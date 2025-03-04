@@ -1,6 +1,6 @@
 # uni-brush
 
-A minimal Electron application with TypeScript
+Tool to "galaxy"-build space and science fiction stories
 
 ## Recommended IDE Setup
 

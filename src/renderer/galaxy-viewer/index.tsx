@@ -9,7 +9,7 @@ const GalaxyViewer: FunctionComponent<GalaxyViewerProps> = (props: GalaxyViewerP
 
   useEffect(() => {
     mountMainThreeRenderer(mountRef);
-  }, []);
+  });
 
   return <div className="vis" ref={mountRef} />;
 };

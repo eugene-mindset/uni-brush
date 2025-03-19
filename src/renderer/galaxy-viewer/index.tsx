@@ -1,6 +1,8 @@
 import { FunctionComponent } from "preact";
 import { useEffect, useRef } from "preact/hooks";
-import { mountMainThreeRenderer } from "./threejs";
+
+import { mountMainThreeRenderer } from "@/renderer/threejs";
+import "@/styles/three.css";
 
 export interface GalaxyViewerProps {}
 
@@ -11,7 +13,7 @@ const GalaxyViewer: FunctionComponent<GalaxyViewerProps> = (props: GalaxyViewerP
     mountMainThreeRenderer(mountRef);
   });
 
-  return <div className="vis" ref={mountRef} />;
+  return <div className="threeMainRender" ref={mountRef} />;
 };
 
 export default GalaxyViewer;

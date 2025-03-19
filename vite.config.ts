@@ -3,6 +3,7 @@ import path from "node:path";
 import pkg from "./package.json";
 import electron from "vite-plugin-electron/simple";
 import { rmSync } from "node:fs";
+import preact from "@preact/preset-vite";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -14,15 +15,14 @@ export default defineConfig(({ command }) => {
 
   return {
     plugins: [
+      preact(),
       electron({
         main: {
           // Shortcut of `build.lib.entry`.
           entry: "src/main/index.ts",
           onstart(args) {
             if (process.env.VSCODE_DEBUG) {
-              console.log(
-                /* For `.vscode/.debug.script.mjs` */ "[startup] Electron App"
-              );
+              console.log(/* For `.vscode/.debug.script.mjs` */ "[startup] Electron App");
             } else {
               args.startup();
             }
@@ -41,7 +41,7 @@ export default defineConfig(({ command }) => {
           input: path.join(__dirname, "src/preload/index.ts"),
           vite: {
             build: {
-              sourcemap: sourcemap ? true : undefined, // #332
+              sourcemap: sourcemap ? "inline" : undefined, // #332
               minify: isBuild,
               outDir: "out/preload",
             },
@@ -66,11 +66,11 @@ export default defineConfig(({ command }) => {
           port: +url.port,
         };
       })(),
-      resolve: {
-        alias: {
-          "@": path.resolve(__dirname, "./src"),
-        },
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
       },
+    },
     clearScreen: false,
   };
 });

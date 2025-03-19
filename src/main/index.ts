@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { start } from "node:repl";
-import { handleFileSave } from "./comm";
+import { handleFileSaveDialog, handleProjectLoad, handleProjectSave } from "./comm";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -59,7 +59,8 @@ function createWindow() {
 }
 
 function startApp() {
-  ipcMain.handle("dialog:saveFile", handleFileSave);
+  ipcMain.handle("ub:saveProjectFile", handleProjectSave);
+  ipcMain.handle("ub:loadProjectFile", handleProjectLoad);
   createWindow();
 }
 

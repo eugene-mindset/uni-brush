@@ -1,14 +1,27 @@
+import { StarSystemManager } from "@/models/star-system";
 import "@/styles/ui.css";
 
 export const MainMenu = () => {
   const onSaveClick = async () => {
-    const filePath = await window.ipcRenderer.invoke("dialog:saveFile");
-    console.log(filePath);
+    const files = [{ content: StarSystemManager.dumpData(), path: "star_systems.json" }];
+    const outputFile = await window.ipcRenderer.invoke("ub:saveProjectFile", files);
+    console.log(outputFile);
+  };
+
+  const onLoadClick = async () => {
+    console.log(StarSystemManager.getAll()[0].publicId);
+    const contents = await window.ipcRenderer.invoke("ub:loadProjectFile");
+    for (const { content, path } of contents) {
+      if (path === "star_systems.json") StarSystemManager.loadData(content);
+    }
+
+    StarSystemManager.batchInitializeEntites();
+    console.log(StarSystemManager.getAll()[0].publicId);
   };
 
   return (
     <div>
-      <button>Load</button>
+      <button onClick={onLoadClick}>Load</button>
       <button onClick={onSaveClick}>Save</button>
     </div>
   );

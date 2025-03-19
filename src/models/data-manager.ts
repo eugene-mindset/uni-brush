@@ -46,12 +46,14 @@
  *  export const ExampleManager = ExampleManagerInternal as ExampleManager;
  */
 
+import { Buffer } from "node:buffer";
+
 export interface DataInstance {
   publicId: string;
 }
 
-export interface DataStoreModel {
-  publicId: Array<string>;
+interface DataStore {
+  publicId: string[];
 }
 
 export class DataInstanceInternal {
@@ -64,18 +66,6 @@ export class DataInstanceInternal {
   protected get internalId(): number {
     return this._internalId;
   }
-
-  public get publicId(): string {
-    return DataInstanceInternal._manager?.getDataValueForInstance(this._internalId, "publicId");
-  }
-}
-
-export namespace DataInstanceInternal {
-  export const _manager: DataManagerClass<
-    DataInstance,
-    DataInstanceInternal,
-    DataStoreModel
-  > | null = null;
 }
 
 export interface DataManager<Ext, Mod> {
@@ -84,8 +74,11 @@ export interface DataManager<Ext, Mod> {
   create: () => Ext;
   get: (id: string) => Ext;
   getAll: () => Ext[];
+  fullReset: (capacity?: number) => void;
   batchInitializeValue: <K extends keyof Mod>(key: K, array: Mod[K][]) => void;
   batchInitializeEntites: () => void;
+  dumpData: () => string;
+  loadData: (content: string) => void;
 }
 
 export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
@@ -94,7 +87,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   _create: new (_newId: number) => Int;
   private _dataInstances: Array<Int>;
   //TODO: handle resizing of arrays some how
-  private _dataStore: { [key in keyof Mod]: Array<Mod[key] | undefined> } & DataStoreModel;
+  private _dataStore: { [key in keyof Mod]: Array<Mod[key] | undefined> } & DataStore;
   private _capacity: number = 1000;
 
   private _publicToInternal: Record<string, number> = {};
@@ -144,6 +137,10 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return this._dataInstances[this._publicToInternal[id]];
   }
 
+  public getPublicId(id: number): string {
+    return this._dataStore["publicId"][id];
+  }
+
   public getAll(): Ext[] {
     return [...this._dataInstances];
   }
@@ -156,11 +153,22 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return this._dataInstances[this._publicToInternal[id]];
   }
 
-  public getDataValueForInstance(id: number, key: keyof Mod): any {
+  public fullReset(capacity?: number) {
+    this._dataInstances = [];
+    this._dataStore = {} as typeof this._dataStore;
+    this._capacity = capacity ? capacity : this._capacity;
+    this.batchInitializeProperty("publicId");
+  }
+
+  public getDataValueForInstance(id: number, key: keyof typeof this._dataStore): any {
     return this._dataStore[key][id];
   }
 
-  public setDataValueForInstance<K extends keyof Mod>(id: number, key: K, value: Mod[K]): boolean {
+  public setDataValueForInstance<K extends keyof typeof this._dataStore>(
+    id: number,
+    key: K,
+    value: (typeof this._dataStore)[K][number]
+  ): boolean {
     // TODO: do some checks to allow assignment
     // TODO: throw some exceptions?
 
@@ -192,6 +200,24 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
     for (let index = 0; index < this._capacity; index++) {
       this.create();
+    }
+  }
+
+  public dumpData(): string {
+    return JSON.stringify(this._dataStore);
+  }
+
+  public loadData(content: string) {
+    const newStore = JSON.parse(content) as typeof this._dataStore;
+
+    // TODO: do some error checks
+
+    this.fullReset();
+    this._dataStore["publicId"] = [];
+
+    let key: keyof typeof this._dataStore;
+    for (key in newStore) {
+      this._dataStore[key] = newStore[key];
     }
   }
 }

@@ -9,14 +9,12 @@ export const MainMenu = () => {
   };
 
   const onLoadClick = async () => {
-    console.log(StarSystemManager.getAll()[0].publicId);
     const contents = await window.ipcRenderer.invoke("ub:loadProjectFile");
     for (const { content, path } of contents) {
       if (path === "star_systems.json") StarSystemManager.loadData(content);
     }
 
     StarSystemManager.batchInitializeEntites();
-    console.log(StarSystemManager.getAll()[0].publicId);
   };
 
   return (

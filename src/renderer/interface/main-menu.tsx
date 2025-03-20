@@ -1,11 +1,12 @@
 import { StarSystemManager } from "@/models/star-system";
 import "@/styles/ui.css";
 
+// TODO: UI needs to get cleaned up
 export const MainMenu = () => {
   const onSaveClick = async () => {
     const files = [{ content: StarSystemManager.dumpData(), path: "star_systems.json" }];
     const outputFile = await window.ipcRenderer.invoke("ub:saveProjectFile", files);
-    console.log(outputFile);
+    console.log(outputFile); // TODO: add better logging
   };
 
   const onLoadClick = async () => {

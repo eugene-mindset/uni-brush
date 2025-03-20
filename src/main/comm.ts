@@ -1,9 +1,10 @@
 import fs from "node:fs";
 import { Buffer } from "node:buffer";
-
 import { dialog } from "electron";
 import archiver from "archiver";
-import yauzl, { Entry } from "yauzl-promise";
+import yauzl from "yauzl-promise";
+
+import { streamToString } from "@/utils";
 
 export async function handleFileSaveDialog(
   _?: Electron.IpcMainInvokeEvent,
@@ -32,8 +33,7 @@ type ProjectJsonContent = { content: string; path: string }[];
 export async function handleProjectSave(
   _?: Electron.IpcMainInvokeEvent,
   files?: ProjectJsonContent,
-  dialogOptions?: Electron.SaveDialogOptions,
-  useDialog?: boolean
+  dialogOptions?: Electron.SaveDialogOptions
 ): Promise<string> {
   if (!files) return "";
 
@@ -51,7 +51,7 @@ export async function handleProjectSave(
   });
 
   output.on("close", function () {
-    console.log(archive.pointer() + " total bytes");
+    console.log(archive.pointer() + " total bytes"); // TODO: add better logging
     console.log("archiver has been finalized and the output file descriptor has closed.");
   });
 
@@ -83,19 +83,9 @@ export async function handleProjectSave(
   return finalPath;
 }
 
-function streamToString(stream: NodeJS.ReadableStream): Promise<string> {
-  const chunks: any[] = [];
-  return new Promise((resolve, reject) => {
-    stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
-    stream.on("error", (err) => reject(err));
-    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-  });
-}
-
 export async function handleProjectLoad(
   _?: Electron.IpcMainInvokeEvent,
-  dialogOptions?: Electron.OpenDialogOptions,
-  useDialog?: boolean
+  dialogOptions?: Electron.OpenDialogOptions
 ): Promise<ProjectJsonContent> {
   const filePath = await handleFileOpenDialog(undefined, dialogOptions);
 

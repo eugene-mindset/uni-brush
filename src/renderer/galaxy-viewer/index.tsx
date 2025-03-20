@@ -19,6 +19,7 @@ const GalaxyViewer: FunctionComponent<GalaxyViewerProps> = (props: GalaxyViewerP
     setRemount((x) => x + 1);
   };
 
+  // generate random galaxy upon viewer (app) load
   useEffect(() => {
     const newPositions: Position[] = new Array();
     for (let index = 0; index < StarSystemManager.capacity; index++) {

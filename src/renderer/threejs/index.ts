@@ -39,6 +39,8 @@ export const mountMainThreeRenderer = (mountRef: { current: HTMLDivElement | nul
 
   controls.maxPolarAngle = Math.PI / 2;
 
+  // TODO: very expensive to recreate stars, for small changes will need to track and change individual
+  // ones
   const systemCollection: StarSystemVisual[] = [];
   for (const starSystem of StarSystemManager.getAll()) {
     const starSystemVisual = new StarSystemVisual(

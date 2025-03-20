@@ -14,7 +14,7 @@ const GalaxyViewer: FunctionComponent<GalaxyViewerProps> = (props: GalaxyViewerP
   const mountRef = useRef<HTMLDivElement | null>(null);
   const [remount, setRemount] = useState<number>(0);
 
-  const onRefresh = () => {
+  const onRefreshNeeded = () => {
     StarSystemManager.batchInitializeEntites();
     setRemount((x) => x + 1);
   };
@@ -36,9 +36,9 @@ const GalaxyViewer: FunctionComponent<GalaxyViewerProps> = (props: GalaxyViewerP
   }, []);
 
   useEffect(() => {
-    StarSystemManager.subscribe("refresh", onRefresh);
-    return () => StarSystemManager.unsubscribe("refresh", onRefresh);
-  }, [onRefresh]);
+    StarSystemManager.subscribe("refresh", onRefreshNeeded);
+    return () => StarSystemManager.unsubscribe("refresh", onRefreshNeeded);
+  }, [onRefreshNeeded]);
 
   useEffect(() => {
     mountMainThreeRenderer(mountRef);

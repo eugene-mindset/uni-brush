@@ -4,7 +4,7 @@ import { dialog } from "electron";
 import archiver from "archiver";
 import yauzl from "yauzl-promise";
 
-import { streamToString } from "@/utils";
+import { streamToString } from "./utils";
 
 export async function handleFileSaveDialog(
   _?: Electron.IpcMainInvokeEvent,

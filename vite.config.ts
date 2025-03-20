@@ -30,7 +30,7 @@ export default defineConfig(({ command }) => {
           vite: {
             build: {
               rollupOptions: {
-                external: ["@node-rs/crc32"],
+                external: ["@node-rs/crc32", "./src/utils"],
               },
               sourcemap,
               minify: isBuild,

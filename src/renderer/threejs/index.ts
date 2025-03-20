@@ -2,24 +2,10 @@ import * as THREE from "three";
 import { MapControls } from "three/examples/jsm/Addons.js";
 
 import { StarSystemManager } from "@/models/star-system";
-import { Position } from "@/types";
-
 import { StarSystemVisual } from "./objects/star-system-visual";
 
 export const mountMainThreeRenderer = (mountRef: { current: HTMLDivElement | null }) => {
-  const newPositions: Position[] = new Array();
-  for (let index = 0; index < StarSystemManager.capacity; index++) {
-    const vec = new THREE.Vector3().randomDirection();
-    const radius = Math.random();
-    newPositions.push({
-      x: vec.x * 200 * radius,
-      y: vec.y * 10 * Math.random(),
-      z: vec.z * 200 * radius,
-    });
-  }
-
-  StarSystemManager.batchInitializeValue("initPos", newPositions);
-  StarSystemManager.batchInitializeEntites();
+  console.log("mount call");
 
   // Scene, camera, and renderer setup
   const scene = new THREE.Scene();

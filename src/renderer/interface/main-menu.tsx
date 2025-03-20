@@ -11,10 +11,10 @@ export const MainMenu = () => {
   const onLoadClick = async () => {
     const contents = await window.ipcRenderer.invoke("ub:loadProjectFile");
     for (const { content, path } of contents) {
-      if (path === "star_systems.json") StarSystemManager.loadData(content);
+      if (path === "star_systems.json") {
+        StarSystemManager.loadData(content);
+      }
     }
-
-    StarSystemManager.batchInitializeEntites();
   };
 
   return (

@@ -46,8 +46,6 @@
  *  export const ExampleManager = ExampleManagerInternal as ExampleManager;
  */
 
-import { Buffer } from "node:buffer";
-
 export interface DataInstance {
   publicId: string;
 }
@@ -71,42 +69,62 @@ export class DataInstanceInternal {
 export interface DataManager<Ext, Mod> {
   capacity: number;
   count: number;
+
   create: () => Ext;
+
   get: (id: string) => Ext;
   getAll: () => Ext[];
+
   fullReset: (capacity?: number) => void;
   batchInitializeValue: <K extends keyof Mod>(key: K, array: Mod[K][]) => void;
   batchInitializeEntites: () => void;
   dumpData: () => string;
   loadData: (content: string) => void;
+
+  subscribe: (eventName: string, callback: DataManagerEventCallback) => void;
+  unsubscribe: (eventName: string, callback: DataManagerEventCallback) => void;
 }
+
+type DataManagerEventCallback = (...args: any[]) => void;
 
 export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   implements DataManager<Ext, Mod>
 {
-  _create: new (_newId: number) => Int;
-  private _dataInstances: Array<Int>;
+  private createInstanceCall: new (_newId: number) => Int;
+  private dataInstances: Array<Int>;
   //TODO: handle resizing of arrays some how
-  private _dataStore: { [key in keyof Mod]: Array<Mod[key] | undefined> } & DataStore;
-  private _capacity: number = 1000;
+  private dataStore: { [key in keyof Mod]: Array<Mod[key] | undefined> } & DataStore;
+  private currentCapacity: number = 1000;
 
-  private _publicToInternal: Record<string, number> = {};
+  private publicToInternal: Record<string, number> = {};
+
+  /** META */
+  private events: Record<string, DataManagerEventCallback[]>;
 
   public constructor(type: new (_newId: number, ...args: any[]) => Int, initCapacity?: number) {
-    this._create = type;
-    this._dataInstances = [];
+    this.createInstanceCall = type;
+    this.dataInstances = [];
 
-    this._dataStore = {} as typeof this._dataStore;
-    this._capacity = initCapacity ? initCapacity : this._capacity;
+    this.dataStore = {} as typeof this.dataStore;
+    this.currentCapacity = initCapacity ? initCapacity : this.currentCapacity;
+    this.batchInitializeProperty("publicId");
+
+    this.events = {};
+  }
+
+  public fullReset(capacity?: number) {
+    this.dataInstances = [];
+    this.dataStore = {} as typeof this.dataStore;
+    this.currentCapacity = capacity ? capacity : this.currentCapacity;
     this.batchInitializeProperty("publicId");
   }
 
   public get capacity(): number {
-    return this._capacity;
+    return this.currentCapacity;
   }
 
   public get count(): number {
-    return this._dataInstances.length;
+    return this.dataInstances.length;
   }
 
   private resizeStore(alloc?: number): void {
@@ -114,110 +132,135 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   }
 
   public create(): Ext {
-    if (this._dataInstances.length >= this._capacity) {
+    if (this.dataInstances.length >= this.currentCapacity) {
       this.resizeStore();
     }
 
-    const newInstId = this._dataInstances.length;
+    const newInstId = this.dataInstances.length;
     const newInstPublicId = crypto.randomUUID();
-    const newInstance = new this._create(newInstId);
+    const newInstance = new this.createInstanceCall(newInstId);
 
-    this._dataInstances.push(newInstance);
-    this._dataStore.publicId[newInstId] = newInstPublicId;
-    this._publicToInternal[newInstPublicId] = newInstId;
+    this.dataInstances.push(newInstance);
+    this.dataStore.publicId[newInstId] = newInstPublicId;
+    this.publicToInternal[newInstPublicId] = newInstId;
 
     return newInstance;
   }
 
   public get(id: string): Ext {
-    if (!(id in this._publicToInternal)) {
+    if (!(id in this.publicToInternal)) {
       throw new Error("Entity does not exist.");
     }
 
-    return this._dataInstances[this._publicToInternal[id]];
+    return this.dataInstances[this.publicToInternal[id]];
   }
 
   public getPublicId(id: number): string {
-    return this._dataStore["publicId"][id];
+    return this.dataStore["publicId"][id];
   }
 
   public getAll(): Ext[] {
-    return [...this._dataInstances];
+    return [...this.dataInstances];
   }
 
   public getSafe(id: string): Ext | undefined {
-    if (!(id in this._publicToInternal)) {
+    if (!(id in this.publicToInternal)) {
       return undefined;
     }
 
-    return this._dataInstances[this._publicToInternal[id]];
+    return this.dataInstances[this.publicToInternal[id]];
   }
 
-  public fullReset(capacity?: number) {
-    this._dataInstances = [];
-    this._dataStore = {} as typeof this._dataStore;
-    this._capacity = capacity ? capacity : this._capacity;
-    this.batchInitializeProperty("publicId");
+  public getDataValueForInstance(id: number, key: keyof typeof this.dataStore): any {
+    return this.dataStore[key][id];
   }
 
-  public getDataValueForInstance(id: number, key: keyof typeof this._dataStore): any {
-    return this._dataStore[key][id];
-  }
-
-  public setDataValueForInstance<K extends keyof typeof this._dataStore>(
+  public setDataValueForInstance<K extends keyof typeof this.dataStore>(
     id: number,
     key: K,
-    value: (typeof this._dataStore)[K][number]
+    value: (typeof this.dataStore)[K][number]
   ): boolean {
     // TODO: do some checks to allow assignment
     // TODO: throw some exceptions?
 
-    this._dataStore[key][id] = value;
+    this.dataStore[key][id] = value;
 
     return true;
   }
 
-  protected batchInitializeProperty<K extends keyof typeof this._dataStore>(key: K) {
-    this._dataStore = {
-      ...this._dataStore,
-      [key]: new Array<(typeof this._dataStore)[K]>(this._capacity),
+  protected batchInitializeProperty<K extends keyof typeof this.dataStore>(key: K) {
+    this.dataStore = {
+      ...this.dataStore,
+      [key]: new Array<(typeof this.dataStore)[K]>(this.currentCapacity),
     };
   }
 
   public batchInitializeValue<K extends keyof Mod>(key: K, array: Mod[K][]) {
-    if (this._capacity < array.length) {
+    if (this.currentCapacity < array.length) {
       this.resizeStore();
     }
 
-    const newArray = [...array, ...new Array<Mod[K]>(Math.min(this._capacity - array.length, 0))];
-    this._dataStore = { ...this._dataStore, [key]: newArray };
+    const newArray = [
+      ...array,
+      ...new Array<Mod[K]>(Math.min(this.currentCapacity - array.length, 0)),
+    ];
+    this.dataStore = { ...this.dataStore, [key]: newArray };
   }
 
   public batchInitializeEntites(): void {
-    if (this._dataInstances.length) {
+    if (this.dataInstances.length) {
       throw new Error("Entities alreaedy exist!");
     }
 
-    for (let index = 0; index < this._capacity; index++) {
+    for (let index = 0; index < this.currentCapacity; index++) {
       this.create();
     }
   }
 
+  /** SERIALIZATION */
+
   public dumpData(): string {
-    return JSON.stringify(this._dataStore);
+    return JSON.stringify(this.dataStore);
   }
 
   public loadData(content: string) {
-    const newStore = JSON.parse(content) as typeof this._dataStore;
+    const newStore = JSON.parse(content) as typeof this.dataStore;
 
     // TODO: do some error checks
 
     this.fullReset();
-    this._dataStore["publicId"] = [];
+    this.dataStore["publicId"] = [];
 
-    let key: keyof typeof this._dataStore;
+    let key: keyof typeof this.dataStore;
     for (key in newStore) {
-      this._dataStore[key] = newStore[key];
+      this.dataStore[key] = newStore[key];
+    }
+
+    this.emit("refresh");
+  }
+
+  /** EVENTS */
+
+  public subscribe(eventName: string, callback: DataManagerEventCallback): void {
+    if (!this.events[eventName]) {
+      this.events[eventName] = [];
+    }
+    this.events[eventName].push(callback);
+  }
+
+  public unsubscribe(eventName: string, callback: DataManagerEventCallback): void {
+    const eventCallbacks = this.events[eventName];
+    if (eventCallbacks) {
+      this.events[eventName] = eventCallbacks.filter((cb) => cb !== callback);
+    }
+  }
+
+  protected emit(eventName: string, ...args: any[]): void {
+    const eventCallbacks = this.events[eventName];
+    if (eventCallbacks) {
+      eventCallbacks.forEach((callback) => {
+        callback(...args);
+      });
     }
   }
 }

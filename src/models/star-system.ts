@@ -11,12 +11,7 @@
 
 import { Position } from "@/types";
 
-import {
-  DataInstanceInternal,
-  DataManager,
-  DataManagerClass,
-  DataStoreModel,
-} from "./data-manager";
+import { DataInstance, DataInstanceInternal, DataManager, DataManagerClass } from "./data-manager";
 
 export interface StarSystem {
   publicId: string;
@@ -32,12 +27,16 @@ export interface StarSystem {
   // geography: GeoFeatures[];
 }
 
-interface StarSystemStoreModel extends DataStoreModel {
+interface StarSystemStoreModel extends DataInstance {
   name: string;
   initPos: Position;
 }
 
 class StarSystemInternal extends DataInstanceInternal implements StarSystem {
+  get publicId(): string {
+    return StarSystemInternal.Manager.getPublicId(this.internalId);
+  }
+
   get name(): string {
     return StarSystemInternal.Manager.getName(this.internalId);
   }
@@ -74,12 +73,13 @@ class StarSystemManagerClass extends DataManagerClass<
   }
 }
 
-export type StarSystemManager = DataManager<StarSystem, StarSystemStoreModel>;
-
 const StarSystemManagerInternal = new StarSystemManagerClass();
 
 namespace StarSystemInternal {
   export const Manager: StarSystemManagerClass = StarSystemManagerInternal;
 }
 
-export const StarSystemManager = StarSystemManagerInternal as StarSystemManager;
+export const StarSystemManager = StarSystemManagerInternal as DataManager<
+  StarSystem,
+  StarSystemStoreModel
+>;

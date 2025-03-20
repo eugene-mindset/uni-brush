@@ -1,7 +1,9 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { start } from "node:repl";
+import { handleFileSaveDialog, handleProjectLoad, handleProjectSave } from "./comm";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -52,7 +54,14 @@ function createWindow() {
 
   win.once("ready-to-show", () => {
     win?.show();
+    process.env.MAIN_WINDOW_ID = win?.id || -1;
   });
+}
+
+function startApp() {
+  ipcMain.handle("ub:saveProjectFile", handleProjectSave);
+  ipcMain.handle("ub:loadProjectFile", handleProjectLoad);
+  createWindow();
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -69,8 +78,8 @@ app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    startApp();
   }
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(startApp);

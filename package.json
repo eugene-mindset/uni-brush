@@ -14,7 +14,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
     "@types/three": "^0.174.0",
+    "@types/yauzl-promise": "^4.0.1",
     "electron": "^30.0.1",
     "electron-builder": "^24.13.3",
     "typescript": "^5.2.2",
@@ -24,8 +26,11 @@
   },
   "main": "out/main/index.js",
   "dependencies": {
+    "@node-rs/crc32": "^1.10.6",
     "@preact/preset-vite": "^2.10.1",
+    "archiver": "^7.0.1",
     "preact": "^10.26.4",
-    "three": "^0.174.0"
+    "three": "^0.174.0",
+    "yauzl-promise": "^4.0.0"
   }
 }

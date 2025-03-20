@@ -1,0 +1,19 @@
+* {
+    z-index: 1;
+}
+
+#main-menu {
+    margin: auto;
+    padding: 10px;
+
+    width: 150px;
+    min-height: 400px;
+    display: flex;
+    z-index: 10;
+    flex-direction: column;
+
+    justify-content: stretch;
+
+    background-color: rgba(0, 0, 0, 0.5);
+}
+

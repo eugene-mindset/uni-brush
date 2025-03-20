@@ -4,11 +4,13 @@ import { render, FunctionComponent } from "preact";
 
 import "@/styles/global.css";
 import GalaxyViewer from "./galaxy-viewer";
+import MainMenu from "./interface/main-menu";
 
 const App: FunctionComponent<{}> = ({}) => {
   return (
     <>
       <GalaxyViewer />
+      <MainMenu />
     </>
   );
 };
@@ -18,7 +20,6 @@ if (appElement) {
   render(<App />, appElement);
 }
 
-// Use contextBridge
 window.ipcRenderer.on("main-process-message", (_event, message) => {
   console.log(message);
 });

@@ -12,9 +12,9 @@ import { BaseVisual } from "@/renderer/threejs";
 import { Position } from "@/types";
 
 import { DataInstance, DataInstanceInternal, DataManager, DataManagerClass } from "./data-manager";
+import { EntityTypes } from "./types";
 
-interface StarSystemClass {
-  publicId: string;
+interface StarSystemClass extends DataInstance {
   visual: BaseVisual;
   name: string;
   desc: string;
@@ -34,7 +34,8 @@ interface StarSystemStoreModel extends DataInstance {
   initPos: Position;
 }
 
-class StarSystemInternal extends DataInstanceInternal implements StarSystemClass {
+class StarSystemInternal extends DataInstanceInternal {
+  public readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
   public static manager: StarSystemManagerInternalClass;
 
   get publicId(): string {
@@ -73,6 +74,8 @@ class StarSystemManagerInternalClass extends DataManagerClass<
   StarSystemInternal,
   StarSystemStoreModel
 > {
+  public readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
+
   constructor() {
     super(StarSystemInternal);
     this.batchInitializePropertyArray("obj3D");
@@ -118,7 +121,7 @@ class StarSystemManagerInternalClass extends DataManagerClass<
 StarSystemInternal.manager = new StarSystemManagerInternalClass();
 
 export namespace StarSystem {
-  export type InstanceType = StarSystemClass;
+  export type EntityType = StarSystemClass;
   export type ManagerType = StarSystemManagerClass;
   export const Manager: StarSystemManagerClass = StarSystemInternal.manager;
 }

@@ -46,9 +46,12 @@
  *  export const ExampleManager = ExampleManagerInternal as ExampleManager;
  */
 
+import { EntityTypes } from "./types";
+
 // TODO: rename data to entity?
 
 export interface DataInstance {
+  type: EntityTypes;
   publicId: string;
 }
 
@@ -57,6 +60,7 @@ interface DataStore {
 }
 
 export class DataInstanceInternal {
+  public static type: EntityTypes = EntityTypes.BASE;
   private _internalId: number;
 
   constructor(_newId: number, ..._: any[]) {
@@ -70,6 +74,7 @@ export class DataInstanceInternal {
 
 export interface DataManager<Ext, Mod> {
   /** PROPERTIES */
+  type: EntityTypes;
 
   /** META */
 
@@ -78,8 +83,8 @@ export interface DataManager<Ext, Mod> {
   loadData: (content: string) => void;
 
   // EVENTS
-  subscribe: (eventName: string, callback: DataManagerEventCallback) => void;
-  unsubscribe: (eventName: string, callback: DataManagerEventCallback) => void;
+  addEventListener: (eventName: string, callback: DataManagerEventCallback) => void;
+  removeEventListener: (eventName: string, callback: DataManagerEventCallback) => void;
 
   // FETCH
   get: (id: string) => Ext;
@@ -102,11 +107,12 @@ type DataManagerEventCallback = (...args: any[]) => void;
 export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   implements DataManager<Ext, Mod>
 {
+  public type: EntityTypes = EntityTypes.BASE;
   private createInstanceCall: new (_newId: number) => Int;
   private dataInstances: Array<Int>;
   //TODO: handle resizing of arrays some how
   private dataStore: { [key in keyof Mod]: Array<Mod[key] | undefined> } & DataStore;
-  private currentCapacity: number = 1000;
+  private currentCapacity: number = 10000;
 
   private publicToInternal: Record<string, number> = {};
 
@@ -135,7 +141,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
     // TODO: do some error checks
 
-    this.fullReset();
+    this.fullReset(newStore.publicId.length);
     this.dataStore["publicId"] = [];
 
     let key: keyof typeof this.dataStore;
@@ -148,14 +154,14 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
   /** EVENTS */
 
-  public subscribe(eventName: string, callback: DataManagerEventCallback): void {
+  public addEventListener(eventName: string, callback: DataManagerEventCallback): void {
     if (!this.events[eventName]) {
       this.events[eventName] = [];
     }
     this.events[eventName].push(callback);
   }
 
-  public unsubscribe(eventName: string, callback: DataManagerEventCallback): void {
+  public removeEventListener(eventName: string, callback: DataManagerEventCallback): void {
     const eventCallbacks = this.events[eventName];
     if (eventCallbacks) {
       this.events[eventName] = eventCallbacks.filter((cb) => cb !== callback);
@@ -291,4 +297,8 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
       [key]: new Array<(typeof this.dataStore)[K]>(this.currentCapacity),
     };
   }
+}
+
+export namespace Base {
+  export type EntityType = DataInstance;
 }

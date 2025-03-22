@@ -5,13 +5,17 @@ import { render, FunctionComponent } from "preact";
 import "@/styles/global.css";
 import GalaxyViewer from "./galaxy-viewer";
 import MainMenu from "./interface/main-menu";
+import { MainViewContextProvider } from "@/store/main-view-contex";
+import { AppContextProvider } from "@/store/app-context";
 
 const App: FunctionComponent<{}> = ({}) => {
   return (
-    <>
-      <GalaxyViewer />
-      <MainMenu />
-    </>
+    <AppContextProvider value={{}}>
+      <MainViewContextProvider value={{}}>
+        <GalaxyViewer />
+        <MainMenu />
+      </MainViewContextProvider>
+    </AppContextProvider>
   );
 };
 

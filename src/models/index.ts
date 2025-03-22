@@ -1,1 +1,2 @@
-export * as Data from "./managers";
+export * as Entity from "./managers";
+export { EntityTypes } from "./managers";

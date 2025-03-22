@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { BaseVisual } from "./base";
+import { EntityTypes } from "@/models";
 
 export class StarSystemVisual extends BaseVisual {
   private geometry?: THREE.BufferGeometry;
@@ -10,6 +11,7 @@ export class StarSystemVisual extends BaseVisual {
     this.geometry = new THREE.SphereGeometry(0.5);
     this.material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     this.obj3D = new THREE.Mesh(this.geometry, this.material);
+    this.setUserData({ ref: this, id: newId, type: EntityTypes.STAR_SYSTEM });
 
     if (pos) this.obj3D.position.copy(pos);
   }

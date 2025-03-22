@@ -1,4 +1,11 @@
+import { Entity } from "@/models";
 import * as THREE from "three";
+
+interface BaseVisualData {
+  ref: BaseVisual;
+  id: string;
+  type: Entity.EntityTypes;
+}
 
 export class BaseVisual {
   private dataId: string;
@@ -6,6 +13,11 @@ export class BaseVisual {
 
   constructor(newId: string) {
     this.dataId = newId;
+  }
+
+  protected setUserData(data: BaseVisualData & Object) {
+    if (!this.obj3D) return;
+    this.obj3D.userData = data;
   }
 
   public get object3D(): THREE.Object3D {

@@ -1,4 +1,4 @@
-import { Data } from "@/models";
+import { Entity } from "@/models";
 import "@/styles/ui.css";
 import { Fragment, FunctionComponent } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
@@ -18,7 +18,7 @@ export const MainMenu: FunctionComponent<{}> = () => {
 
   // TODO: don't to save and load calls here
   const onSaveClick = async () => {
-    const files = [{ content: Data.StarSystem.Manager.dumpData(), path: "star_systems.json" }];
+    const files = [{ content: Entity.StarSystem.Manager.dumpData(), path: "star_systems.json" }];
     const outputFile = await window.ipcRenderer.invoke("ub:saveProjectFile", files);
     console.log(outputFile); // TODO: add better logging
   };
@@ -27,7 +27,7 @@ export const MainMenu: FunctionComponent<{}> = () => {
     const contents = await window.ipcRenderer.invoke("ub:loadProjectFile");
     for (const { content, path } of contents) {
       if (path === "star_systems.json") {
-        Data.StarSystem.Manager.loadData(content);
+        Entity.StarSystem.Manager.loadData(content);
       }
     }
   };

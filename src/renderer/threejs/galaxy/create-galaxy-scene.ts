@@ -1,12 +1,13 @@
 import * as THREE from "three";
 
-import { StarSystemVisual } from "./objects";
-import { Data } from "@/models";
+import { StarSystemVisual } from "../objects";
+import { Entity } from "@/models";
 
 export const createGalaxyScene = (scene: THREE.Scene) => {
   // TODO: very expensive to recreate stars, for small changes will need to track and change individual
   // ones
-  for (const starSystem of Data.StarSystem.Manager.getAll()) {
+
+  for (const starSystem of Entity.StarSystem.Manager.getAll()) {
     const starSystemVisual = new StarSystemVisual(
       starSystem.publicId,
       new THREE.Vector3(

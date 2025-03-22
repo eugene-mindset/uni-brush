@@ -46,6 +46,8 @@
  *  export const ExampleManager = ExampleManagerInternal as ExampleManager;
  */
 
+// TODO: rename data to entity?
+
 export interface DataInstance {
   publicId: string;
 }
@@ -57,7 +59,7 @@ interface DataStore {
 export class DataInstanceInternal {
   private _internalId: number;
 
-  constructor(_newId: number, ...args: any[]) {
+  constructor(_newId: number, ..._: any[]) {
     this._internalId = _newId;
   }
 
@@ -82,14 +84,17 @@ export interface DataManager<Ext, Mod> {
   // FETCH
   get: (id: string) => Ext;
   getAll: () => Ext[];
+  getAllForProperty: <K extends keyof Ext>(key: K) => Ext[K][];
 
   // MANAGE
   capacity: number;
   count: number;
   create: () => Ext;
   fullReset: (capacity?: number) => void;
-  batchInitializeValue: <K extends keyof Mod>(key: K, array: Mod[K][]) => void;
+  batchInitializeProperty: <K extends keyof Mod>(key: K, array: Mod[K][]) => void;
   batchInitializeEntites: () => void;
+  forEachEntity: <R>(pred: (x: Ext) => R) => void;
+  mapEntities: <R>(pred: (x: Ext) => R) => R[];
 }
 
 type DataManagerEventCallback = (...args: any[]) => void;
@@ -114,7 +119,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = initCapacity ? initCapacity : this.currentCapacity;
-    this.batchInitializeProperty("publicId");
+    this.batchInitializePropertyArray("publicId");
 
     this.events = {};
   }
@@ -192,7 +197,11 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return [...this.dataInstances];
   }
 
-  protected getDataValueForInstance(id: number, key: keyof typeof this.dataStore): any {
+  public getAllForProperty<K extends keyof Ext>(key: K): Ext[K][] {
+    return this.dataInstances.map((x) => x[key]);
+  }
+
+  protected getPropertyForInstance(id: number, key: keyof typeof this.dataStore): any {
     return this.dataStore[key][id];
   }
 
@@ -226,10 +235,10 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.dataInstances = [];
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = capacity ? capacity : this.currentCapacity;
-    this.batchInitializeProperty("publicId");
+    this.batchInitializePropertyArray("publicId");
   }
 
-  public batchInitializeValue<K extends keyof Mod>(key: K, array: Mod[K][]) {
+  public batchInitializeProperty<K extends keyof Mod>(key: K, array: Mod[K][]) {
     if (this.currentCapacity < array.length) {
       this.resizeStore();
     }
@@ -251,11 +260,19 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     }
   }
 
-  private resizeStore(alloc?: number): void {
+  public forEachEntity<R>(pred: (x: Ext) => R) {
+    this.dataInstances.forEach(pred);
+  }
+
+  public mapEntities<R>(pred: (x: Ext) => R): R[] {
+    return this.dataInstances.map(pred);
+  }
+
+  private resizeStore(_?: number): void {
     throw new Error("Method not implemented yet. Need to allocate more space to create entities.");
   }
 
-  protected setDataValueForInstance<K extends keyof typeof this.dataStore>(
+  protected setPropertyForInstance<K extends keyof typeof this.dataStore>(
     id: number,
     key: K,
     value: (typeof this.dataStore)[K][number]
@@ -268,7 +285,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return true;
   }
 
-  protected batchInitializeProperty<K extends keyof typeof this.dataStore>(key: K) {
+  protected batchInitializePropertyArray<K extends keyof typeof this.dataStore>(key: K) {
     this.dataStore = {
       ...this.dataStore,
       [key]: new Array<(typeof this.dataStore)[K]>(this.currentCapacity),

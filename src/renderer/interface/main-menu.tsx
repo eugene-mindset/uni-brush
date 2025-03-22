@@ -1,11 +1,10 @@
-import { StarSystemManager } from "@/models/star-system";
+import { Data } from "@/models";
 import "@/styles/ui.css";
 import { Fragment, FunctionComponent } from "preact/compat";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 // TODO: UI needs to get cleaned up
 export const MainMenu: FunctionComponent<{}> = () => {
-  const ref = useRef<HTMLDialogElement | undefined>(undefined);
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
   // TODO: move the hiding and showing of menus from keys to global state
@@ -17,8 +16,9 @@ export const MainMenu: FunctionComponent<{}> = () => {
     // TODO: figure out how to dismiss modal when clicking outside of it
   };
 
+  // TODO: don't to save and load calls here
   const onSaveClick = async () => {
-    const files = [{ content: StarSystemManager.dumpData(), path: "star_systems.json" }];
+    const files = [{ content: Data.StarSystem.Manager.dumpData(), path: "star_systems.json" }];
     const outputFile = await window.ipcRenderer.invoke("ub:saveProjectFile", files);
     console.log(outputFile); // TODO: add better logging
   };
@@ -27,7 +27,7 @@ export const MainMenu: FunctionComponent<{}> = () => {
     const contents = await window.ipcRenderer.invoke("ub:loadProjectFile");
     for (const { content, path } of contents) {
       if (path === "star_systems.json") {
-        StarSystemManager.loadData(content);
+        Data.StarSystem.Manager.loadData(content);
       }
     }
   };
@@ -43,7 +43,7 @@ export const MainMenu: FunctionComponent<{}> = () => {
   }, []);
 
   return showMenu ? (
-    <dialog id="main-menu" ref={ref}>
+    <dialog id="main-menu">
       <button onClick={onLoadClick}>Load</button>
       <button onClick={onSaveClick}>Save</button>
     </dialog>

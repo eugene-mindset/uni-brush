@@ -1,2 +1,2 @@
-export { useMainViewContext } from "./main-view-contex";
+export { useMainViewContext } from "./main-view-context";
 export { useAppContext } from "./app-context";

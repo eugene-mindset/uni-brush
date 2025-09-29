@@ -77,8 +77,14 @@ class StarSystemManagerInternalClass extends DataManagerClass<
   public readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
 
   constructor() {
-    super(StarSystemInternal);
+    super(StarSystemInternal, 2500, ["obj3D"]);
+    this.initProperties();
+  }
+
+  private initProperties() {
     this.batchInitializePropertyArray("obj3D");
+    this.batchInitializePropertyArray("name");
+    this.batchInitializePropertyArray("desc");
     this.batchInitializePropertyArray("initPos");
   }
 
@@ -113,8 +119,7 @@ class StarSystemManagerInternalClass extends DataManagerClass<
     this.forEachEntity((x) => x.visual?.dispose());
 
     super.fullReset(capacity);
-    this.batchInitializePropertyArray("obj3D");
-    this.batchInitializePropertyArray("initPos");
+    this.initProperties();
   }
 }
 

@@ -1,4 +1,4 @@
-import { FunctionComponent } from "preact";
+import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import * as THREE from "three";
 
@@ -11,7 +11,7 @@ import "@/styles/three.css";
 
 export interface GalaxyViewerProps {}
 
-const GalaxyViewer: FunctionComponent<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
+const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   const divRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [remount, setRemount] = useState<number>(0);

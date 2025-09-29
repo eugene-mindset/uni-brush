@@ -15,7 +15,7 @@ export interface MainViewContextReadOnlyState {
 export interface MainViewContextFullState extends MainViewContextReadOnlyState {
   pointer: {
     intersect: {
-      setIntersect: (entity: Entity.Base.EntityType) => void;
+      setIntersect: (entity?: Entity.Base.EntityType) => void;
     };
   } & MainViewContextReadOnlyState["pointer"];
 }
@@ -25,7 +25,7 @@ const MainViewContext = createContext({} as MainViewContextFullState);
 export const MainViewContextProvider: Provider<{}> = ({ children }) => {
   const intersectEntity = signal<Entity.Base.EntityType>();
 
-  const setIntersect = (entity: Entity.Base.EntityType) => {
+  const setIntersect = (entity?: Entity.Base.EntityType) => {
     intersectEntity.value = entity;
   };
 

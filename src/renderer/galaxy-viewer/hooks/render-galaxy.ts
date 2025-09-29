@@ -6,7 +6,7 @@ import { MapControls } from "three/examples/jsm/Addons.js";
 import { Entity } from "@/models";
 import { createGalaxyScene } from "@/renderer/threejs/galaxy/create-galaxy-scene";
 import { BaseVisual } from "@/renderer/threejs";
-import { useMainViewFullContext } from "@/store/main-view-contex";
+import { useMainViewFullContext } from "@/store/main-view-context";
 
 export interface RenderGalaxyData {
   scene?: THREE.Scene;
@@ -29,7 +29,7 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
 
   const pointerRef = useRef<THREE.Vector2>(new THREE.Vector2());
   const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
-  const [selectedObject, selectObject] = useState<RenderIntersectData>();
+  const [_, selectObject] = useState<RenderIntersectData>();
 
   const mainView = useMainViewFullContext();
 
@@ -71,6 +71,7 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
         };
       });
     } else {
+      mainView.pointer.intersect.setIntersect();
       selectObject(undefined);
     }
   };
@@ -136,7 +137,6 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
   const cleanUp = () => {
     if (canvasRef.current && rendererRef.current) {
       rendererRef.current.dispose();
-      canvasRef.current?.removeChild(rendererRef.current.domElement);
     }
 
     if (sceneRef) {

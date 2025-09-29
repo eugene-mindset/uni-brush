@@ -1,19 +1,19 @@
 `use client`;
 
-import { render, FunctionComponent } from "preact";
+import { render, FunctionalComponent } from "preact";
 
 import "@/styles/global.css";
 import GalaxyViewer from "./galaxy-viewer";
-import MainMenu from "./interface/main-menu";
-import { MainViewContextProvider } from "@/store/main-view-contex";
+import FullInterface from "./interface";
+import { MainViewContextProvider } from "@/store/main-view-context";
 import { AppContextProvider } from "@/store/app-context";
 
-const App: FunctionComponent<{}> = ({}) => {
+const App: FunctionalComponent<{}> = ({}) => {
   return (
     <AppContextProvider value={{}}>
       <MainViewContextProvider value={{}}>
         <GalaxyViewer />
-        <MainMenu />
+        <FullInterface />
       </MainViewContextProvider>
     </AppContextProvider>
   );

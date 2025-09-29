@@ -110,21 +110,31 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   public type: EntityTypes = EntityTypes.BASE;
   private createInstanceCall: new (_newId: number) => Int;
   private dataInstances: Array<Int>;
+
   //TODO: handle resizing of arrays some how
   private dataStore: { [key in keyof Mod]: Array<Mod[key] | undefined> } & DataStore;
-  private currentCapacity: number = 10000;
+  private currentCapacity: number = 1000;
+  private noDumpList: Set<keyof typeof this.dataStore>;
 
-  private publicToInternal: Record<string, number> = {};
+  private publicToInternal: Record<string, number>;
 
   /** META */
   private events: Record<string, DataManagerEventCallback[]>;
 
-  public constructor(type: new (_newId: number, ...args: any[]) => Int, initCapacity?: number) {
+  public constructor(
+    type: new (_newId: number, ...args: any[]) => Int,
+    initCapacity?: number,
+    excludeProperties?: (keyof typeof this.dataStore)[]
+  ) {
     this.createInstanceCall = type;
     this.dataInstances = [];
 
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = initCapacity ? initCapacity : this.currentCapacity;
+
+    this.publicToInternal = {};
+    this.noDumpList = new Set(excludeProperties);
+
     this.batchInitializePropertyArray("publicId");
 
     this.events = {};
@@ -133,7 +143,13 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   /** SERIALIZE*/
 
   public dumpData(): string {
-    return JSON.stringify(this.dataStore);
+    return JSON.stringify(
+      Object.fromEntries(
+        Object.entries(this.dataStore).filter(
+          ([k, _]) => !this.noDumpList.has(k as keyof typeof this.dataStore)
+        )
+      )
+    );
   }
 
   public loadData(content: string) {
@@ -239,8 +255,12 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
   public fullReset(capacity?: number) {
     this.dataInstances = [];
+
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = capacity ? capacity : this.currentCapacity;
+
+    this.publicToInternal = {};
+
     this.batchInitializePropertyArray("publicId");
   }
 

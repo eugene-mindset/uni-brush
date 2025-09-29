@@ -1,10 +1,10 @@
 import { Entity } from "@/models";
 import "@/styles/ui.css";
-import { Fragment, FunctionComponent } from "preact/compat";
+import { Fragment, FunctionalComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 // TODO: UI needs to get cleaned up
-export const MainMenu: FunctionComponent<{}> = () => {
+export const MainMenu: FunctionalComponent<{}> = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
   // TODO: move the hiding and showing of menus from keys to global state
@@ -12,7 +12,7 @@ export const MainMenu: FunctionComponent<{}> = () => {
     if (event.key === "Escape") setShowMenu((x) => !x);
   };
 
-  const onClick = (event: MouseEvent) => {
+  const onClick = (_: MouseEvent) => {
     // TODO: figure out how to dismiss modal when clicking outside of it
   };
 
@@ -32,6 +32,10 @@ export const MainMenu: FunctionComponent<{}> = () => {
     }
   };
 
+  const onQuitClick = async () => {
+    window.ipcRenderer.invoke("ub:quit");
+  };
+
   useEffect(() => {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("click", onClick);
@@ -43,9 +47,10 @@ export const MainMenu: FunctionComponent<{}> = () => {
   }, []);
 
   return showMenu ? (
-    <dialog id="main-menu">
+    <dialog id="main-menu" className="panel">
       <button onClick={onLoadClick}>Load</button>
       <button onClick={onSaveClick}>Save</button>
+      <button onClick={onQuitClick}>Quit</button>
     </dialog>
   ) : (
     <Fragment />

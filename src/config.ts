@@ -1,7 +1,8 @@
 import { BaseGalaxyConfig } from "@/models/procedural-generators";
+import { Entity } from "./models";
 
 export const config: BaseGalaxyConfig = {
-  numStars: 50000,
+  numStars: Entity.StarSystem.Manager.capacity,
   radius: 500,
   width: 10,
   mainGravityStrength: 0.5,

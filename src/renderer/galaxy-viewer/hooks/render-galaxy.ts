@@ -1,14 +1,14 @@
 import { RefObject } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import * as THREE from "three";
-import { MapControls } from "three/examples/jsm/Addons.js";
 
 import { Entity } from "@/models";
 import { createGalaxyScene } from "@/renderer/threejs/galaxy/create-galaxy-scene";
 import { BaseVisual } from "@/renderer/threejs";
 import { useMainViewFullContext } from "@/store/main-view-context";
 import { BaseGalaxyConfig } from "@/models/procedural-generators";
-import { config } from "./config";
+import { config } from "@/config";
+import { initCore, initRenderer } from "./init-calls";
 
 export interface RenderGalaxyData {
   scene?: THREE.Scene;
@@ -32,21 +32,12 @@ export const useRenderGalaxy = (
   const rendererRef = useRef<THREE.WebGLRenderer>();
 
   const pointerRef = useRef<THREE.Vector2>(new THREE.Vector2());
-  const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
+  const raycastRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
   const [_, selectObject] = useState<RenderIntersectData>();
-
-  const [stars, setStars] = useState([]);
 
   const mainView = useMainViewFullContext();
 
-  const onWindowResize = () => {
-    if (cameraRef.current) {
-      cameraRef.current.aspect = window.innerWidth / window.innerHeight;
-      cameraRef.current.updateProjectionMatrix();
-      rendererRef.current?.setSize(window.innerWidth, window.innerHeight);
-    }
-  };
-
+  // find pointer within canvas
   const onCanvasPointerMove = (event: PointerEvent) => {
     pointerRef.current.set(
       (event.clientX / window.innerWidth) * 2 - 1,
@@ -54,89 +45,47 @@ export const useRenderGalaxy = (
     );
   };
 
+  // get selected object
   const onCanvasClick = () => {
-    // if (!cameraRef.current || !sceneRef.current) return;
-    // raycasterRef.current?.setFromCamera(pointerRef.current, cameraRef.current);
-    // const intersects = raycasterRef.current.intersectObjects(sceneRef.current?.children);
-    // if (intersects.length > 0) {
-    //   const intersect = intersects[0];
-    //   const userData = intersect.object.userData;
-    //   if (!userData?.id) return;
-    //   selectObject(() => {
-    //     const entity = Entity.StarSystem.Manager.get(userData?.id);
-    //     mainView.pointer.intersect.setIntersect(entity);
-    //     return {
-    //       ...intersect,
-    //       refVisual: userData?.ref,
-    //       // TODO: make a method to retrieve correct entity
-    //       refEntity: entity,
-    //       refType: Entity.EntityTypes.STAR_SYSTEM,
-    //     };
-    //   });
-    // } else {
-    //   mainView.pointer.intersect.setIntersect();
-    //   selectObject(undefined);
-    // }
+    if (!cameraRef.current || !sceneRef.current) return;
+
+    raycastRef.current?.setFromCamera(pointerRef.current, cameraRef.current);
+    const intersects = raycastRef.current.intersectObjects(sceneRef.current?.children);
+
+    if (intersects.length > 0) {
+      const intersect = intersects[0];
+      const userData = intersect.object.userData;
+
+      if (!userData?.id) return;
+
+      selectObject(() => {
+        const entity = Entity.StarSystem.Manager.get(userData?.id);
+        mainView.pointer.intersect.setIntersect(entity);
+
+        return {
+          ...intersect,
+          refVisual: userData?.ref,
+          // TODO: make a method to retrieve correct entity
+          refEntity: entity,
+          refType: Entity.EntityTypes.STAR_SYSTEM,
+        };
+      });
+    } else {
+      mainView.pointer.intersect.setIntersect();
+      selectObject(undefined);
+    }
   };
 
+  // initialize canvas
   const initialize = () => {
     if (!canvasRef.current) return;
+    const { scene, camera, controls } = initCore(canvasRef.current);
+    const { renderer } = initRenderer(canvasRef.current);
 
-    // Scene, camera, and renderer setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-
-    // const grid = new THREE.GridHelper(1000, 100);
-    // scene.add(grid);
-
-    const axesHelper = new THREE.AxesHelper(10);
-    scene.add(axesHelper);
-
-    // const loader = new THREE.TextureLoader();
-    // const texture = loader.load("src/assets/skybox.png", () => {
-    //   texture.mapping = THREE.EquirectangularReflectionMapping;
-    //   texture.colorSpace = THREE.SRGBColorSpace;
-    //   scene.background = texture;
-    // });
-
-    // const camera = new THREE.OrthographicCamera();
-    const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // controls
-    // TODO: make my own control
-    const controls = new MapControls(camera, renderer.domElement);
-
-    // controls.addEventListener("change", renderer); // call this only in static scenes (i.e., if there is no animation loop)
-    controls.keys = {
-      LEFT: "ArrowLeft", //left arrow
-      UP: "ArrowUp", // up arrow
-      RIGHT: "ArrowRight", // right arrow
-      BOTTOM: "ArrowDown", // down arrow
-    };
-
-    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    controls.dampingFactor = 0.05;
-
-    controls.screenSpacePanning = false;
-
-    controls.minDistance = 10;
-    controls.maxDistance = 300;
-
-    // controls.maxPolarAngle = Math.PI / 2;
-    // controls.minPolarAngle = -Math.PI / 2;
-    // Load objects here
+    // load 3d visuals into scene
     createGalaxyScene(scene, config);
 
-    camera.position.copy(new THREE.Vector3(0, 300, 0));
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-    // Animation loop
+    // animation loop
     const animate = () => {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
@@ -148,17 +97,27 @@ export const useRenderGalaxy = (
     rendererRef.current = renderer;
   };
 
-  // Cleanup function
+  // cleanup function to call when cleaning up render
   const cleanUp = () => {
     if (canvasRef.current && rendererRef.current) {
       rendererRef.current.dispose();
     }
 
-    // if (sceneRef) {
-    //   Entity.StarSystem.Manager.mapEntities((x) => x.visual?.dispose());
-    // }
+    if (sceneRef) {
+      Entity.StarSystem.Manager.mapEntities((x) => x.visual?.dispose());
+    }
   };
 
+  // callback to resize
+  const onWindowResize = () => {
+    if (cameraRef.current) {
+      cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+      cameraRef.current.updateProjectionMatrix();
+      rendererRef.current?.setSize(window.innerWidth, window.innerHeight);
+    }
+  };
+
+  // effect to update dimensions in render if canvas is resized
   useEffect(() => {
     window.addEventListener("resize", onWindowResize);
     canvasRef.current?.addEventListener("pointermove", onCanvasPointerMove);

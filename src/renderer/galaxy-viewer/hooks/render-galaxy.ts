@@ -7,6 +7,8 @@ import { Entity } from "@/models";
 import { createGalaxyScene } from "@/renderer/threejs/galaxy/create-galaxy-scene";
 import { BaseVisual } from "@/renderer/threejs";
 import { useMainViewFullContext } from "@/store/main-view-context";
+import { BaseGalaxyConfig } from "@/models/procedural-generators";
+import { config } from "./config";
 
 export interface RenderGalaxyData {
   scene?: THREE.Scene;
@@ -22,7 +24,9 @@ export interface RenderIntersectData extends THREE.Intersection {
   refType?: Entity.EntityTypes;
 }
 
-export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): RenderGalaxyData => {
+export const useRenderGalaxy = (
+  canvasRef: RefObject<HTMLCanvasElement>
+): [RenderGalaxyData, BaseGalaxyConfig] => {
   const sceneRef = useRef<THREE.Scene>();
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const rendererRef = useRef<THREE.WebGLRenderer>();
@@ -30,6 +34,8 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
   const pointerRef = useRef<THREE.Vector2>(new THREE.Vector2());
   const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
   const [_, selectObject] = useState<RenderIntersectData>();
+
+  const [stars, setStars] = useState([]);
 
   const mainView = useMainViewFullContext();
 
@@ -49,31 +55,28 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
   };
 
   const onCanvasClick = () => {
-    if (!cameraRef.current || !sceneRef.current) return;
-
-    raycasterRef.current?.setFromCamera(pointerRef.current, cameraRef.current);
-    const intersects = raycasterRef.current.intersectObjects(sceneRef.current?.children);
-
-    if (intersects.length > 0) {
-      const intersect = intersects[0];
-      const userData = intersect.object.userData;
-
-      selectObject(() => {
-        const entity = Entity.StarSystem.Manager.get(userData?.id);
-        mainView.pointer.intersect.setIntersect(entity);
-
-        return {
-          ...intersect,
-          refVisual: userData?.ref,
-          // TODO: make a method to retrieve correct entity
-          refEntity: entity,
-          refType: Entity.EntityTypes.STAR_SYSTEM,
-        };
-      });
-    } else {
-      mainView.pointer.intersect.setIntersect();
-      selectObject(undefined);
-    }
+    // if (!cameraRef.current || !sceneRef.current) return;
+    // raycasterRef.current?.setFromCamera(pointerRef.current, cameraRef.current);
+    // const intersects = raycasterRef.current.intersectObjects(sceneRef.current?.children);
+    // if (intersects.length > 0) {
+    //   const intersect = intersects[0];
+    //   const userData = intersect.object.userData;
+    //   if (!userData?.id) return;
+    //   selectObject(() => {
+    //     const entity = Entity.StarSystem.Manager.get(userData?.id);
+    //     mainView.pointer.intersect.setIntersect(entity);
+    //     return {
+    //       ...intersect,
+    //       refVisual: userData?.ref,
+    //       // TODO: make a method to retrieve correct entity
+    //       refEntity: entity,
+    //       refType: Entity.EntityTypes.STAR_SYSTEM,
+    //     };
+    //   });
+    // } else {
+    //   mainView.pointer.intersect.setIntersect();
+    //   selectObject(undefined);
+    // }
   };
 
   const initialize = () => {
@@ -88,12 +91,18 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
       1000
     );
 
-    const loader = new THREE.TextureLoader();
-    const texture = loader.load("src/assets/skybox.png", () => {
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      texture.colorSpace = THREE.SRGBColorSpace;
-      scene.background = texture;
-    });
+    // const grid = new THREE.GridHelper(1000, 100);
+    // scene.add(grid);
+
+    const axesHelper = new THREE.AxesHelper(10);
+    scene.add(axesHelper);
+
+    // const loader = new THREE.TextureLoader();
+    // const texture = loader.load("src/assets/skybox.png", () => {
+    //   texture.mapping = THREE.EquirectangularReflectionMapping;
+    //   texture.colorSpace = THREE.SRGBColorSpace;
+    //   scene.background = texture;
+    // });
 
     // const camera = new THREE.OrthographicCamera();
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
@@ -103,7 +112,13 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
     // TODO: make my own control
     const controls = new MapControls(camera, renderer.domElement);
 
-    //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
+    // controls.addEventListener("change", renderer); // call this only in static scenes (i.e., if there is no animation loop)
+    controls.keys = {
+      LEFT: "ArrowLeft", //left arrow
+      UP: "ArrowUp", // up arrow
+      RIGHT: "ArrowRight", // right arrow
+      BOTTOM: "ArrowDown", // down arrow
+    };
 
     controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     controls.dampingFactor = 0.05;
@@ -113,10 +128,10 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
     controls.minDistance = 10;
     controls.maxDistance = 300;
 
-    controls.maxPolarAngle = Math.PI / 2;
-
+    // controls.maxPolarAngle = Math.PI / 2;
+    // controls.minPolarAngle = -Math.PI / 2;
     // Load objects here
-    createGalaxyScene(scene);
+    createGalaxyScene(scene, config);
 
     camera.position.copy(new THREE.Vector3(0, 300, 0));
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -139,9 +154,9 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
       rendererRef.current.dispose();
     }
 
-    if (sceneRef) {
-      Entity.StarSystem.Manager.mapEntities((x) => x.visual?.dispose());
-    }
+    // if (sceneRef) {
+    //   Entity.StarSystem.Manager.mapEntities((x) => x.visual?.dispose());
+    // }
   };
 
   useEffect(() => {
@@ -156,11 +171,14 @@ export const useRenderGalaxy = (canvasRef: RefObject<HTMLCanvasElement>): Render
     };
   }, [canvasRef.current]);
 
-  return {
-    scene: sceneRef.current,
-    camera: cameraRef.current,
-    renderer: rendererRef.current,
-    cleanUp,
-    initialize,
-  };
+  return [
+    {
+      scene: sceneRef.current,
+      camera: cameraRef.current,
+      renderer: rendererRef.current,
+      cleanUp,
+      initialize,
+    },
+    config,
+  ];
 };

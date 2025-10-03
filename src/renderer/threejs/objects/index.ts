@@ -1,2 +1,2 @@
 export * from "./base";
-export * from "./star-system";
+export * from "./star-system-visual";

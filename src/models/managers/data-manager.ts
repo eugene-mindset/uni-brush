@@ -97,7 +97,7 @@ export interface DataManager<Ext, Mod> {
   create: () => Ext;
   fullReset: (capacity?: number) => void;
   batchInitializeProperty: <K extends keyof Mod>(key: K, array: Mod[K][]) => void;
-  batchInitializeEntites: () => void;
+  batchInitializeEntities: () => void;
   forEachEntity: <R>(pred: (x: Ext) => R) => void;
   mapEntities: <R>(pred: (x: Ext) => R) => R[];
 }
@@ -114,7 +114,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   //TODO: handle resizing of arrays some how
   private dataStore: { [key in keyof Mod]: Array<Mod[key] | undefined> } & DataStore;
   private currentCapacity: number = 1000;
-  private noDumpList: Set<keyof typeof this.dataStore>;
+  private notSerializedProperties: Set<keyof typeof this.dataStore>;
 
   private publicToInternal: Record<string, number>;
 
@@ -133,7 +133,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.currentCapacity = initCapacity ? initCapacity : this.currentCapacity;
 
     this.publicToInternal = {};
-    this.noDumpList = new Set(excludeProperties);
+    this.notSerializedProperties = new Set(excludeProperties);
 
     this.batchInitializePropertyArray("publicId");
 
@@ -146,7 +146,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return JSON.stringify(
       Object.fromEntries(
         Object.entries(this.dataStore).filter(
-          ([k, _]) => !this.noDumpList.has(k as keyof typeof this.dataStore)
+          ([k, _]) => !this.notSerializedProperties.has(k as keyof typeof this.dataStore)
         )
       )
     );
@@ -276,7 +276,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.dataStore = { ...this.dataStore, [key]: newArray };
   }
 
-  public batchInitializeEntites(): void {
+  public batchInitializeEntities(): void {
     if (this.dataInstances.length) {
       throw new Error("Entities alreaedy exist!");
     }

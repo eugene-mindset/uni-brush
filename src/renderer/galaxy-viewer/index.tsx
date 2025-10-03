@@ -1,6 +1,5 @@
 import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
-import * as THREE from "three";
 
 import { Entity } from "@/models";
 import { Position } from "@/types";
@@ -8,6 +7,7 @@ import { Position } from "@/types";
 import { useRenderGalaxy } from "./hooks/render-galaxy";
 
 import "@/styles/three.css";
+import { Procedural } from "@/models";
 
 export interface GalaxyViewerProps {}
 
@@ -16,28 +16,31 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [remount, setRemount] = useState<number>(0);
 
-  const render = useRenderGalaxy(canvasRef);
+  const [render, config] = useRenderGalaxy(canvasRef);
 
+  /// refresh, usually a result of all new data being set
   const onRefreshNeeded = () => {
-    Entity.StarSystem.Manager.batchInitializeEntites();
+    Entity.StarSystem.Manager.batchInitializeEntities();
     setRemount((x) => x + 1);
   };
 
-  // generate random galaxy upon viewer (app) load
+  // generate a random layout upon initial visit
   useEffect(() => {
-    const newPositions: Position[] = new Array();
-    for (let index = 0; index < Entity.StarSystem.Manager.capacity; index++) {
-      const vec = new THREE.Vector3().randomDirection();
-      const radius = Math.random();
-      newPositions.push({
-        x: vec.x * 200 * radius,
-        y: vec.y * 10 * Math.random(),
-        z: vec.z * 200 * radius,
-      });
-    }
+    const newVectors = Procedural.generateGalaxyBase(config);
+    const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
 
-    Entity.StarSystem.Manager.batchInitializeProperty("initPos", newPositions);
-    Entity.StarSystem.Manager.batchInitializeEntites();
+    const final = config.showDebug ? newVectors : afterArm;
+
+    const positions = final.map((vec) => {
+      return {
+        x: vec.x,
+        y: vec.y,
+        z: vec.z,
+      } as Position;
+    });
+
+    Entity.StarSystem.Manager.batchInitializeProperty("initPos", positions);
+    Entity.StarSystem.Manager.batchInitializeEntities();
   }, []);
 
   // setup to non-state events

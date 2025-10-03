@@ -77,7 +77,7 @@ class StarSystemManagerInternalClass extends DataManagerClass<
   public readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
 
   constructor() {
-    super(StarSystemInternal, 2500, ["obj3D"]);
+    super(StarSystemInternal, 5000, ["obj3D"]);
     this.initProperties();
   }
 
@@ -121,6 +121,8 @@ class StarSystemManagerInternalClass extends DataManagerClass<
     super.fullReset(capacity);
     this.initProperties();
   }
+
+  public CreateObject3D() {}
 }
 
 StarSystemInternal.manager = new StarSystemManagerInternalClass();

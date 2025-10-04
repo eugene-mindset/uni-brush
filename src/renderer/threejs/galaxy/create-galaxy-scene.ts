@@ -52,6 +52,6 @@ export const createGalaxyScene = (scene: THREE.Scene, config: BaseGalaxyConfig) 
   }
 
   //
-  const rim = new THREE.PolarGridHelper(config.radius * 1.25, config.numArms);
+  const rim = new THREE.PolarGridHelper(config.dim.x, config.numArms, 4);
   scene.add(rim);
 };

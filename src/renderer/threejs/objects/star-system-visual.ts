@@ -8,7 +8,7 @@ export class StarSystemVisual extends BaseVisual {
 
   constructor(newId: string, pos?: THREE.Vector3) {
     super(newId);
-    this.geometry = new THREE.SphereGeometry(0.5);
+    this.geometry = new THREE.SphereGeometry(5);
     this.material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     this.obj3D = new THREE.Mesh(this.geometry, this.material);
     this.setUserData({ ref: this, id: newId, type: EntityTypes.STAR_SYSTEM });

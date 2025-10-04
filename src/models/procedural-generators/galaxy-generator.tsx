@@ -12,9 +12,8 @@ export enum GalaxyArmCount {
 }
 
 export type BaseGalaxyConfig = {
-  numStars: number;
-  radius: number; // 26.8
-  width: number; // 0.306601
+  numOfEntities: number;
+  dim: Vector3; // (13.4, 0.306601, 13.4)
   mainGravityStrength: number;
   mainGravityFallOff: number;
 
@@ -24,82 +23,94 @@ export type BaseGalaxyConfig = {
   showDebug: boolean;
   armSpeed: number;
   armSpread: number;
+  armSpreadDistance: number;
   armOffset: number;
+  centerOverArmRatio: number;
+  armSharpness: number;
 
   // bulgeRadius: number;
   // bulgeHeight: number;
 };
 
-// export function clusteringGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
-
-// export function ringGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
-
-// export function bulgeGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
-
-export function armsGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig): Vector3[] {
-  if (config.numArms == GalaxyArmCount.NoArms) return positions;
-
-  const armArc = (2 * Math.PI) / config.numArms;
-  const armOffset = config.armOffset;
-
-  const shifts: number[][] = [];
-
-  let starSystems = positions.map((x) => {
-    const star = x.clone();
-    const starAngle = Math.atan2(star.z, star.x) + armOffset;
-    const nearestArmAngle = Math.round(starAngle / armArc) * armArc;
-    const starDistance = Math.sqrt(star.x ** 2 + star.z ** 2);
-    const starDistanceRatio = starDistance / config.radius;
-
-    const deltaAngle = nearestArmAngle - starAngle;
-
-    const factor =
-      starDistanceRatio < config.mainGravityFallOff
-        ? 0
-        : MathHelpers.clamp(starDistanceRatio - config.mainGravityFallOff, 0, 1) /
-          (1 - config.mainGravityFallOff);
-
-    shifts.push([starDistanceRatio, deltaAngle * starDistance]);
-
-    const taperAngle = factor ? deltaAngle / Math.pow(factor, 1 / config.armShapeStrength) : 0;
-    const finalAngle =
-      taperAngle +
-      starDistanceRatio *
-        config.armSpeed *
-        (1 + MathHelpers.randomFromNormal(0, config.armSpread).z0);
-    // deltaAngle * MathHelpers.clamp(starDistanceRatio + 0.5, 0, 1); //* (Math.abs(MathHelpers.randomFromNormal(0, 1 / 3).z0) + 1);
-
-    return new Vector3(star.x, star.y, star.z).applyAxisAngle(new Vector3(0, 1, 0), -finalAngle);
-  });
-
-  console.log(shifts.sort((a, b) => a[0] - b[0]));
-
-  return starSystems;
+function calculateEllipsoidDistRatio(point: Vector3, dim: Vector3): number {
+  return new Vector3(point.x / dim.x, point.y / dim.y, point.z / dim.z).length();
 }
 
 export function generateGalaxyBase(config: BaseGalaxyConfig): Vector3[] {
   let out: Vector3[] = [];
 
-  for (let index = 0; index < config.numStars; index++) {
-    const radiusFactor = config.radius / 4;
-    const planar = MathHelpers.randomFromNormal(0, 1);
+  for (let index = 0; index < config.numOfEntities; index++) {
+    const radius = Math.abs(MathHelpers.randomPercentFromNormal().z0);
+    let initPos = MathHelpers.randomVectorFromNormal().normalize();
+    initPos = initPos.multiplyVectors(initPos, config.dim).multiplyScalar(radius);
 
-    const planarVector = new Vector2(planar.z0, planar.z1);
-
-    const initPos = new Vector3(
-      planarVector.x * radiusFactor,
-      (1 - planarVector.length() / 4) * config.width * MathHelpers.randomSigned(),
-      planarVector.y * radiusFactor
+    const distanceRatio = calculateEllipsoidDistRatio(initPos, config.dim);
+    const initPosPulled = initPos.multiplyScalar(
+      Math.pow(
+        MathHelpers.clamp(config.mainGravityFallOff, distanceRatio, 1),
+        config.mainGravityStrength
+      )
     );
 
-    const ratioDistFromCOM = initPos.length() / config.radius;
-    const mainGravityPull = initPos.multiplyScalar(
-      Math.pow(ratioDistFromCOM, config.mainGravityStrength)
-    );
-
-    const finalPos = mainGravityPull;
+    const finalPos = initPosPulled;
     out.push(finalPos);
   }
 
   return out;
 }
+
+export function armsGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig): Vector3[] {
+  if (config.numArms == GalaxyArmCount.NoArms) return positions;
+
+  const armArc = (2 * Math.PI) / config.numArms;
+
+  let out = positions.map((x) => {
+    const pos = x.clone();
+
+    const theta = Math.atan2(pos.z / config.dim.z, pos.x / config.dim.x) + config.armOffset;
+    const nearestArmTheta = Math.round(theta / armArc) * armArc;
+    const deltaTheta = nearestArmTheta - theta;
+
+    const planarDistRatio = new Vector2(pos.x / config.dim.x, pos.z / config.dim.z).length();
+
+    const factor =
+      // how off the entity's angle is from the center of its nearest arm
+      planarDistRatio < config.centerOverArmRatio
+        ? 0
+        : MathHelpers.clamp(planarDistRatio - config.centerOverArmRatio, 0, 1) /
+          (1 - config.centerOverArmRatio);
+
+    const finalCoefficient = Math.pow(factor, 1 / config.armShapeStrength);
+
+    const taperTheta = finalCoefficient ? deltaTheta / finalCoefficient : 0;
+    const finalTheta = taperTheta + planarDistRatio * config.armSpeed;
+
+    const rotated = new Vector3(
+      pos.x / config.dim.x,
+      pos.y / config.dim.y,
+      pos.z / config.dim.z
+    ).applyAxisAngle(new Vector3(0, 1, 0), -finalTheta);
+
+    // add jitter to final position
+    const jitter =
+      1 +
+      config.armSpread *
+        config.dim.length() *
+        MathHelpers.randomPercentFromNormal().z0 *
+        Math.min(planarDistRatio + config.armSpreadDistance, 1);
+
+    const final = MathHelpers.applyJitter(
+      new Vector3().multiplyVectors(rotated, config.dim),
+      jitter
+    );
+
+    return final;
+  });
+
+  return out;
+}
+
+// export function bulgeGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
+// export function ringGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
+// export function clusteringGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
+// export function wobbleGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}

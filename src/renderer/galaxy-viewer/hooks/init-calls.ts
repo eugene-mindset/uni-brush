@@ -19,7 +19,7 @@ export function initCore(canvas: HTMLCanvasElement): initCoreData {
   const scene = new THREE.Scene();
 
   // camera
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 4000);
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
   camera.position.copy(new THREE.Vector3(0, 300, 0));
   camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -43,7 +43,7 @@ export function initCore(canvas: HTMLCanvasElement): initCoreData {
   controls.screenSpacePanning = false;
 
   controls.minDistance = 1;
-  controls.maxDistance = 1000;
+  controls.maxDistance = 2500;
 
   const axesHelper = new THREE.AxesHelper(10);
   scene.add(axesHelper);

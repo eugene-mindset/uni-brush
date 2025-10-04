@@ -17,8 +17,21 @@ export function randomFromNormal(mean: number, stddev: number) {
   return { z0: z0 * stddev + mean, z1: z1 * stddev + mean };
 }
 
+export function randomPercentFromNormal() {
+  const { z0, z1 } = randomFromNormal(0, 1 / 4);
+  return { z0: clamp(z0, -1, 1), z1: clamp(z1, -1, 1) };
+}
+
 export function randomSigned(): number {
   return Math.random() * 2 - 1;
+}
+
+export function randomVectorFromNormal() {
+  return new Vector3(
+    randomPercentFromNormal().z0,
+    randomPercentFromNormal().z0,
+    randomPercentFromNormal().z0
+  );
 }
 
 export function applyJitter(vec: Vector3, amount: number): Vector3 {

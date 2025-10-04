@@ -1,5 +1,13 @@
+import { BASE_LAYER, BLOOM_LAYER, BLOOM_PARAMS, OVERLAY_LAYER } from "@/config";
+import { CompositionShader } from "@/renderer/shaders";
 import * as THREE from "three";
-import { MapControls } from "three/examples/jsm/Addons.js";
+import {
+  EffectComposer,
+  MapControls,
+  RenderPass,
+  ShaderPass,
+  UnrealBloomPass,
+} from "three/examples/jsm/Addons.js";
 
 interface initCoreData {
   scene: THREE.Scene;
@@ -51,8 +59,11 @@ export function initCore(canvas: HTMLCanvasElement): initCoreData {
   return { scene, camera, controls };
 }
 
+export type RenderPassPipeline = Record<number, EffectComposer>;
+
 interface initRenderData {
   renderer: THREE.WebGLRenderer;
+  pipeline: RenderPassPipeline;
 }
 
 /**
@@ -60,7 +71,11 @@ interface initRenderData {
  * @param canvas canvas to create render pipeline for
  * @returns newly created rendering-related objects
  */
-export function initRenderer(canvas: HTMLCanvasElement): initRenderData {
+export function initRenderer(
+  canvas: HTMLCanvasElement,
+  scene: THREE.Scene,
+  camera: THREE.PerspectiveCamera
+): initRenderData {
   if (!canvas) throw new Error("Canvas element is not valid.");
 
   // renderer
@@ -72,11 +87,97 @@ export function initRenderer(canvas: HTMLCanvasElement): initRenderData {
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.5;
 
-  // TODO: add render passes, let them be configurable
-  // TODO: add pipeline config call or something to properly order the passes
+  const renderPass = new RenderPass(scene, camera);
+  const bloomComposer = createBloomComposer({ renderer, renderPass });
+  const overlayComposer = createOverlayComposer({ renderer, renderPass });
 
-  return { renderer };
+  // Shader pass to combine base layer, bloom, and overlay layers
+  const finalPass = new ShaderPass(
+    new THREE.ShaderMaterial({
+      uniforms: {
+        baseTexture: { value: null },
+        bloomTexture: { value: bloomComposer.renderTarget2.texture },
+        overlayTexture: { value: overlayComposer.renderTarget2.texture },
+      },
+      vertexShader: CompositionShader.vertex,
+      fragmentShader: CompositionShader.fragment,
+      defines: {},
+    }),
+    "baseTexture"
+  );
+  finalPass.needsSwap = true;
+
+  const baseComposer = createBaseComposer({ renderer, renderPass }, finalPass);
+
+  const passes = {
+    [BLOOM_LAYER]: bloomComposer,
+    [OVERLAY_LAYER]: overlayComposer,
+    [BASE_LAYER]: baseComposer,
+  };
+
+  return { renderer, pipeline: passes };
+}
+
+interface createComposerArgs {
+  renderer: THREE.WebGLRenderer;
+  renderPass: RenderPass;
+}
+
+function createBloomComposer(args: createComposerArgs) {
+  const { renderer, renderPass } = args;
+
+  const bloomPass = new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    1.5,
+    0.4,
+    0.85
+  );
+  bloomPass.threshold = BLOOM_PARAMS.bloomThreshold;
+  bloomPass.strength = BLOOM_PARAMS.bloomStrength;
+  bloomPass.radius = BLOOM_PARAMS.bloomRadius;
+
+  const bloomComposer = new EffectComposer(renderer);
+  bloomComposer.renderToScreen = false;
+  bloomComposer.addPass(renderPass);
+  bloomComposer.addPass(bloomPass);
+
+  return bloomComposer;
+}
+
+function createOverlayComposer(args: createComposerArgs) {
+  const { renderer, renderPass } = args;
+
+  const overlayComposer = new EffectComposer(renderer);
+  overlayComposer.renderToScreen = false;
+  overlayComposer.addPass(renderPass);
+
+  return overlayComposer;
+}
+
+function createBaseComposer(args: createComposerArgs, finalPass: ShaderPass) {
+  const { renderer, renderPass } = args;
+
+  const baseComposer = new EffectComposer(renderer);
+  baseComposer.addPass(renderPass);
+  baseComposer.addPass(finalPass);
+
+  return baseComposer;
+}
+
+export function enablePipeline(camera: THREE.PerspectiveCamera, pipeline: RenderPassPipeline) {
+  Object.entries(pipeline).forEach((value) => {
+    const [layer, _] = value;
+    camera.layers.enable(Number(layer));
+  });
+}
+
+export function renderPipeline(pipeline: RenderPassPipeline) {
+  Object.entries(pipeline).forEach((value) => {
+    const [_, composer] = value;
+    composer.render();
+  });
 }

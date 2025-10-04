@@ -8,14 +8,15 @@
  * creating systems and editing their properties is guarded here. The exposed Manager and StarSystem
  * classes hide the underlying detail to what is just necesscary.
  */
-import { BaseVisual } from "@/renderer/threejs";
+import * as THREE from "three";
+import { StarSystemVisual } from "@/renderer/threejs";
 import { Position } from "@/types";
 
 import { DataInstance, DataInstanceInternal, DataManager, DataManagerClass } from "./data-manager";
 import { EntityTypes } from "./types";
 
 interface StarSystemClass extends DataInstance {
-  visual: BaseVisual;
+  visual: StarSystemVisual;
   name: string;
   desc: string;
   initialPosition: Position;
@@ -28,7 +29,7 @@ interface StarSystemClass extends DataInstance {
 }
 
 interface StarSystemStoreModel extends DataInstance {
-  obj3D: BaseVisual;
+  obj3D: StarSystemVisual;
   name: string;
   desc: string;
   initPos: Position;
@@ -42,11 +43,11 @@ class StarSystemInternal extends DataInstanceInternal {
     return StarSystemInternal.manager.getPublicId(this.internalId);
   }
 
-  get visual(): BaseVisual {
+  get visual(): StarSystemVisual {
     return StarSystemInternal.manager.getObject3D(this.internalId);
   }
 
-  set visual(objRef: BaseVisual) {
+  set visual(objRef: StarSystemVisual) {
     StarSystemInternal.manager.setObject3D(this.internalId, objRef);
   }
 
@@ -67,7 +68,9 @@ class StarSystemInternal extends DataInstanceInternal {
   }
 }
 
-interface StarSystemManagerClass extends DataManager<StarSystemClass, StarSystemStoreModel> {}
+interface StarSystemManagerClass extends DataManager<StarSystemClass, StarSystemStoreModel> {
+  updateVisualScale: (framePos: THREE.Vector3) => void;
+}
 
 class StarSystemManagerInternalClass extends DataManagerClass<
   StarSystemClass,
@@ -77,7 +80,7 @@ class StarSystemManagerInternalClass extends DataManagerClass<
   public readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
 
   constructor() {
-    super(StarSystemInternal, 5000, ["obj3D"]);
+    super(StarSystemInternal, 2500, ["obj3D"]);
     this.initProperties();
   }
 
@@ -88,11 +91,11 @@ class StarSystemManagerInternalClass extends DataManagerClass<
     this.batchInitializePropertyArray("initPos");
   }
 
-  public getObject3D(id: number): BaseVisual {
+  public getObject3D(id: number): StarSystemVisual {
     return this.getPropertyForInstance(id, "obj3D");
   }
 
-  public setObject3D(id: number, ref: BaseVisual) {
+  public setObject3D(id: number, ref: StarSystemVisual) {
     // TODO: do some checks
     this.setPropertyForInstance(id, "obj3D", ref);
   }
@@ -122,7 +125,9 @@ class StarSystemManagerInternalClass extends DataManagerClass<
     this.initProperties();
   }
 
-  public CreateObject3D() {}
+  public updateVisualScale(framePos: THREE.Vector3): void {
+    this.forEachEntity((x) => x.visual.updateScale(framePos));
+  }
 }
 
 StarSystemInternal.manager = new StarSystemManagerInternalClass();

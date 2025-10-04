@@ -8,7 +8,7 @@ import { BaseVisual } from "@/renderer/threejs";
 import { useMainViewFullContext } from "@/store/main-view-context";
 import { BaseGalaxyConfig } from "@/models/procedural-generators";
 import { config } from "@/config";
-import { initCore, initRenderer } from "./init-calls";
+import { enablePipeline, initCore, initRenderer, renderPipeline } from "./init-calls";
 
 export interface RenderGalaxyData {
   scene?: THREE.Scene;
@@ -47,10 +47,12 @@ export const useRenderGalaxy = (
 
   // get selected object
   const onCanvasClick = () => {
+    console.log("test");
     if (!cameraRef.current || !sceneRef.current) return;
 
     raycastRef.current?.setFromCamera(pointerRef.current, cameraRef.current);
     const intersects = raycastRef.current.intersectObjects(sceneRef.current?.children);
+    console.log(intersects);
 
     if (intersects.length > 0) {
       const intersect = intersects[0];
@@ -80,15 +82,19 @@ export const useRenderGalaxy = (
   const initialize = () => {
     if (!canvasRef.current) return;
     const { scene, camera, controls } = initCore(canvasRef.current);
-    const { renderer } = initRenderer(canvasRef.current);
+
+    const { renderer, pipeline } = initRenderer(canvasRef.current, scene, camera);
+    enablePipeline(camera, pipeline);
+    const renderCall = () => renderPipeline(pipeline);
 
     // load 3d visuals into scene
     createGalaxyScene(scene, config);
 
     // animation loop
     const animate = () => {
+      Entity.StarSystem.Manager.updateVisualScale(camera.position);
+      renderCall();
       requestAnimationFrame(animate);
-      renderer.render(scene, camera);
     };
 
     animate();

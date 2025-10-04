@@ -12,14 +12,7 @@ export const createGalaxyScene = (scene: THREE.Scene, config: BaseGalaxyConfig) 
   // render stars
   const starSystems = Entity.StarSystem.Manager.getAll();
   for (const starSystem of starSystems) {
-    const starSystemVisual = new StarSystemVisual(
-      starSystem.publicId,
-      new THREE.Vector3(
-        starSystem.initialPosition.x,
-        starSystem.initialPosition.y,
-        starSystem.initialPosition.z
-      )
-    );
+    const starSystemVisual = new StarSystemVisual(starSystem.publicId, starSystem.initialPosition);
 
     scene.add(starSystemVisual.object3D);
     starSystem.visual = starSystemVisual;
@@ -38,7 +31,7 @@ export const createGalaxyScene = (scene: THREE.Scene, config: BaseGalaxyConfig) 
 
     for (let i = 0; i < shift.length; i++) {
       const pos = starSystems[i].initialPosition;
-      const vec = shift[i].sub(new THREE.Vector3(pos.x, pos.y, pos.z));
+      const vec = shift[i].sub(pos);
       const dist = vec.length();
       const arrow = new THREE.ArrowHelper(
         vec.normalize(),

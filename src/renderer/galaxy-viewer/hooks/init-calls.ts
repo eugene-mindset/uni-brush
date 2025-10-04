@@ -1,5 +1,5 @@
 import { BASE_LAYER, BLOOM_LAYER, BLOOM_PARAMS, OVERLAY_LAYER } from "@/config";
-import { CompositionShader } from "@/renderer/shaders";
+import { CompositionShader } from "@/renderer/three/shaders";
 import * as THREE from "three";
 import {
   EffectComposer,

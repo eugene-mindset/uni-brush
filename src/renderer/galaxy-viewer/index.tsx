@@ -2,7 +2,6 @@ import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 import { Entity } from "@/models";
-import { Position } from "@/types";
 
 import { useRenderGalaxy } from "./hooks/render-galaxy";
 
@@ -29,18 +28,11 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
     const newVectors = Procedural.generateGalaxyBase(config);
     const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
 
-    const final = config.showDebug ? newVectors : afterArm;
+    const finalVectors = config.showDebug ? newVectors : afterArm;
 
-    const positions = final.map((vec) => {
-      return {
-        x: vec.x,
-        y: vec.y,
-        z: vec.z,
-      } as Position;
-    });
-
-    Entity.StarSystem.Manager.batchInitializeProperty("initPos", positions);
+    Entity.StarSystem.Manager.batchInitializeProperty("initPos", finalVectors);
     Entity.StarSystem.Manager.batchInitializeEntities();
+    Entity.StarSystem.Manager.setAsReady();
   }, []);
 
   // setup to non-state events

@@ -33,7 +33,7 @@ export class StarSystemVisual extends BaseVisual {
     let dist = this.position.distanceTo(position) / 250;
 
     // update star size
-    this.renderScale = MathHelpers.clamp(dist, 0.1, 3);
+    this.renderScale = MathHelpers.clamp(dist, 0.5, 3);
     this.obj3D?.scale.copy(new THREE.Vector3(this.renderScale, this.renderScale, this.renderScale));
   }
 

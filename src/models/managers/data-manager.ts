@@ -174,6 +174,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     if (!this.events[eventName]) {
       this.events[eventName] = [];
     }
+
     this.events[eventName].push(callback);
   }
 
@@ -186,6 +187,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
   protected emit(eventName: string, ...args: any[]): void {
     const eventCallbacks = this.events[eventName];
+
     if (eventCallbacks) {
       eventCallbacks.forEach((callback) => {
         callback(...args);
@@ -278,7 +280,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
   public batchInitializeEntities(): void {
     if (this.dataInstances.length) {
-      throw new Error("Entities alreaedy exist!");
+      throw new Error("Entities already exist!");
     }
 
     for (let index = 0; index < this.currentCapacity; index++) {

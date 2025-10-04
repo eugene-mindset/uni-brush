@@ -2,6 +2,7 @@ import { FunctionalComponent } from "preact";
 
 import MainMenu from "./main-menu";
 import { StarSystemEditor } from "./star-system-editor";
+import { StarSystemDirectory } from "./star-system-directory";
 
 export const FullInterface: FunctionalComponent<{}> = ({}) => {
   // const showStarSystemEditor = computed(() => {
@@ -14,6 +15,7 @@ export const FullInterface: FunctionalComponent<{}> = ({}) => {
     <>
       <MainMenu />
       <StarSystemEditor />
+      <StarSystemDirectory />
     </>
   );
 };

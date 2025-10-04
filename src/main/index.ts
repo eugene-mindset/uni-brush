@@ -1,11 +1,10 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import { createRequire } from "node:module";
+// import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { start } from "node:repl";
-import { handleFileSaveDialog, handleProjectLoad, handleProjectSave } from "./comm";
+import { handleProjectLoad, handleProjectSave } from "./comm";
 
-const require = createRequire(import.meta.url);
+// const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // The built directory structure
@@ -59,6 +58,7 @@ function createWindow() {
 }
 
 function startApp() {
+  ipcMain.handle("ub:quit", () => app.quit());
   ipcMain.handle("ub:saveProjectFile", handleProjectSave);
   ipcMain.handle("ub:loadProjectFile", handleProjectLoad);
   createWindow();
@@ -80,6 +80,10 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     startApp();
   }
+});
+
+app.on("before-quit", () => {
+  console.log("App is about to quit...");
 });
 
 app.whenReady().then(startApp);

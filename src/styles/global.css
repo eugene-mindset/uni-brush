@@ -92,3 +92,6 @@ button:focus-visible {
   }
 }
 
+dialog {
+  border: 0;
+}

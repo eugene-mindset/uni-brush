@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import { Buffer } from "node:buffer";
-import { dialog } from "electron";
+import { app, dialog } from "electron";
 import archiver from "archiver";
 import yauzl from "yauzl-promise";
 

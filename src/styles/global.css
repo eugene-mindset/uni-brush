@@ -1,8 +1,9 @@
 :root {
   height: 100%;
   width: 100%;
+  font-size: 10pt;
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: monospace;
   line-height: 1.5;
   font-weight: 400;
 
@@ -43,12 +44,13 @@ body {
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
-input {
-  -webkit-user-select: text;
-  -khtml-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
+input,
+canvas {
+  -webkit-user-select: all;
+  -khtml-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
 }
 
 h1 {
@@ -111,4 +113,13 @@ button:focus-visible {
 
 dialog {
   border: 0;
+}
+
+.panels {
+  --panel-padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: hidden;
+  gap: var(--panel-padding);
 }

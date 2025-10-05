@@ -14,8 +14,10 @@ export const FullInterface: FunctionalComponent<{}> = ({}) => {
   return (
     <>
       <MainMenu />
-      <StarSystemEditor />
-      <StarSystemDirectory />
+      {/* <div className="panels" hidden>
+        <StarSystemEditor />
+        <StarSystemDirectory />
+      </div> */}
     </>
   );
 };

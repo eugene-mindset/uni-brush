@@ -1,7 +1,5 @@
 import { Vector2, Vector3 } from "three";
 import { MathHelpers } from "@/util";
-import { RAD2DEG } from "three/src/math/MathUtils.js";
-import { cubeTexture } from "three/tsl";
 
 export enum GalaxyArmCount {
   NoArms = 0,
@@ -32,6 +30,10 @@ export type BaseGalaxyConfig = {
   // bulgeHeight: number;
 };
 
+const NORMAL_CONTROL_RATIO = 4 / 3.25;
+
+const generateRandomPercent = () => MathHelpers.randomPercentFromNormal().z0 * NORMAL_CONTROL_RATIO;
+
 function calculateEllipsoidDistRatio(point: Vector3, dim: Vector3): number {
   return new Vector3(point.x / dim.x, point.y / dim.y, point.z / dim.z).length();
 }
@@ -40,7 +42,7 @@ export function generateGalaxyBase(config: BaseGalaxyConfig): Vector3[] {
   let out: Vector3[] = [];
 
   for (let index = 0; index < config.numOfEntities; index++) {
-    const radius = Math.abs(MathHelpers.randomPercentFromNormal().z0);
+    const radius = Math.abs(generateRandomPercent());
     let initPos = MathHelpers.randomVectorFromNormal().normalize();
     initPos = initPos.multiplyVectors(initPos, config.dim).multiplyScalar(radius);
 
@@ -96,7 +98,7 @@ export function armsGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfi
       1 +
       config.armSpread *
         config.dim.length() *
-        MathHelpers.randomPercentFromNormal().z0 *
+        generateRandomPercent() *
         Math.min(planarDistRatio + config.armSpreadDistance, 1);
 
     const final = MathHelpers.applyJitter(
@@ -109,6 +111,8 @@ export function armsGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfi
 
   return out;
 }
+
+export function rotateGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
 
 // export function bulgeGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
 // export function ringGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}

@@ -12,10 +12,18 @@ export const StarSystemDirectoryEntry: FunctionalComponent<{
 }> = (props) => {
   return (
     <tr>
-      <th>{props?.starSystemName}</th>
-      <td>...</td>
-      <td>...</td>
-      <td>{ThreeVector3ToString(props?.pos)}</td>
+      <th className="center">{props?.starSystemName}</th>
+      <td className="center">...</td>
+      <td className="center">...</td>
+      <td className="center">
+        {ThreeVector3ToString(props?.pos, "coord", {
+          compactDisplay: "short",
+          minimumIntegerDigits: 3,
+          minimumFractionDigits: 3,
+          useGrouping: false,
+          signDisplay: "always",
+        })}
+      </td>
     </tr>
   );
 };
@@ -42,7 +50,7 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   }, []);
 
   return (
-    <div className="scrollable-table">
+    <div draggable className="panel directory scrollable-table alt-row-table">
       <table>
         <thead>
           <tr>

@@ -11,13 +11,16 @@ export class StarSystemVisual extends BaseVisual {
 
   private renderScale: number = 1;
 
+  public readonly MIN_SCALE = 0.25;
+  public readonly MAX_SCALE = 3;
+
   constructor(newId: string, pos?: THREE.Vector3) {
     super(newId);
     this.geometry = new THREE.SphereGeometry(0.5);
     this.material = new THREE.MeshStandardMaterial({
-      color: 0xffff00,
-      emissive: 0xffff00,
-      emissiveIntensity: 0.8,
+      color: 0xcccbef,
+      emissive: 0xcccbef,
+      emissiveIntensity: 1.1,
     });
     this.obj3D = new THREE.Mesh(this.geometry, this.material);
     this.obj3D.layers.enable(BLOOM_LAYER);
@@ -33,7 +36,7 @@ export class StarSystemVisual extends BaseVisual {
     let dist = this.position.distanceTo(position) / 250;
 
     // update star size
-    this.renderScale = MathHelpers.clamp(dist, 0.5, 3);
+    this.renderScale = MathHelpers.clamp(dist, this.MIN_SCALE, this.MAX_SCALE);
     this.obj3D?.scale.copy(new THREE.Vector3(this.renderScale, this.renderScale, this.renderScale));
   }
 

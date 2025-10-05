@@ -25,6 +25,8 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
 
   // generate a random layout upon initial visit
   useEffect(() => {
+    if (Entity.StarSystem.Manager.checkIsReady()) return;
+
     const newVectors = Procedural.generateGalaxyBase(config);
     const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
 

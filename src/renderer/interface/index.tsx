@@ -1,8 +1,9 @@
 import { FunctionalComponent } from "preact";
 
-import MainMenu from "./main-menu";
+import AppMenu from "./app-menu";
 import { StarSystemEditor } from "./star-system-editor";
 import { StarSystemDirectory } from "./star-system-directory";
+import MainToolbar from "./main-toolbar";
 
 export const FullInterface: FunctionalComponent<{}> = ({}) => {
   // const showStarSystemEditor = computed(() => {
@@ -13,7 +14,8 @@ export const FullInterface: FunctionalComponent<{}> = ({}) => {
   console.log("render full interface");
   return (
     <>
-      <MainMenu />
+      <AppMenu />
+      <MainToolbar />
       {/* <div className="panels" hidden>
         <StarSystemEditor />
         <StarSystemDirectory />

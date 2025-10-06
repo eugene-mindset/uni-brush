@@ -74,7 +74,7 @@ export const useRenderGalaxy = (
 
   // cleanup function to call when cleaning up render
   const cleanUp = () => {
-    // might not be the best approach long term for performance
+    // might not be the best approach long term for performance: https://discourse.threejs.org/t/renderer-render-method-makes-an-webgl-error-in-useeffect/40866/5
     animateHandleRef?.current && cancelAnimationFrame(animateHandleRef?.current);
 
     if (canvasRef.current && rendererRef.current) {

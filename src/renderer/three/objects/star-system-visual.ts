@@ -12,7 +12,7 @@ export class StarSystemVisual extends BaseVisual {
   private renderScale: number = 1;
 
   public readonly MIN_SCALE = 0.25;
-  public readonly MAX_SCALE = 3;
+  public readonly MAX_SCALE = 5;
 
   constructor(newId: string, pos?: THREE.Vector3) {
     super(newId);

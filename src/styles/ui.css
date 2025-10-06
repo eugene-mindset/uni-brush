@@ -2,7 +2,7 @@
   z-index: 1;
 }
 
-#main-menu {
+#app-menu {
   margin: auto;
 
   width: 150px;
@@ -10,7 +10,7 @@
   z-index: 10;
 }
 
-#main-menu > *:last-child {
+#app-menu > *:last-child {
   /* Selects the last direct child of .container */
   margin-top: auto;
 }
@@ -58,4 +58,29 @@ table thead {
 .directory tbody th {
   border-collapse: separate;
   border-right: 1px solid white;
+}
+
+#main-toolbar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#inner-toolbar {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#toolbar-container {
+  gap: 10px;
+}
+
+.sub-toolbar {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }

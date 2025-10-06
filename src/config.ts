@@ -13,7 +13,7 @@ export const config: BaseGalaxyConfig = {
   armSpeed: -15,
   armSpread: 0.15,
   armOffset: Math.PI / 4,
-  armSpreadDistance: 0.15,
+  armSpreadDistance: 0.6,
   centerOverArmRatio: 0.125,
   armSharpness: 0.1,
 };

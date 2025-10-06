@@ -245,7 +245,12 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     }
 
     const newInstId = this.dataInstances.length;
-    const newInstPublicId = crypto.randomUUID();
+
+    // guarantee new & unique id
+    let tempId = crypto.randomUUID();
+    while (this.publicToInternal[tempId]) tempId = crypto.randomUUID();
+    const newInstPublicId = tempId;
+
     const newInstance = new this.createInstanceCall(newInstId);
 
     this.dataInstances.push(newInstance);

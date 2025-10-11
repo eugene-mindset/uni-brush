@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { BaseVisual } from "./base-visual";
 import { Entity, EntityTypes } from "@/models";
-import { BLOOM_LAYER } from "@/config";
+import { BASE_LAYER, BLOOM_LAYER } from "@/config";
 import { MathHelpers } from "@/util";
 
 export class StarSystemVisual extends BaseVisual {
@@ -16,20 +16,32 @@ export class StarSystemVisual extends BaseVisual {
 
   constructor(newId: string, pos?: THREE.Vector3) {
     super(newId, EntityTypes.STAR_SYSTEM);
-    this.geometry = new THREE.SphereGeometry(MathHelpers.clamp(Math.random(), 0.45, 0.95));
+    this.createObj3D(pos);
+    this.setUserData();
+  }
+
+  private createObj3D(pos?: THREE.Vector3) {
+    const lod = new THREE.LOD();
     this.material = new THREE.MeshStandardMaterial({
       color: 0xcccbef,
       emissive: 0xcccbef,
       emissiveIntensity: 1.1,
     });
-    this.obj3D = new THREE.Mesh(this.geometry, this.material);
-    this.obj3D.layers.enable(BLOOM_LAYER);
-    if (pos) {
-      this.obj3D.position.copy(pos);
-      this.position = new THREE.Vector3().copy(pos);
+
+    const radius = MathHelpers.clamp(Math.random(), 0.45, 0.95);
+    for (let i = 0; i < 3; i++) {
+      const geometry = new THREE.IcosahedronGeometry(radius, 3 - i);
+      const mesh = new THREE.Mesh(geometry, this.material);
+      lod.addLevel(mesh, i * 75);
     }
 
-    this.setUserData();
+    this.obj3D = lod;
+    this.obj3D.layers.enable(BLOOM_LAYER);
+
+    if (pos) {
+      this.obj3D.position.copy(pos);
+      this.position.copy(pos);
+    }
   }
 
   public get entity(): Entity.StarSystem.EntityType {

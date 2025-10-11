@@ -8,7 +8,7 @@ import { createGalaxyScene } from "@/renderer/three/galaxy/create-galaxy-scene";
 import { BaseVisual, StarSystemVisual } from "@/renderer/three";
 import { useMainViewFullContext } from "@/store/main-view-context";
 import { BaseGalaxyConfig } from "@/models/procedural-generators";
-import { config } from "@/config";
+import { config, DEBUG_LAYER } from "@/config";
 import {
   enablePipeline,
   initCore,
@@ -64,7 +64,8 @@ export const useRenderGalaxy = (
   // pointer info
   const pointerRef = useRef<THREE.Vector2>(new THREE.Vector2());
   const raycastRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
-  raycastRef.current.layers.disable(31);
+  raycastRef.current.layers.enableAll();
+  raycastRef.current.layers.disable(DEBUG_LAYER);
 
   // stats
   const statsRef = useRef<Stats>(new Stats());
@@ -112,55 +113,61 @@ export const useRenderGalaxy = (
 
     const delta = clockRef.current.getDelta();
 
-    const outIntersect = getIntersectedEntity();
-    if (outIntersect) {
-      const { entity, intersect } = outIntersect;
-      mainView.pointer.setIntersect("hover", entity, intersect);
-    } else {
-      mainView.pointer.setIntersect("hover");
-    }
+    // const outIntersect = getIntersectedEntity();
+    // if (outIntersect) {
+    //   const { entity, intersect } = outIntersect;
+    //   mainView.pointer.setIntersect("hover", entity, intersect);
+    // } else {
+    //   mainView.pointer.setIntersect("hover");
+    // }
 
-    if (cameraRef.current) {
-      const camera = cameraRef.current;
-      Entity.StarSystem.Manager.updateVisualScale(camera.position);
+    // if (cameraRef.current) {
+    //   const camera = cameraRef.current;
+    //   Entity.StarSystem.Manager.updateVisualScale(camera.position);
 
-      const target = targetCameraRef.current;
+    //   const target = targetCameraRef.current;
 
-      if (target) {
-        let linPrecise = false;
-        let angPrecise = false;
+    //   if (target) {
+    //     let linPrecise = false;
+    //     let angPrecise = false;
 
-        const translateV = new THREE.Vector3().subVectors(target.position, camera.position);
-        const translateMag = translateV.length();
+    //     const translateV = new THREE.Vector3().subVectors(target.position, camera.position);
+    //     const translateMag = translateV.length();
 
-        if (translateMag < delta * CAMERA_LINEAR_SPEED) {
-          linPrecise = true;
-          camera.position.copy(target.position);
-        } else {
-          camera.position.lerp(
-            camera.position.addScaledVector(translateV.normalize(), CAMERA_LINEAR_SPEED * delta),
-            CAMERA_LERP
-          );
-        }
+    //     if (translateMag < delta * CAMERA_LINEAR_SPEED) {
+    //       linPrecise = true;
+    //       camera.position.copy(target.position);
+    //     } else {
+    //       camera.position.lerp(
+    //         camera.position.addScaledVector(translateV.normalize(), CAMERA_LINEAR_SPEED * delta),
+    //         CAMERA_LERP
+    //       );
+    //     }
 
-        const rotateQ = new THREE.Quaternion()
-          .copy(camera.quaternion)
-          .rotateTowards(target.quaternion, CAMERA_ANGULAR_SPEED * delta);
+    //     const rotateQ = new THREE.Quaternion()
+    //       .copy(camera.quaternion)
+    //       .rotateTowards(target.quaternion, CAMERA_ANGULAR_SPEED * delta);
 
-        if (rotateQ.angleTo(target.quaternion) < CAMERA_PHYSICS_PRECISION) {
-          angPrecise = true;
-          camera.setRotationFromQuaternion(target.quaternion);
-        } else {
-          const slerped = new THREE.Quaternion().copy(camera.quaternion).slerp(rotateQ, 0.25);
-          camera.setRotationFromQuaternion(slerped);
-        }
+    //     if (rotateQ.angleTo(target.quaternion) < CAMERA_PHYSICS_PRECISION) {
+    //       angPrecise = true;
+    //       camera.setRotationFromQuaternion(target.quaternion);
+    //     } else {
+    //       const slerped = new THREE.Quaternion().copy(camera.quaternion).slerp(rotateQ, 0.25);
+    //       camera.setRotationFromQuaternion(slerped);
+    //     }
 
-        if (linPrecise && angPrecise) {
-          targetCameraRef.current = null;
-        }
-      }
-    }
+    //     if (linPrecise && angPrecise) {
+    //       targetCameraRef.current = null;
+    //     }
+    //   }
+    // }
+
+    // if (sceneRef.current && cameraRef.current) {
+    //   rendererRef.current?.render(sceneRef.current, cameraRef.current);
+    // }
+
     renderCallback();
+
     statsRef.current.end();
     animateHandleRef.current = requestAnimationFrame(animate);
   };
@@ -184,6 +191,7 @@ export const useRenderGalaxy = (
 
     rendererRef.current = renderer;
     pipelineRef.current = pipeline;
+
     animate();
   };
 

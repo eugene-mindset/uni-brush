@@ -1,4 +1,4 @@
-import { BASE_LAYER, BLOOM_LAYER, BLOOM_PARAMS, OVERLAY_LAYER } from "@/config";
+import { BASE_LAYER, BLOOM_LAYER, BLOOM_PARAMS, DEBUG_LAYER, OVERLAY_LAYER } from "@/config";
 import { CompositionShader } from "@/renderer/three/shaders";
 import * as THREE from "three";
 import {
@@ -29,7 +29,6 @@ export function initCore(canvas: HTMLCanvasElement): initCoreData {
 
   // camera
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
-  camera.layers.enableAll();
   camera.position.copy(new THREE.Vector3(0, 300, 0));
   camera.lookAt(new THREE.Vector3(0, 0, 0));
 

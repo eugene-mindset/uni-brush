@@ -21,6 +21,7 @@ export const config: BaseGalaxyConfig = {
 export const BASE_LAYER = 0;
 export const BLOOM_LAYER = 1;
 export const OVERLAY_LAYER = 2;
+export const DEBUG_LAYER = 31;
 
 export const BLOOM_PARAMS = {
   exposure: 1,

@@ -7,7 +7,7 @@ import { useMainViewContext } from "@/store";
 import { ThreeVector3ToString } from "@/util";
 
 export const StarSystemEditor: FunctionalComponent<{}> = () => {
-  const [starSystem, setStarSystem] = useState<Entity.StarSystem.EntityType>();
+  const [starSystem, setStarSystem] = useState<Entity.StarSystem.EntityType | null>(null);
   const mainView = useMainViewContext();
 
   const [name, setName] = useState<string>("");
@@ -33,19 +33,25 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
       const newStarSystem = setRef?.refEntity as Entity.StarSystem.EntityType;
       setStarSystem(newStarSystem);
       setName(newStarSystem.name || "");
+    } else {
+      setStarSystem(null);
     }
   });
 
-  return (
-    <div className="panel">
-      <span>
-        System Name: {starSystem?.name} <input value={name} onInput={onInputName} />
-      </span>
-      <span>Name: {starSystem?.name || ""}</span>
-      <span>Description: {starSystem?.desc || ""}</span>
-      <span>Galactic Position: {ThreeVector3ToString(starSystem?.initialPosition, "point")}</span>
-      <span>Public ID: {starSystem?.publicId}</span>
-      <button onClick={saveChanges}>Submit</button>
-    </div>
-  );
+  if (starSystem) {
+    return (
+      <div id="system-viewer" className="panel core-div bottom">
+        <span>
+          System Name: {starSystem?.name} <input value={name} onInput={onInputName} />
+        </span>
+        <span>Name: {starSystem?.name || ""}</span>
+        <span>Description: {starSystem?.desc || ""}</span>
+        <span>Galactic Position: {ThreeVector3ToString(starSystem?.initialPosition, "point")}</span>
+        <span>Public ID: {starSystem?.publicId}</span>
+        <button className="bottom" onClick={saveChanges}>
+          Submit
+        </button>
+      </div>
+    );
+  }
 };

@@ -56,7 +56,7 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   }, []);
 
   return (
-    <div draggable className="panel wide directory scrollable-table alt-row-table core-div">
+    <div className="panel wide directory scrollable-table alt-row-table core-div">
       <table>
         <thead>
           <tr>

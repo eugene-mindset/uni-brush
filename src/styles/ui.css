@@ -79,25 +79,42 @@
 
 #main-toolbar {
   pointer-events: all;
-  top: 10px;
-  left: 10px;
+  top: var(--general-spacing);
+  left: var(--general-spacing);
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: var(--general-spacing);
 }
 
 #inner-toolbar {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: var(--general-spacing);
 }
 
 #toolbar-container {
-  gap: 10px;
+  gap: var(--general-spacing);
 }
 
 .sub-toolbar {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: var(--general-spacing);
+}
+
+.interface-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: var(--general-spacing);
+  height: 100%;
+}
+
+#system-viewer {
+  min-height: 150px;
+  min-width: 300px;
+}
+
+.bottom {
+  margin-top: auto;
 }

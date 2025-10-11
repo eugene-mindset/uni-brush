@@ -25,19 +25,23 @@ export const FullInterface: FunctionalComponent<{}> = ({}) => {
   // })
   // ;
 
+  const panelToDisplay = selectedPath[0] === "" ? "" : selectedPath.join(", ");
   const onRouteSelected = (path: [string, string]) => {
     setSelectedPath(path);
   };
 
+  console.log(panelToDisplay);
   console.log("render full interface");
   return (
     <div className="interface">
       <AppMenu />
       <MainToolbar routes={toolbarRoutes} onPathSelected={onRouteSelected} path={selectedPath} />
-      <div className="panels" hidden>
-        {panelToShow[selectedPath.join(", ")]}
+      <div className="interface-body">
+        {panelToDisplay !== "" && <div className="panels">{panelToShow[panelToDisplay]}</div>}
+        <div className="panels">
+          <StarSystemEditor />
+        </div>
       </div>
-      <StarSystemEditor />
     </div>
   );
 };

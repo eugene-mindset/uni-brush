@@ -1,40 +1,61 @@
 import { createContext, Provider } from "preact";
-import { Signal, signal } from "@preact/signals";
+import { Signal, signal, useSignal } from "@preact/signals";
 import { useContext } from "preact/hooks";
 
-import { Entity } from "@/models";
+import { RenderIntersectData } from "@/types";
+import { Intersection } from "three";
 
 export interface MainViewContextReadOnlyState {
   pointer: {
-    intersect: {
-      ref: Signal<Entity.Base.EntityType | undefined>;
+    hover: {
+      ref: Signal<RenderIntersectData | null>;
+      intersect: Signal<Intersection | null>;
+    };
+    select: {
+      ref: Signal<RenderIntersectData | null>;
+      intersect: Signal<Intersection | null>;
     };
   };
 }
 
 export interface MainViewContextFullState extends MainViewContextReadOnlyState {
   pointer: {
-    intersect: {
-      setIntersect: (entity?: Entity.Base.EntityType) => void;
-    };
+    setIntersect: (
+      action: "hover" | "select",
+      entity?: RenderIntersectData,
+      intersect?: Intersection
+    ) => void;
   } & MainViewContextReadOnlyState["pointer"];
 }
 
 const MainViewContext = createContext({} as MainViewContextFullState);
 
 export const MainViewContextProvider: Provider<{}> = ({ children }) => {
-  const intersectEntity = signal<Entity.Base.EntityType>();
+  const hoverEntity = useSignal<RenderIntersectData | null>(null);
+  const hoverIntersect = useSignal<Intersection | null>(null);
 
-  const setIntersect = (entity?: Entity.Base.EntityType) => {
-    intersectEntity.value = entity;
+  const selectEntity = useSignal<RenderIntersectData | null>(null);
+  const selectIntersect = useSignal<Intersection | null>(null);
+
+  const setIntersect = (
+    action: "hover" | "select",
+    entity?: RenderIntersectData,
+    intersect?: Intersection
+  ) => {
+    if (action === "select") {
+      selectEntity.value = hoverEntity.value;
+      selectIntersect.value = entity ? hoverIntersect.value : intersect || null;
+    } else {
+      hoverEntity.value = entity || null;
+      hoverIntersect.value = intersect || null;
+    }
   };
 
   const out: MainViewContextFullState = {
     pointer: {
-      intersect: {
-        ref: intersectEntity,
-        setIntersect,
-      },
+      hover: { ref: hoverEntity, intersect: hoverIntersect },
+      select: { ref: selectEntity, intersect: selectIntersect },
+      setIntersect,
     },
   };
 

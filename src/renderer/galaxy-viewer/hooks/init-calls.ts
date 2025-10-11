@@ -1,5 +1,5 @@
 import { BASE_LAYER, BLOOM_LAYER, BLOOM_PARAMS, OVERLAY_LAYER } from "@/config";
-import { CompositionShader } from "@/renderer/shaders";
+import { CompositionShader } from "@/renderer/three/shaders";
 import * as THREE from "three";
 import {
   EffectComposer,
@@ -12,7 +12,8 @@ import {
 interface initCoreData {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
-  controls: THREE.Controls<{}>;
+  controls: MapControls;
+  clock: THREE.Clock;
 }
 
 /**
@@ -28,6 +29,7 @@ export function initCore(canvas: HTMLCanvasElement): initCoreData {
 
   // camera
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+  camera.layers.enableAll();
   camera.position.copy(new THREE.Vector3(0, 300, 0));
   camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -53,10 +55,7 @@ export function initCore(canvas: HTMLCanvasElement): initCoreData {
   controls.minDistance = 1;
   controls.maxDistance = 2500;
 
-  const axesHelper = new THREE.AxesHelper(10);
-  scene.add(axesHelper);
-
-  return { scene, camera, controls };
+  return { scene, camera, controls, clock: new THREE.Clock() };
 }
 
 export type RenderPassPipeline = Record<number, EffectComposer>;

@@ -1,20 +1,48 @@
-import { FunctionalComponent } from "preact";
+import { FunctionalComponent, JSX } from "preact";
+import { useState } from "preact/hooks";
 
-import MainMenu from "./main-menu";
+import AppMenu from "./app-menu";
 import { StarSystemEditor } from "./star-system-editor";
+import { StarSystemDirectory } from "./star-system-directory";
+import MainToolbar from "./main-toolbar";
+
+export const toolbarRoutes = [
+  { name: "Geography", options: ["Terrain Editor", "System Directory"] },
+  { name: "Civilization", options: ["Nations", "Species", "Diplomacy & Warfare"] },
+  { name: "Transportation", options: ["Routes"] },
+  { name: "Cartography", options: ["Measurement"] },
+];
+
+const panelToShow: Record<string, JSX.Element> = {
+  "Geography, System Directory": <StarSystemDirectory />,
+};
 
 export const FullInterface: FunctionalComponent<{}> = ({}) => {
+  const [selectedPath, setSelectedPath] = useState<[string, string]>(["", ""]);
+
   // const showStarSystemEditor = computed(() => {
   //   return mainView.pointer.intersect.ref.value?.type === EntityTypes.STAR_SYSTEM;
   // })
   // ;
 
+  const panelToDisplay = selectedPath[0] === "" ? "" : selectedPath.join(", ");
+  const onRouteSelected = (path: [string, string]) => {
+    setSelectedPath(path);
+  };
+
+  console.log(panelToDisplay);
   console.log("render full interface");
   return (
-    <>
-      <MainMenu />
-      <StarSystemEditor />
-    </>
+    <div className="interface">
+      <AppMenu />
+      <MainToolbar routes={toolbarRoutes} onPathSelected={onRouteSelected} path={selectedPath} />
+      <div className="interface-body">
+        {panelToDisplay !== "" && <div className="panels">{panelToShow[panelToDisplay]}</div>}
+        <div className="panels">
+          <StarSystemEditor />
+        </div>
+      </div>
+    </div>
   );
 };
 

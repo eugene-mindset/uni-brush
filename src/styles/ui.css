@@ -1,24 +1,120 @@
 * {
-    z-index: 1;
+  z-index: 1;
 }
 
-#main-menu {
-    margin: auto;
+#app-menu {
+  pointer-events: all;
+  margin: auto;
 
-    width: 150px;
-    min-height: 400px;
-    z-index: 10;
+  width: 150px;
+  min-height: 400px;
+  z-index: 10;
 }
 
-#main-menu > *:last-child { /* Selects the last direct child of .container */
-    margin-top: auto;
+#app-menu > *:last-child {
+  /* Selects the last direct child of .container */
+  margin-top: auto;
 }
 
 .panel {
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: all;
+  padding: var(--general-spacing);
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  background-color: var(--background-color);
+}
 
+.scrollable-table {
+  height: 300px;
+  overflow-y: scroll;
+  border: none;
+}
+
+.alt-row-table table {
+  border-collapse: collapse;
+}
+
+.alt-row-table tbody tr:nth-child(odd) {
+  background-color: #0000005f;
+  color: #fff;
+}
+
+.center {
+  text-align: center;
+}
+
+.directory tr {
+  height: 40px;
+  padding: 0px;
+}
+
+.directory th {
+  height: 40px;
+  padding: 0px;
+}
+
+.directory thead {
+  border-bottom: 1px solid white;
+}
+
+.directory tbody tr {
+  font-size: 0.85rem;
+}
+
+.directory tbody th {
+  border-collapse: separate;
+  border-right: 2px solid white;
+}
+
+.directory tbody td {
+  border-collapse: separate;
+  border-right: 1px solid white;
+}
+
+.directory tbody td:last-child {
+  border-collapse: separate;
+  border-right: none;
+}
+
+#main-toolbar {
+  pointer-events: all;
+  top: var(--general-spacing);
+  left: var(--general-spacing);
+  display: flex;
+  flex-direction: row;
+  gap: var(--general-spacing);
+}
+
+#inner-toolbar {
+  display: flex;
+  flex-direction: row;
+  gap: var(--general-spacing);
+}
+
+#toolbar-container {
+  gap: var(--general-spacing);
+}
+
+.sub-toolbar {
+  display: flex;
+  flex-direction: row;
+  gap: var(--general-spacing);
+}
+
+.interface-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: var(--general-spacing);
+  height: 100%;
+}
+
+#system-viewer {
+  min-height: 150px;
+  min-width: 300px;
+}
+
+.bottom {
+  margin-top: auto;
 }

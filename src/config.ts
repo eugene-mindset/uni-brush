@@ -5,15 +5,15 @@ import { Vector3 } from "three";
 export const config: BaseGalaxyConfig = {
   numOfEntities: Entity.StarSystem.Manager.capacity,
   dim: new Vector3(1250, 20, 1250),
-  mainGravityStrength: 0.1,
+  mainGravityStrength: 0.0,
   mainGravityFallOff: 0.05,
   armShapeStrength: 10,
   numArms: 2,
   showDebug: false,
-  armSpeed: -20,
-  armSpread: 0.4,
-  armOffset: 0,
-  armSpreadDistance: 0.15,
+  armSpeed: -15,
+  armSpread: 0.15,
+  armOffset: Math.PI / 4,
+  armSpreadDistance: 0.6,
   centerOverArmRatio: 0.125,
   armSharpness: 0.1,
 };
@@ -26,5 +26,5 @@ export const BLOOM_PARAMS = {
   exposure: 1,
   bloomStrength: 1,
   bloomThreshold: 0.4,
-  bloomRadius: 0,
+  bloomRadius: 0.1,
 };

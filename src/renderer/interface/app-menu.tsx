@@ -4,7 +4,7 @@ import { Fragment, FunctionalComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 // TODO: UI needs to get cleaned up
-export const MainMenu: FunctionalComponent<{}> = () => {
+export const AppMenu: FunctionalComponent<{}> = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
   // TODO: move the hiding and showing of menus from keys to global state
@@ -47,7 +47,7 @@ export const MainMenu: FunctionalComponent<{}> = () => {
   }, []);
 
   return showMenu ? (
-    <dialog id="main-menu" className="panel">
+    <dialog id="app-menu" className="panel">
       <button onClick={onLoadClick}>Load</button>
       <button onClick={onSaveClick}>Save</button>
       <button onClick={onQuitClick}>Quit</button>
@@ -57,4 +57,4 @@ export const MainMenu: FunctionalComponent<{}> = () => {
   );
 };
 
-export default MainMenu;
+export default AppMenu;

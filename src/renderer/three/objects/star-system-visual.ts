@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { BaseVisual } from "./base-visual";
-import { EntityTypes } from "@/models";
+import { Entity, EntityTypes } from "@/models";
 import { BLOOM_LAYER } from "@/config";
 import { MathHelpers } from "@/util";
 
@@ -11,13 +11,16 @@ export class StarSystemVisual extends BaseVisual {
 
   private renderScale: number = 1;
 
+  public readonly MIN_SCALE = 0.25;
+  public readonly MAX_SCALE = 5;
+
   constructor(newId: string, pos?: THREE.Vector3) {
-    super(newId);
-    this.geometry = new THREE.SphereGeometry(0.5);
+    super(newId, EntityTypes.STAR_SYSTEM);
+    this.geometry = new THREE.SphereGeometry(MathHelpers.clamp(Math.random(), 0.45, 0.95));
     this.material = new THREE.MeshStandardMaterial({
-      color: 0xffff00,
-      emissive: 0xffff00,
-      emissiveIntensity: 0.8,
+      color: 0xcccbef,
+      emissive: 0xcccbef,
+      emissiveIntensity: 1.1,
     });
     this.obj3D = new THREE.Mesh(this.geometry, this.material);
     this.obj3D.layers.enable(BLOOM_LAYER);
@@ -26,14 +29,18 @@ export class StarSystemVisual extends BaseVisual {
       this.position = new THREE.Vector3().copy(pos);
     }
 
-    this.setUserData({ ref: this, id: newId, type: EntityTypes.STAR_SYSTEM });
+    this.setUserData();
+  }
+
+  public get entity(): Entity.StarSystem.EntityType {
+    return Entity.StarSystem.Manager.get(this.id);
   }
 
   public updateScale(position: THREE.Vector3) {
     let dist = this.position.distanceTo(position) / 250;
 
     // update star size
-    this.renderScale = MathHelpers.clamp(dist, 0.1, 3);
+    this.renderScale = MathHelpers.clamp(dist, this.MIN_SCALE, this.MAX_SCALE);
     this.obj3D?.scale.copy(new THREE.Vector3(this.renderScale, this.renderScale, this.renderScale));
   }
 

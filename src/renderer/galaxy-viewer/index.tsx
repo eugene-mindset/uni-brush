@@ -2,7 +2,6 @@ import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 import { Entity } from "@/models";
-import { Position } from "@/types";
 
 import { useRenderGalaxy } from "./hooks/render-galaxy";
 
@@ -26,29 +25,24 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
 
   // generate a random layout upon initial visit
   useEffect(() => {
+    if (Entity.StarSystem.Manager.checkIsReady()) return;
+
     const newVectors = Procedural.generateGalaxyBase(config);
     const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
 
-    const final = config.showDebug ? newVectors : afterArm;
+    const finalVectors = config.showDebug ? newVectors : afterArm;
 
-    const positions = final.map((vec) => {
-      return {
-        x: vec.x,
-        y: vec.y,
-        z: vec.z,
-      } as Position;
-    });
-
-    Entity.StarSystem.Manager.batchInitializeProperty("initPos", positions);
+    Entity.StarSystem.Manager.batchInitializeProperty("initPos", finalVectors);
     Entity.StarSystem.Manager.batchInitializeEntities();
+    Entity.StarSystem.Manager.setAsReady();
   }, []);
 
   // setup to non-state events
   useEffect(() => {
-    Entity.StarSystem.Manager.addEventListener("refresh", onRefreshNeeded);
+    Entity.StarSystem.Manager.addEventListener("load", onRefreshNeeded);
 
     return () => {
-      Entity.StarSystem.Manager.removeEventListener("refresh", onRefreshNeeded);
+      Entity.StarSystem.Manager.removeEventListener("load", onRefreshNeeded);
     };
   }, []);
 
@@ -57,12 +51,13 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
     render.initialize();
 
     return () => {
+      console.log("cleanup triggered!");
       render.cleanUp();
     };
   }, [remount]);
 
   return (
-    <div ref={divRef} className="threeMainRender">
+    <div ref={divRef} id="threeMainRender">
       <canvas ref={canvasRef} />
     </div>
   );

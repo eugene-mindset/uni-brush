@@ -1,0 +1,63 @@
+.core-div {
+  color: var(--text-color);
+  background-color: var(--background-color);
+
+  border: 1px solid transparent;
+  border-radius: 5px 20px;
+}
+
+button.core {
+  box-sizing: border-box;
+  color: var(--text-color);
+  background-color: var(--background-color);
+
+  border: 1px solid transparent;
+  border-radius: 5px 20px;
+  transition: box-shadow 0.2s;
+
+  height: 40px;
+}
+
+button.core:hover {
+  box-shadow: inset -1em 1em 2em var(--highlight-color);
+}
+
+button.core.selected {
+  border: 1px solid var(--highlight-color);
+  outline: none;
+}
+
+button.core.large {
+  font-size: 1.25rem;
+  height: 50px;
+}
+
+button.core.small {
+  font-size: 0.75rem;
+  height: 30px;
+  border-radius: 2px 10px;
+}
+
+.panel.base {
+  background-color: var(--background-color);
+}
+
+.panel.wide {
+  width: 750px;
+}
+
+.square {
+  aspect-ratio: 1;
+}
+
+.core-hover {
+  transition: box-shadow 0.2s;
+}
+
+.core-hover:hover {
+  box-shadow: inset 0em -1em 2em var(--highlight-color);
+}
+
+.core-hover:active {
+  background-color: var(--highlight-color);
+}

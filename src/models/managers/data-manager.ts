@@ -135,9 +135,9 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.publicToInternal = {};
     this.notSerializedProperties = new Set(excludeProperties);
 
-    this.batchInitializePropertyArray("publicId");
-
     this.events = {};
+
+    this.batchInitializePropertyArray("publicId");
   }
 
   /** SERIALIZE*/
@@ -166,6 +166,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     }
 
     this.emit("refresh");
+    this.emit("load");
   }
 
   /** EVENTS */
@@ -174,6 +175,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     if (!this.events[eventName]) {
       this.events[eventName] = [];
     }
+
     this.events[eventName].push(callback);
   }
 
@@ -185,6 +187,10 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   }
 
   protected emit(eventName: string, ...args: any[]): void {
+    if (!(eventName in this.events)) {
+      return;
+    }
+
     const eventCallbacks = this.events[eventName];
     if (eventCallbacks) {
       eventCallbacks.forEach((callback) => {
@@ -243,13 +249,18 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     }
 
     const newInstId = this.dataInstances.length;
-    const newInstPublicId = crypto.randomUUID();
+
+    // guarantee new & unique id
+    let tempId = crypto.randomUUID();
+    while (this.publicToInternal[tempId]) tempId = crypto.randomUUID();
+    const newInstPublicId = tempId;
+
     const newInstance = new this.createInstanceCall(newInstId);
 
     this.dataInstances.push(newInstance);
     this.dataStore.publicId[newInstId] = newInstPublicId;
     this.publicToInternal[newInstPublicId] = newInstId;
-
+    this.emit("refresh");
     return newInstance;
   }
 
@@ -274,11 +285,12 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
       ...new Array<Mod[K]>(Math.min(this.currentCapacity - array.length, 0)),
     ];
     this.dataStore = { ...this.dataStore, [key]: newArray };
+    this.emit("refresh");
   }
 
   public batchInitializeEntities(): void {
     if (this.dataInstances.length) {
-      throw new Error("Entities alreaedy exist!");
+      throw new Error("Entities already exist!");
     }
 
     for (let index = 0; index < this.currentCapacity; index++) {
@@ -307,7 +319,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     // TODO: throw some exceptions?
 
     this.dataStore[key][id] = value;
-
+    this.emit("refresh");
     return true;
   }
 
@@ -316,6 +328,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
       ...this.dataStore,
       [key]: new Array<(typeof this.dataStore)[K]>(this.currentCapacity),
     };
+    this.emit("refresh");
   }
 }
 

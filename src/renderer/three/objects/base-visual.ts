@@ -1,0 +1,43 @@
+import { Entity, EntityTypes } from "@/models";
+import * as THREE from "three";
+
+export class BaseVisual {
+  private _dataId: string;
+  private _entityType: EntityTypes;
+  protected obj3D?: THREE.Object3D;
+
+  protected constructor(newId: string, entityType: EntityTypes) {
+    this._dataId = newId;
+    this._entityType = entityType;
+  }
+
+  protected setUserData(data?: Object) {
+    if (!this.obj3D) return;
+    this.obj3D.userData = {
+      ...data,
+      visualRef: this,
+      entityId: this._dataId,
+      entityType: this._entityType,
+    };
+  }
+
+  public get object3D(): THREE.Object3D {
+    if (this.obj3D) return this.obj3D;
+    throw new Error("Object3D of instance either not created successfully was deleted.");
+  }
+
+  public get id(): string {
+    return this._dataId;
+  }
+
+  public get entity(): Entity.Base.EntityType {
+    throw new Error("Visual has no abstract entity type.");
+  }
+
+  public get threeId(): string {
+    if (this.obj3D) return this.obj3D.uuid;
+    throw new Error("Object3D of instance either not created successfully was deleted.");
+  }
+
+  public dispose() {}
+}

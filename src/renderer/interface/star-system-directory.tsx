@@ -7,13 +7,16 @@ import { Vector3 } from "three";
 import { ThreeVector3ToString } from "@/util";
 
 const StarSystemDirectoryEntry: FunctionalComponent<{
+  onClick?: () => void;
   starSystemName?: string;
   pos?: Vector3;
 }> = (props) => {
   return (
     <tr>
       <th className="center">
-        <button className="core-hover clear fill">{props?.starSystemName} System</button>
+        <button className="core-hover clear fill" onClick={() => props?.onClick && props.onClick()}>
+          {props?.starSystemName} System
+        </button>
       </th>
       <td className="center">...</td>
       <td className="center">...</td>
@@ -31,22 +34,23 @@ const StarSystemDirectoryEntry: FunctionalComponent<{
 };
 
 export const StarSystemDirectory: FunctionalComponent<{}> = () => {
-  // const mainView = useMainViewContext();
+  const mainView = useMainViewContext();
 
   const [starSystems, setStarSystems] = useState<Entity.StarSystem.EntityType[]>([]);
 
   // TODO: make a single spot to subscribe to all entity changes within a data manager
   const onUpdateDirectory = () => {
     setStarSystems(Entity.StarSystem.Manager.getAll());
+    console.log("refreshed star directory")!;
   };
 
   useEffect(() => {
-    Entity.StarSystem.Manager.addEventListener("loaded", onUpdateDirectory);
+    Entity.StarSystem.Manager.addEventListener("load", onUpdateDirectory);
     Entity.StarSystem.Manager.addEventListener("refresh", onUpdateDirectory);
     onUpdateDirectory();
 
     return () => {
-      Entity.StarSystem.Manager.removeEventListener("loaded", onUpdateDirectory);
+      Entity.StarSystem.Manager.removeEventListener("load", onUpdateDirectory);
       Entity.StarSystem.Manager.removeEventListener("refresh", onUpdateDirectory);
     };
   }, []);
@@ -68,6 +72,13 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
               starSystemName={x.name}
               pos={x.initialPosition}
               key={x.publicId}
+              onClick={() => {
+                mainView.pointer.select.ref.value = {
+                  refVisual: x.visual,
+                  refEntity: x,
+                  refType: x.type,
+                };
+              }}
             />
           ))}
         </tbody>

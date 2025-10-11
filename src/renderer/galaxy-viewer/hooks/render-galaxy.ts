@@ -18,6 +18,7 @@ import {
 } from "./init-calls";
 import { MathHelpers } from "@/util";
 import { MapControls } from "three/examples/jsm/Addons.js";
+import { useSignalEffect } from "@preact/signals";
 
 export interface RenderGalaxyData {
   scene?: THREE.Scene;
@@ -27,13 +28,13 @@ export interface RenderGalaxyData {
   cleanUp: () => void;
 }
 
-const CAMERA_LINEAR_SPEED = 250;
-const CAMERA_ANGULAR_SPEED = 10;
+const CAMERA_LINEAR_SPEED = 200;
+const CAMERA_ANGULAR_SPEED = 7.5;
 const CAMERA_PHYSICS_PRECISION = 0.001;
 const CAMERA_LERP = 0.55;
 
 export interface RendererControls {
-  // updateCamera: (position: THREE.Vector3) => void;
+  // updateCamera: (position: THREE.Vector3, quaternion: THREE.Quaternion) => void;
 }
 
 // TODO: split this up between hook to control the renderer and hook to control scene
@@ -167,6 +168,7 @@ export const useRenderGalaxy = (
 
   // initialize canvas
   const initialize = () => {
+    console.log("init renderer");
     if (!canvasRef.current) return;
     const { scene, camera, controls, clock } = initCore(canvasRef.current);
 
@@ -202,28 +204,40 @@ export const useRenderGalaxy = (
     Entity.StarSystem.Manager.disposeVisuals();
   };
 
-  // get selected object
-  const onCanvasClick = () => {
-    mainView.pointer.setIntersect("select");
-
-    const target = mainView.pointer.select.ref.value?.refVisual?.object3D;
-    if (!target || !cameraRef.current || !controlsRef.current) {
-      controlsRef.current?.target.set(0, 0, 0);
-      return;
-    }
+  const updateCameraToFocus = (position: THREE.Vector3, rotation?: THREE.Quaternion) => {
+    if (!cameraRef.current || !controlsRef.current) return;
 
     const targetCam = new THREE.PerspectiveCamera();
     targetCam.position.copy(cameraRef.current.position);
     targetCam.rotation.copy(cameraRef.current.rotation);
 
-    const translateV = new THREE.Vector3().subVectors(target.position, cameraRef.current.position);
+    const translateV = new THREE.Vector3().subVectors(position, cameraRef.current.position);
 
-    targetCam.position.copy(target.position).sub(translateV.normalize().multiplyScalar(2.5));
-    targetCam.lookAt(target.position);
+    targetCam.position.copy(position).sub(translateV.normalize().multiplyScalar(2.5));
+
+    if (rotation) {
+    } else {
+      targetCam.lookAt(position);
+    }
 
     targetCameraRef.current = targetCam;
-    controlsRef.current?.target.copy(target.position);
   };
+
+  // get selected object
+  const onCanvasClick = () => {
+    mainView.pointer.setIntersect("select");
+  };
+
+  useSignalEffect(() => {
+    const target = mainView.pointer.select.ref.value?.refVisual?.object3D;
+    if (!target) {
+      controlsRef.current?.target.set(0, 0, 0);
+      return;
+    }
+
+    updateCameraToFocus(target.position);
+    controlsRef.current?.target.copy(target.position);
+  });
 
   // callback to resize
   const onWindowResize = () => {

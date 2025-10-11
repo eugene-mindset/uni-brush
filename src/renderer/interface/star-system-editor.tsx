@@ -14,6 +14,8 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
 
   const saveChanges = () => {
     if (!starSystem) return;
+    if (name === starSystem.name) return;
+    if (name === "" && !starSystem.name) return;
 
     starSystem.name = name;
   };

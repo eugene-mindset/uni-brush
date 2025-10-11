@@ -138,7 +138,6 @@ class StarSystemManagerInternalClass extends DataManagerClass<
 
   public setAsReady(): void {
     this.isReady = true;
-    this.emit("loaded");
   }
 
   public checkIsReady(): boolean {

@@ -1,5 +1,5 @@
 import { createContext, Provider } from "preact";
-import { Signal, signal } from "@preact/signals";
+import { Signal, signal, useSignal } from "@preact/signals";
 import { useContext } from "preact/hooks";
 
 import { RenderIntersectData } from "@/types";
@@ -31,11 +31,11 @@ export interface MainViewContextFullState extends MainViewContextReadOnlyState {
 const MainViewContext = createContext({} as MainViewContextFullState);
 
 export const MainViewContextProvider: Provider<{}> = ({ children }) => {
-  const hoverEntity = signal<RenderIntersectData | null>(null);
-  const hoverIntersect = signal<Intersection | null>(null);
+  const hoverEntity = useSignal<RenderIntersectData | null>(null);
+  const hoverIntersect = useSignal<Intersection | null>(null);
 
-  const selectEntity = signal<RenderIntersectData | null>(null);
-  const selectIntersect = signal<Intersection | null>(null);
+  const selectEntity = useSignal<RenderIntersectData | null>(null);
+  const selectIntersect = useSignal<Intersection | null>(null);
 
   const setIntersect = (
     action: "hover" | "select",

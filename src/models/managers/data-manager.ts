@@ -135,9 +135,9 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.publicToInternal = {};
     this.notSerializedProperties = new Set(excludeProperties);
 
-    this.batchInitializePropertyArray("publicId");
-
     this.events = {};
+
+    this.batchInitializePropertyArray("publicId");
   }
 
   /** SERIALIZE*/
@@ -166,6 +166,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     }
 
     this.emit("refresh");
+    this.emit("load");
   }
 
   /** EVENTS */
@@ -186,8 +187,11 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   }
 
   protected emit(eventName: string, ...args: any[]): void {
-    const eventCallbacks = this.events[eventName];
+    if (!(eventName in this.events)) {
+      return;
+    }
 
+    const eventCallbacks = this.events[eventName];
     if (eventCallbacks) {
       eventCallbacks.forEach((callback) => {
         callback(...args);
@@ -256,7 +260,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.dataInstances.push(newInstance);
     this.dataStore.publicId[newInstId] = newInstPublicId;
     this.publicToInternal[newInstPublicId] = newInstId;
-
+    this.emit("refresh");
     return newInstance;
   }
 
@@ -281,6 +285,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
       ...new Array<Mod[K]>(Math.min(this.currentCapacity - array.length, 0)),
     ];
     this.dataStore = { ...this.dataStore, [key]: newArray };
+    this.emit("refresh");
   }
 
   public batchInitializeEntities(): void {
@@ -314,7 +319,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     // TODO: throw some exceptions?
 
     this.dataStore[key][id] = value;
-
+    this.emit("refresh");
     return true;
   }
 
@@ -323,6 +328,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
       ...this.dataStore,
       [key]: new Array<(typeof this.dataStore)[K]>(this.currentCapacity),
     };
+    this.emit("refresh");
   }
 }
 

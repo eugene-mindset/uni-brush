@@ -51,6 +51,7 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
     render.initialize();
 
     return () => {
+      console.log("cleanup triggered!");
       render.cleanUp();
     };
   }, [remount]);

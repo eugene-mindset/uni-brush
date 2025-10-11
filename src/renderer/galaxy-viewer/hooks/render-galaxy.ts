@@ -152,7 +152,7 @@ export const useRenderGalaxy = (
           camera.setRotationFromQuaternion(target.quaternion);
         } else {
           const slerped = new THREE.Quaternion().copy(camera.quaternion).slerp(rotateQ, 0.25);
-          camera.setRotationFromQuaternion(rotateQ);
+          camera.setRotationFromQuaternion(slerped);
         }
 
         if (linPrecise && angPrecise) {
@@ -161,9 +161,8 @@ export const useRenderGalaxy = (
       }
     }
     renderCallback();
-    animateHandleRef.current = requestAnimationFrame(animate);
-
     statsRef.current.end();
+    animateHandleRef.current = requestAnimationFrame(animate);
   };
 
   // initialize canvas

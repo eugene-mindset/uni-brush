@@ -40,11 +40,17 @@ export const createGalaxyScene = (scene: THREE.Scene, config: BaseGalaxyConfig) 
         "#FFF"
       );
 
+      arrow.layers.set(31);
       scene.add(arrow);
     }
   }
 
   //
   const rim = new THREE.PolarGridHelper(config.dim.x, config.numArms, 4);
+  rim.layers.set(31);
   scene.add(rim);
+
+  const axesHelper = new THREE.AxesHelper(10);
+  axesHelper.layers.set(31);
+  scene.add(axesHelper);
 };

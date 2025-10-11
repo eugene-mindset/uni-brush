@@ -6,13 +6,15 @@ import { useMainViewContext } from "@/store";
 import { Vector3 } from "three";
 import { ThreeVector3ToString } from "@/util";
 
-export const StarSystemDirectoryEntry: FunctionalComponent<{
+const StarSystemDirectoryEntry: FunctionalComponent<{
   starSystemName?: string;
   pos?: Vector3;
 }> = (props) => {
   return (
     <tr>
-      <th className="center">{props?.starSystemName}</th>
+      <th className="center">
+        <button className="core-hover clear fill">{props?.starSystemName} System</button>
+      </th>
       <td className="center">...</td>
       <td className="center">...</td>
       <td className="center">
@@ -50,7 +52,7 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   }, []);
 
   return (
-    <div draggable className="panel directory scrollable-table alt-row-table">
+    <div draggable className="panel wide directory scrollable-table alt-row-table core-div">
       <table>
         <thead>
           <tr>

@@ -1,53 +1,64 @@
-import "@/styles/ui.css";
 import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
-export const toolbarRoutes = [
-  { name: "Geography", options: ["Terrain Editor", "System Directory"] },
-  { name: "Civilization", options: ["Nations", "Species", "Diplomacy & Warfare"] },
-  { name: "Transportation", options: ["Routes"] },
-  { name: "Cartography", options: ["Measurement"] },
-];
+import "@/styles/ui.css";
+
+interface Props {
+  routes: { name: string; options: string[] }[];
+  path?: [string, string];
+  onPathSelected?: (path: [string, string]) => void;
+}
 
 // TODO: UI needs to get cleaned up
-export const MainToolbar: FunctionalComponent<{}> = () => {
+export const MainToolbar: FunctionalComponent<Props> = (props) => {
   const ref = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const buttonsRef = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const [showOptions, setShowMainOptions] = useState<boolean>(false);
-  const [selectedMain, setSelectedMain] = useState<string | null>(null);
-  const [selectedSub, setSelectedSub] = useState<string | null>(null);
+  const [selectedMain, setSelectedMain] = useState<string>(props?.path ? props.path[0] : "");
+  const [selectedSub, setSelectedSub] = useState<string>(props?.path ? props.path[1] : "");
+
+  const updateSelectedRoute = (route: string, subRoute: string) => {
+    const oldRoute = selectedMain;
+    const oldSubRoute = selectedSub;
+
+    if (oldRoute === route && oldSubRoute === subRoute) {
+      if (oldRoute !== "" && oldSubRoute === "") {
+        setSelectedMain("");
+      } else {
+        setSelectedSub("");
+      }
+    } else if (oldRoute === route) {
+      if (subRoute == "") {
+        setSelectedMain("");
+      } else {
+        setSelectedSub(subRoute);
+      }
+    } else {
+      setSelectedMain(route);
+      setSelectedSub(subRoute);
+    }
+  };
 
   const onClickToggle = (e: MouseEvent) => {
     setShowMainOptions((oldShow) => !oldShow);
-
     e.preventDefault();
-    toggleRef.current?.blur();
   };
 
-  const onClickMainOption = (route: string, e: MouseEvent) => {
-    setSelectedMain((oldRoute) => {
-      if (route === oldRoute) {
-        setSelectedSub(null);
-        return null;
-      }
-      return route;
-    });
+  const onClickOption = (route: string, subRoute: string, e: MouseEvent) => {
+    updateSelectedRoute(route, subRoute);
 
     e.preventDefault();
     buttonsRef.current[route]?.blur();
-  };
-
-  const onClickSubOption = (route: string, subRoute: string, e: MouseEvent) => {
-    setSelectedSub((oldRoute) => {
-      if (subRoute === oldRoute) return null;
-      return subRoute;
-    });
-
-    e.preventDefault();
     buttonsRef.current[subRoute]?.blur();
   };
+
+  useEffect(() => {
+    // update selected route when it changes
+    const out: [string, string] = [selectedMain || "", selectedSub || ""];
+    props?.onPathSelected && props.onPathSelected(out);
+  }, [selectedMain, selectedSub]);
 
   // TOOD: make into a hook
   useEffect(() => {
@@ -58,41 +69,38 @@ export const MainToolbar: FunctionalComponent<{}> = () => {
     };
 
     document.addEventListener("click", handleClick);
-
     return () => {
       document.removeEventListener("click", handleClick);
     };
   }, []);
-
-  console.log(showOptions, selectedMain);
 
   return (
     <div ref={ref} id="main-toolbar">
       <button
         ref={toggleRef}
         id="main-toolbar-toggle"
-        className="fancy small"
+        className="core small square"
         onClick={onClickToggle}
       >
         {showOptions ? `\u276E` : `\u276F`}
       </button>
       <div id="toolbar-container" className={showOptions ? "flex-col" : "flex-row"}>
         <div id="inner-toolbar">
-          {toolbarRoutes.map(
+          {props.routes.map(
             (x) =>
               (showOptions || x.name === selectedMain) && (
                 <button
                   ref={(el) => (buttonsRef.current[x.name] = el)}
                   key={x.name}
-                  className={`fancy small ${selectedMain === x.name ? "selected" : ""}`}
-                  onClick={(e) => onClickMainOption(x.name, e)}
+                  className={`core small ${selectedMain === x.name ? "selected" : ""}`}
+                  onClick={(e) => onClickOption(x.name, "", e)}
                 >
                   {x.name}
                 </button>
               )
           )}
         </div>
-        {toolbarRoutes.map(
+        {props.routes.map(
           (main) =>
             main.name === selectedMain && (
               <div className="sub-toolbar">
@@ -102,8 +110,8 @@ export const MainToolbar: FunctionalComponent<{}> = () => {
                       <button
                         ref={(el) => (buttonsRef.current[sub] = el)}
                         key={sub}
-                        className={`fancy small ${selectedSub === sub ? "selected" : ""}`}
-                        onClick={(e) => onClickSubOption(main.name, sub, e)}
+                        className={`core small ${selectedSub === sub ? "selected" : ""}`}
+                        onClick={(e) => onClickOption(main.name, sub, e)}
                       >
                         {sub}
                       </button>

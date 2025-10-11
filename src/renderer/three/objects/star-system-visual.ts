@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { BaseVisual } from "./base-visual";
-import { EntityTypes } from "@/models";
+import { Entity, EntityTypes } from "@/models";
 import { BLOOM_LAYER } from "@/config";
 import { MathHelpers } from "@/util";
 
@@ -15,8 +15,8 @@ export class StarSystemVisual extends BaseVisual {
   public readonly MAX_SCALE = 5;
 
   constructor(newId: string, pos?: THREE.Vector3) {
-    super(newId);
-    this.geometry = new THREE.SphereGeometry(0.5);
+    super(newId, EntityTypes.STAR_SYSTEM);
+    this.geometry = new THREE.SphereGeometry(MathHelpers.clamp(Math.random(), 0.45, 0.95));
     this.material = new THREE.MeshStandardMaterial({
       color: 0xcccbef,
       emissive: 0xcccbef,
@@ -29,7 +29,11 @@ export class StarSystemVisual extends BaseVisual {
       this.position = new THREE.Vector3().copy(pos);
     }
 
-    this.setUserData({ ref: this, id: newId, type: EntityTypes.STAR_SYSTEM });
+    this.setUserData();
+  }
+
+  public get entity(): Entity.StarSystem.EntityType {
+    return Entity.StarSystem.Manager.get(this.id);
   }
 
   public updateScale(position: THREE.Vector3) {

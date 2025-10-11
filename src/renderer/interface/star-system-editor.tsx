@@ -23,12 +23,12 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
   };
 
   useSignalEffect(() => {
-    const setRef = mainView.pointer.intersect.ref.value;
+    const setRef = mainView.pointer.select.ref.value;
     // if (starSystem) return;
 
-    if (setRef?.type === EntityTypes.STAR_SYSTEM) {
+    if (setRef?.refType === EntityTypes.STAR_SYSTEM) {
       saveChanges();
-      const newStarSystem = Entity.StarSystem.Manager.get(setRef.publicId);
+      const newStarSystem = setRef?.refEntity as Entity.StarSystem.EntityType;
       setStarSystem(newStarSystem);
       setName(newStarSystem.name || "");
     }
@@ -41,7 +41,7 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
       </span>
       <span>Name: {starSystem?.name || ""}</span>
       <span>Description: {starSystem?.desc || ""}</span>
-      <span>Galactic Position: {ThreeVector3ToString(starSystem?.initialPosition)}</span>
+      <span>Galactic Position: {ThreeVector3ToString(starSystem?.initialPosition, "point")}</span>
       <span>Public ID: {starSystem?.publicId}</span>
       <button onClick={saveChanges}>Submit</button>
     </div>

@@ -56,7 +56,7 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
   }, [remount]);
 
   return (
-    <div ref={divRef} className="threeMainRender">
+    <div ref={divRef} id="threeMainRender">
       <canvas ref={canvasRef} />
     </div>
   );

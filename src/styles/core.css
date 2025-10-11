@@ -1,69 +1,63 @@
-body {
-  --secondary-color-1: #21295f;
+.core-div {
+  color: var(--text-color);
+  background-color: var(--background-color);
 
-  --background-color-1: #23272f;
-  --background-color-2: #21295f;
-
-  --text-color: #ffffff;
-  --highlight-color: #87f1ff;
+  border: 1px solid transparent;
+  border-radius: 5px 20px;
 }
 
-button.base {
+button.core {
   box-sizing: border-box;
   color: var(--text-color);
-  background-color: var(--background-color-1);
+  background-color: var(--background-color);
 
   border: 1px solid transparent;
   border-radius: 5px 20px;
   transition: box-shadow 0.2s;
+
+  height: 40px;
 }
 
-button.base:hover {
+button.core:hover {
   box-shadow: inset -1em 1em 2em var(--highlight-color);
 }
 
-button.base.selected {
+button.core.selected {
   border: 1px solid var(--highlight-color);
   outline: none;
 }
 
-button.base.large {
+button.core.large {
   font-size: 1.25rem;
   height: 50px;
 }
 
-button.base.small {
+button.core.small {
   font-size: 0.75rem;
   height: 30px;
   border-radius: 2px 10px;
 }
 
-button.fancy {
-  box-sizing: border-box;
-  color: var(--text-color);
-  background-color: var(--background-color-1);
+.panel.base {
+  background-color: var(--background-color);
+}
 
-  border: 1px solid transparent;
-  border-radius: 5px 20px;
+.panel.wide {
+  width: 750px;
+}
+
+.square {
+  aspect-ratio: 1;
+}
+
+.core-hover {
   transition: box-shadow 0.2s;
 }
 
-button.fancy:hover {
-  box-shadow: inset -1em 1em 2em var(--highlight-color);
+.core-hover:hover {
+  box-shadow: inset 0em -1em 2em var(--highlight-color);
 }
 
-button.fancy.selected {
-  border: 1px solid var(--highlight-color);
-  outline: none;
-}
-
-button.fancy.large {
-  font-size: 1.25rem;
-  height: 50px;
-}
-
-button.fancy.small {
-  font-size: 0.75rem;
-  height: 30px;
-  border-radius: 2px 10px;
+.core-hover:active {
+  background-color: var(--highlight-color);
 }

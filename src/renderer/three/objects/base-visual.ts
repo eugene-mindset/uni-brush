@@ -1,23 +1,24 @@
-import { Entity } from "@/models";
+import { Entity, EntityTypes } from "@/models";
 import * as THREE from "three";
 
-interface BaseVisualData {
-  ref: BaseVisual;
-  id: string;
-  type: Entity.EntityTypes;
-}
-
 export class BaseVisual {
-  private dataId: string;
+  private _dataId: string;
+  private _entityType: EntityTypes;
   protected obj3D?: THREE.Object3D;
 
-  constructor(newId: string) {
-    this.dataId = newId;
+  protected constructor(newId: string, entityType: EntityTypes) {
+    this._dataId = newId;
+    this._entityType = entityType;
   }
 
-  protected setUserData(data: BaseVisualData & Object) {
+  protected setUserData(data?: Object) {
     if (!this.obj3D) return;
-    this.obj3D.userData = data;
+    this.obj3D.userData = {
+      ...data,
+      visualRef: this,
+      entityId: this._dataId,
+      entityType: this._entityType,
+    };
   }
 
   public get object3D(): THREE.Object3D {
@@ -26,7 +27,11 @@ export class BaseVisual {
   }
 
   public get id(): string {
-    return this.dataId;
+    return this._dataId;
+  }
+
+  public get entity(): Entity.Base.EntityType {
+    throw new Error("Visual has no abstract entity type.");
   }
 
   public get threeId(): string {

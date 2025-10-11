@@ -3,6 +3,7 @@
 }
 
 #app-menu {
+  pointer-events: all;
   margin: auto;
 
   width: 150px;
@@ -16,12 +17,12 @@
 }
 
 .panel {
-  position: absolute;
-  padding: var(--panel-padding);
+  pointer-events: all;
+  padding: var(--general-spacing);
   display: flex;
   flex-direction: column;
   justify-content: stretch;
-  background-color: rgba(85, 88, 169, 0.773);
+  background-color: var(--background-color);
 }
 
 .scrollable-table {
@@ -39,29 +40,45 @@
   color: #fff;
 }
 
-/* 
-.scrollable-table table tbody,
-table thead {
-  display: block;
-}
-
-.scrollable-table thead {
-  position: sticky;
-  top: var(--panel-padding);
-  z-index: 1;
-} */
-
 .center {
   text-align: center;
 }
 
+.directory tr {
+  height: 40px;
+  padding: 0px;
+}
+
+.directory th {
+  height: 40px;
+  padding: 0px;
+}
+
+.directory thead {
+  border-bottom: 1px solid white;
+}
+
+.directory tbody tr {
+  font-size: 0.85rem;
+}
+
 .directory tbody th {
+  border-collapse: separate;
+  border-right: 2px solid white;
+}
+
+.directory tbody td {
   border-collapse: separate;
   border-right: 1px solid white;
 }
 
+.directory tbody td:last-child {
+  border-collapse: separate;
+  border-right: none;
+}
+
 #main-toolbar {
-  position: absolute;
+  pointer-events: all;
   top: 10px;
   left: 10px;
   display: flex;

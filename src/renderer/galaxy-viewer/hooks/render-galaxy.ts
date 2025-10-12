@@ -118,9 +118,9 @@ export const useRenderGalaxy = (
     const outIntersect = getIntersectedEntity();
     if (outIntersect) {
       const { entity, intersect } = outIntersect;
-      mainView.pointer.setIntersect("hover", entity, intersect);
+      mainView.pointer.setPointer("hover", entity, intersect);
     } else {
-      mainView.pointer.setIntersect("hover");
+      mainView.pointer.setPointer("hover");
     }
 
     if (cameraRef.current) {
@@ -230,7 +230,7 @@ export const useRenderGalaxy = (
 
   // get selected object
   const onCanvasClick = () => {
-    mainView.pointer.setIntersect("select");
+    mainView.pointer.setPointer("select");
   };
 
   useSignalEffect(() => {

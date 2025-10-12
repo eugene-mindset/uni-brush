@@ -1,12 +1,10 @@
 import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
-import { Entity } from "@/models";
-
-import { useRenderGalaxy } from "./hooks/render-galaxy";
-
+import { Entity, Procedural } from "@/models";
 import "@/styles/three.css";
-import { Procedural } from "@/models";
+
+import { useRenderGalaxy } from "./render-galaxy";
 
 export interface GalaxyViewerProps {}
 

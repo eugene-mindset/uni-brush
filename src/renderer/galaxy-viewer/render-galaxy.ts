@@ -4,7 +4,7 @@ import * as THREE from "three";
 import Stats from "stats.js";
 
 import { Entity } from "@/models";
-import { createGalaxyScene } from "@/renderer/three/galaxy/create-galaxy-scene";
+import { createGalaxyScene } from "@/renderer/galaxy-viewer/create-galaxy-scene";
 import { BaseVisual, StarSystemVisual } from "@/renderer/three";
 import { useMainViewFullContext } from "@/store/main-view-context";
 import { BaseGalaxyConfig } from "@/models/procedural-generators";

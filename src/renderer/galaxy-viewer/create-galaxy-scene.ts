@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { StarSystemVisual } from "../objects";
+import { StarSystemVisual } from "../visual-models";
 import { Entity } from "@/models";
 import { Procedural } from "@/models";
 import { BaseGalaxyConfig } from "@/models/procedural-generators";

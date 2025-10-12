@@ -4,7 +4,7 @@ import { render, FunctionalComponent } from "preact";
 
 import "@/styles/global.css";
 import "@/styles/core.css";
-import GalaxyViewer from "./galaxy-viewer";
+import GalaxyViewer from "./renderer/galaxy-viewer";
 import FullInterface from "./interface";
 import { MainViewContextProvider } from "@/store/main-view-context";
 import { AppContextProvider } from "@/store/app-context";

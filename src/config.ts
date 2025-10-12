@@ -10,7 +10,7 @@ export const config: BaseGalaxyConfig = {
   armShapeStrength: 10,
   numArms: 5,
   showDebug: false,
-  armSpeed: -15,
+  armSpeed: -5,
   armSpread: 0.1,
   armOffset: Math.PI / 4,
   armSpreadDistance: 0.3,

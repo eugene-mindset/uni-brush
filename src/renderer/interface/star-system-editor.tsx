@@ -4,7 +4,7 @@ import { useSignalEffect } from "@preact/signals";
 
 import { Entity, EntityTypes } from "@/models";
 import { useMainViewContext } from "@/store";
-import { ThreeVector3ToString } from "@/util";
+import { ThreeHelpers } from "@/util";
 
 export const StarSystemEditor: FunctionalComponent<{}> = () => {
   const [starSystem, setStarSystem] = useState<Entity.StarSystem.EntityType | null>(null);
@@ -47,7 +47,10 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
         </span>
         <span>Name: {starSystem?.name || ""}</span>
         <span>Description: {starSystem?.desc || ""}</span>
-        <span>Galactic Position: {ThreeVector3ToString(starSystem?.initialPosition, "point")}</span>
+        <span>
+          Galactic Position:{" "}
+          {ThreeHelpers.ThreeVector3ToString(starSystem?.initialPosition, "point")}
+        </span>
         <span>Public ID: {starSystem?.publicId}</span>
         <button className="bottom" onClick={saveChanges}>
           Submit

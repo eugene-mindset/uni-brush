@@ -4,6 +4,7 @@ import { StarSystemVisual } from "../objects";
 import { Entity } from "@/models";
 import { Procedural } from "@/models";
 import { BaseGalaxyConfig } from "@/models/procedural-generators";
+import { BASE_LAYER } from "@/config";
 
 export const createGalaxyScene = (scene: THREE.Scene, config: BaseGalaxyConfig) => {
   // TODO: very expensive to recreate stars, for small changes will need to track and change individual
@@ -44,6 +45,10 @@ export const createGalaxyScene = (scene: THREE.Scene, config: BaseGalaxyConfig) 
       scene.add(arrow);
     }
   }
+
+  const light = new THREE.AmbientLight("#828282", 1); // soft white light
+  light.layers.enable(BASE_LAYER);
+  scene.add(light);
 
   //
   const rim = new THREE.PolarGridHelper(config.dim.x, config.numArms, 4);

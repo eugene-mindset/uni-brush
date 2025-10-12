@@ -16,7 +16,7 @@ import {
   RenderPassPipeline,
   renderPipeline,
 } from "./init-calls";
-import { MathHelpers } from "@/util";
+import { MathHelpers, ThreeHelpers } from "@/util";
 import { MapControls } from "three/examples/jsm/Addons.js";
 import { useSignalEffect } from "@preact/signals";
 
@@ -28,8 +28,8 @@ export interface RenderGalaxyData {
   cleanUp: () => void;
 }
 
-const CAMERA_LINEAR_SPEED = 200;
-const CAMERA_ANGULAR_SPEED = 7.5;
+const CAMERA_LINEAR_SPEED = 400;
+const CAMERA_ANGULAR_SPEED = 5;
 const CAMERA_PHYSICS_PRECISION = 0.001;
 const CAMERA_LERP = 0.55;
 
@@ -83,9 +83,12 @@ export const useRenderGalaxy = (
     if (intersects.length == 0) return;
 
     const intersect = intersects[0];
-    const userData = intersect.object.userData;
+    const userData = ThreeHelpers.findAncestor(
+      intersect.object,
+      (anc) => !!anc.userData?.visualRef
+    )?.userData;
 
-    if (!userData?.visualRef) return;
+    if (!userData) return;
 
     const visual = userData?.visualRef as BaseVisual;
 
@@ -146,13 +149,16 @@ export const useRenderGalaxy = (
         const rotateQ = new THREE.Quaternion()
           .copy(camera.quaternion)
           .rotateTowards(target.quaternion, CAMERA_ANGULAR_SPEED * delta);
+        const rotateDeltaMag = camera.quaternion.angleTo(target.quaternion);
 
-        if (rotateQ.angleTo(target.quaternion) < CAMERA_PHYSICS_PRECISION) {
+        if (rotateDeltaMag < delta * CAMERA_ANGULAR_SPEED) {
           angPrecise = true;
           camera.setRotationFromQuaternion(target.quaternion);
         } else {
-          const slerped = new THREE.Quaternion().copy(camera.quaternion).slerp(rotateQ, 0.25);
-          camera.setRotationFromQuaternion(slerped);
+          const slerpRot = new THREE.Quaternion()
+            .copy(camera.quaternion)
+            .slerp(rotateQ, CAMERA_LERP);
+          camera.setRotationFromQuaternion(slerpRot);
         }
 
         if (linPrecise && angPrecise) {
@@ -230,6 +236,7 @@ export const useRenderGalaxy = (
   useSignalEffect(() => {
     const target = mainView.pointer.select.ref.value?.refVisual?.object3D;
     if (!target) {
+      targetCameraRef.current = null;
       controlsRef.current?.target.set(0, 0, 0);
       return;
     }

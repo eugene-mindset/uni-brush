@@ -24,6 +24,7 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
     setName(event.currentTarget.value || "");
   };
 
+  console.log(starSystem?.visual.object3D);
   useSignalEffect(() => {
     const setRef = mainView.pointer.select.ref.value;
     // if (starSystem) return;

@@ -4,7 +4,7 @@ import * as THREE from "three";
 export class BaseVisual {
   private _dataId: string;
   private _entityType: EntityTypes;
-  protected obj3D?: THREE.Object3D;
+  protected _obj3D?: THREE.Object3D;
 
   protected constructor(newId: string, entityType: EntityTypes) {
     this._dataId = newId;
@@ -12,8 +12,8 @@ export class BaseVisual {
   }
 
   protected setUserData(data?: Object) {
-    if (!this.obj3D) return;
-    this.obj3D.userData = {
+    if (!this._obj3D) return;
+    this._obj3D.userData = {
       ...data,
       visualRef: this,
       entityId: this._dataId,
@@ -22,7 +22,7 @@ export class BaseVisual {
   }
 
   public get object3D(): THREE.Object3D {
-    if (this.obj3D) return this.obj3D;
+    if (this._obj3D) return this._obj3D;
     throw new Error("Object3D of instance either not created successfully was deleted.");
   }
 
@@ -35,7 +35,7 @@ export class BaseVisual {
   }
 
   public get threeId(): string {
-    if (this.obj3D) return this.obj3D.uuid;
+    if (this._obj3D) return this._obj3D.uuid;
     throw new Error("Object3D of instance either not created successfully was deleted.");
   }
 

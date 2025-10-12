@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 
 export * as MathHelpers from "./math-helpers";
+export * as ThreeHelpers from "./three-helpers";
 
 type vecStringStyles = "point" | "simple" | "coord";
 

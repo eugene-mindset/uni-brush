@@ -38,6 +38,11 @@ function calculateEllipsoidDistRatio(point: Vector3, dim: Vector3): number {
   return new Vector3(point.x / dim.x, point.y / dim.y, point.z / dim.z).length();
 }
 
+/**
+ * Creates an solid ellipsoid of vectors distributed randomly for galaxy
+ * @param config configuration of galaxy
+ * @returns randomly generated positions of a basic disc-galaxy
+ */
 export function generateGalaxyBase(config: BaseGalaxyConfig): Vector3[] {
   let out: Vector3[] = [];
 
@@ -61,6 +66,12 @@ export function generateGalaxyBase(config: BaseGalaxyConfig): Vector3[] {
   return out;
 }
 
+/**
+ * Moves vectors near the arms of galaxy
+ * @param positions vectors to modify
+ * @param config configuration of galaxy
+ * @returns positions
+ */
 export function armsGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig): Vector3[] {
   if (config.numArms == GalaxyArmCount.NoArms) return positions;
 
@@ -112,8 +123,7 @@ export function armsGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfi
   return out;
 }
 
-export function rotateGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
-
+// export function rotateGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
 // export function bulgeGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
 // export function ringGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}
 // export function clusteringGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig) {}

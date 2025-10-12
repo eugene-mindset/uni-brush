@@ -69,8 +69,6 @@ class StarSystemInternal extends DataInstanceInternal {
 
 interface StarSystemManagerClass extends DataManager<StarSystemClass, StarSystemStoreModel> {
   updateVisualScale: (framePos: THREE.Vector3) => void;
-  setAsReady: () => void;
-  checkIsReady: () => boolean;
   disposeVisuals: () => void;
 }
 
@@ -80,7 +78,6 @@ class StarSystemManagerInternalClass extends DataManagerClass<
   StarSystemStoreModel
 > {
   public readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
-  private isReady: boolean = false;
 
   constructor() {
     super(StarSystemInternal, 2500, ["obj3D"]);
@@ -128,20 +125,12 @@ class StarSystemManagerInternalClass extends DataManagerClass<
     this.initProperties();
   }
 
-  public disposeVisuals() {
-    this.forEachEntity((x) => x.visual?.dispose());
-  }
-
   public updateVisualScale(framePos: THREE.Vector3): void {
     this.forEachEntity((x) => x.visual?.updateScale(framePos));
   }
 
-  public setAsReady(): void {
-    this.isReady = true;
-  }
-
-  public checkIsReady(): boolean {
-    return this.isReady;
+  public disposeVisuals() {
+    this.forEachEntity((x) => x.visual?.dispose());
   }
 }
 

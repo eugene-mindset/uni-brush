@@ -48,7 +48,7 @@ export const AppMenu: FunctionalComponent<{}> = () => {
   }, []);
 
   return showMenu ? (
-    <dialog id="app-menu" className="panel">
+    <dialog id="app-menu" className="panel-old">
       <button onClick={onLoadClick}>Load</button>
       <button onClick={onSaveClick}>Save</button>
       <button onClick={onQuitClick}>Quit</button>

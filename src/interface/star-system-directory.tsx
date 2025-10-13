@@ -5,6 +5,7 @@ import { Entity } from "@/models";
 import { useMainViewContext } from "@/store";
 import { Vector3 } from "three";
 import { ThreeHelpers } from "@/util";
+import { Panel } from "@/components";
 
 const StarSystemDirectoryEntry: FunctionalComponent<{
   onClick?: () => void;
@@ -56,33 +57,35 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   }, []);
 
   return (
-    <div className="panel wide directory scrollable-table alt-row-table core-div">
-      <table>
-        <thead>
-          <tr>
-            <th>System Name</th>
-            <th>Star Name</th>
-            <th>Star Type</th>
-            <th>Galactic Position</th>
-          </tr>
-        </thead>
-        <tbody>
-          {starSystems.map((x) => (
-            <StarSystemDirectoryEntry
-              starSystemName={x.name}
-              pos={x.initialPosition}
-              key={x.publicId}
-              onClick={() => {
-                mainView.pointer.select.ref.value = {
-                  refVisual: x.visual,
-                  refEntity: x,
-                  refType: x.type,
-                };
-              }}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Panel title="Geography / Directory" width="700px" canToggle>
+      <div className="flex-col scrollable">
+        <table className="directory alt-row-table">
+          <thead>
+            <tr>
+              <th>System Name</th>
+              <th>Star Name</th>
+              <th>Star Type</th>
+              <th>Galactic Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            {starSystems.map((x) => (
+              <StarSystemDirectoryEntry
+                starSystemName={x.name}
+                pos={x.initialPosition}
+                key={x.publicId}
+                onClick={() => {
+                  mainView.pointer.select.ref.value = {
+                    refVisual: x.visual,
+                    refEntity: x,
+                    refType: x.type,
+                  };
+                }}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
   );
 };

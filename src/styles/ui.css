@@ -16,7 +16,7 @@
   margin-top: auto;
 }
 
-.panel {
+.panel-old {
   pointer-events: all;
   padding: var(--general-spacing);
   display: flex;
@@ -25,13 +25,13 @@
   background-color: var(--background-color);
 }
 
-.scrollable-table {
+.scrollable {
   height: 300px;
   overflow-y: scroll;
   border: none;
 }
 
-.alt-row-table table {
+table.alt-row-table {
   border-collapse: collapse;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .directory thead {
-  border-bottom: 1px solid white;
+  border-bottom: 2px solid white;
 }
 
 .directory tbody tr {

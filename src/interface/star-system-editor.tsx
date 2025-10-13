@@ -24,7 +24,6 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
     setName(event.currentTarget.value || "");
   };
 
-  console.log(starSystem?.visual.object3D);
   useSignalEffect(() => {
     const setRef = mainView.pointer.select.ref.value;
     // if (starSystem) return;
@@ -41,7 +40,7 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
 
   if (starSystem) {
     return (
-      <div id="system-viewer" className="panel core-div bottom">
+      <div id="system-viewer" className="panel-old core-div bottom">
         <span>
           System Name: {starSystem?.name} <input value={name} onInput={onInputName} />
         </span>

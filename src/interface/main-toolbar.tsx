@@ -2,6 +2,7 @@ import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 import "@/styles/ui.css";
+import { SVGIcons } from "@/components";
 
 interface Props {
   routes: { name: string; options: string[] }[];
@@ -82,7 +83,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
         className="core small square"
         onClick={onClickToggle}
       >
-        {showOptions ? `\u276E` : `\u276F`}
+        {showOptions ? <SVGIcons.CaretLeftFill /> : <SVGIcons.CaretRightFill />}
       </button>
       <div id="toolbar-container" className={showOptions ? "flex-col" : "flex-row"}>
         <div id="inner-toolbar">

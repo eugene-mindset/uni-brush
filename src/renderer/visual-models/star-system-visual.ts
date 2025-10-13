@@ -1,8 +1,10 @@
 import * as THREE from "three";
-import { BaseVisual } from "./base-visual";
+
 import { Entity, EntityTypes } from "@/models";
-import { BLOOM_LAYER } from "@/config";
+import { Global } from "@/renderer";
 import { MathHelpers } from "@/util";
+
+import { BaseVisual } from "./base-visual";
 
 const starSpriteTexture = new THREE.TextureLoader().load("src/assets//sprite120.png");
 const starSpriteMaterial = new THREE.SpriteMaterial({
@@ -55,7 +57,7 @@ export class StarSystemVisual extends BaseVisual {
     lod.addLevel(pointMesh, 5);
 
     this._obj3D = lod;
-    this._obj3D.layers.enable(BLOOM_LAYER);
+    this._obj3D.layers.enable(Global.Layers.BLOOM_LAYER);
 
     if (pos) {
       this._obj3D.position.copy(pos);

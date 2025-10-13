@@ -1,5 +1,3 @@
-import { BASE_LAYER, BLOOM_LAYER, BLOOM_PARAMS, OVERLAY_LAYER } from "@/config";
-import { CompositionShader } from "@/renderer/shaders";
 import * as THREE from "three";
 import {
   EffectComposer,
@@ -8,6 +6,9 @@ import {
   ShaderPass,
   UnrealBloomPass,
 } from "three/examples/jsm/Addons.js";
+
+import { CompositionShader } from "@/renderer/shaders";
+import { BLOOM_PARAMS, Global } from "../global";
 
 interface initCoreData {
   scene: THREE.Scene;
@@ -113,9 +114,9 @@ export function initRenderer(
   const baseComposer = createBaseComposer({ renderer, renderPass }, finalPass);
 
   const passes = {
-    [BLOOM_LAYER]: bloomComposer,
-    [OVERLAY_LAYER]: overlayComposer,
-    [BASE_LAYER]: baseComposer,
+    [Global.Layers.BLOOM_LAYER]: bloomComposer,
+    [Global.Layers.OVERLAY_LAYER]: overlayComposer,
+    [Global.Layers.BASE_LAYER]: baseComposer,
   };
 
   return { renderer, pipeline: passes };

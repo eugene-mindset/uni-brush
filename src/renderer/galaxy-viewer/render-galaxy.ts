@@ -1,11 +1,11 @@
 import { RefObject } from "preact";
-import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef } from "preact/hooks";
 import * as THREE from "three";
 import Stats from "stats.js";
 
 import { Entity } from "@/models";
 import { createGalaxyScene } from "@/renderer/galaxy-viewer/create-galaxy-scene";
-import { BaseVisual, StarSystemVisual } from "@/renderer/three";
+import { BaseVisual } from "@/renderer";
 import { useMainViewFullContext } from "@/store/main-view-context";
 import { BaseGalaxyConfig } from "@/models/procedural-generators";
 import { config } from "@/config";
@@ -16,7 +16,7 @@ import {
   RenderPassPipeline,
   renderPipeline,
 } from "./init-calls";
-import { MathHelpers, ThreeHelpers } from "@/util";
+import { ThreeHelpers } from "@/util";
 import { MapControls } from "three/examples/jsm/Addons.js";
 import { useSignalEffect } from "@preact/signals";
 
@@ -30,7 +30,7 @@ export interface RenderGalaxyData {
 
 const CAMERA_LINEAR_SPEED = 400;
 const CAMERA_ANGULAR_SPEED = 5;
-const CAMERA_PHYSICS_PRECISION = 0.001;
+// const CAMERA_PHYSICS_PRECISION = 0.001;
 const CAMERA_LERP = 0.55;
 
 export interface RendererControls {

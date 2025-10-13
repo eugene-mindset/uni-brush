@@ -1,11 +1,17 @@
 import fs from "node:fs";
 import { Buffer } from "node:buffer";
-import { app, dialog } from "electron";
+import { dialog } from "electron";
 import archiver from "archiver";
 import yauzl from "yauzl-promise";
 
 import { streamToString } from "./utils";
 
+/**
+ * Opens a save dialog
+ * @param _ Electron.IPC stuff
+ * @param options dialog options for save
+ * @returns filepath selected in dialog
+ */
 export async function handleFileSaveDialog(
   _?: Electron.IpcMainInvokeEvent,
   options: Electron.SaveDialogOptions = {}
@@ -17,6 +23,12 @@ export async function handleFileSaveDialog(
   }
 }
 
+/**
+ * Opens a load dialog
+ * @param _ Electron.IPC stuff
+ * @param options dialog options for load
+ * @returns first filepath selected in dialog
+ */
 export async function handleFileOpenDialog(
   _?: Electron.IpcMainInvokeEvent,
   options: Electron.OpenDialogOptions = {}
@@ -30,6 +42,13 @@ export async function handleFileOpenDialog(
 
 type ProjectJsonContent = { content: string; path: string }[];
 
+/**
+ * Opens a save dialog for a uni-brush project
+ * @param _ Electron.IPC stuff
+ * @param files files to save in final project file
+ * @param dialogOptions options for project dialog
+ * @returns full path of the file save
+ */
 export async function handleProjectSave(
   _?: Electron.IpcMainInvokeEvent,
   files?: ProjectJsonContent,
@@ -83,6 +102,12 @@ export async function handleProjectSave(
   return finalPath;
 }
 
+/**
+ * Opens a load dialog for a uni-brush project
+ * @param _ Electron.IPC stuff
+ * @param dialogOptions options for project dialog
+ * @returns returns the full content needed to load project
+ */
 export async function handleProjectLoad(
   _?: Electron.IpcMainInvokeEvent,
   dialogOptions?: Electron.OpenDialogOptions

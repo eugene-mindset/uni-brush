@@ -1,12 +1,10 @@
 import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
-import { Entity } from "@/models";
-
-import { useRenderGalaxy } from "./hooks/render-galaxy";
-
+import { Entity, Procedural } from "@/models";
 import "@/styles/three.css";
-import { Procedural } from "@/models";
+
+import { useRenderGalaxy } from "./render-galaxy";
 
 export interface GalaxyViewerProps {}
 
@@ -25,8 +23,6 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
 
   // generate a random layout upon initial visit
   useEffect(() => {
-    if (Entity.StarSystem.Manager.checkIsReady()) return;
-
     const newVectors = Procedural.generateGalaxyBase(config);
     const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
 
@@ -34,7 +30,6 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
 
     Entity.StarSystem.Manager.batchInitializeProperty("initPos", finalVectors);
     Entity.StarSystem.Manager.batchInitializeEntities();
-    Entity.StarSystem.Manager.setAsReady();
   }, []);
 
   // setup to non-state events

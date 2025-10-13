@@ -1,8 +1,10 @@
 import * as THREE from "three";
-import { BaseVisual } from "./base-visual";
+
 import { Entity, EntityTypes } from "@/models";
-import { BASE_LAYER, BLOOM_LAYER } from "@/config";
+import { Global } from "@/renderer";
 import { MathHelpers } from "@/util";
+
+import { BaseVisual } from "./base-visual";
 
 const starSpriteTexture = new THREE.TextureLoader().load("src/assets//sprite120.png");
 const starSpriteMaterial = new THREE.SpriteMaterial({
@@ -21,10 +23,16 @@ export class StarSystemVisual extends BaseVisual {
   public readonly MIN_SCALE = 0.5;
   public readonly MAX_SCALE = 5;
 
+  private readonly MIN_RADIUS = 0.45;
+  private readonly MAX_RADIUS = 0.95;
+
+  private readonly RENDER_THRESHOLD = 30;
+  private readonly RENDER_RADIUS_THRESHOLD = 0.6;
+
   constructor(newId: string, pos?: THREE.Vector3) {
     super(newId, EntityTypes.STAR_SYSTEM);
 
-    this.radius = MathHelpers.clamp(Math.random(), 0.45, 0.95);
+    this.radius = MathHelpers.clamp(Math.random(), this.MIN_RADIUS, this.MAX_RADIUS);
     this.createObject3D(pos);
     this.setUserData();
   }
@@ -49,7 +57,7 @@ export class StarSystemVisual extends BaseVisual {
     lod.addLevel(pointMesh, 5);
 
     this._obj3D = lod;
-    this._obj3D.layers.enable(BLOOM_LAYER);
+    this._obj3D.layers.enable(Global.Layers.BLOOM_LAYER);
 
     if (pos) {
       this._obj3D.position.copy(pos);
@@ -69,7 +77,7 @@ export class StarSystemVisual extends BaseVisual {
     // update star size
     this.renderScale = MathHelpers.clamp(dist, this.MIN_SCALE, this.MAX_SCALE);
 
-    if (this.renderScale > this.MAX_SCALE / 2 && this.radius < 0.55) {
+    if (this.renderScale > this.RENDER_THRESHOLD && this.radius < this.RENDER_RADIUS_THRESHOLD) {
       this._obj3D.visible = false;
     } else {
       this._obj3D.visible = true;

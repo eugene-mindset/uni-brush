@@ -4,7 +4,7 @@ import { useEffect, useState } from "preact/hooks";
 import { Entity } from "@/models";
 import { useMainViewContext } from "@/store";
 import { Vector3 } from "three";
-import { ThreeVector3ToString } from "@/util";
+import { ThreeHelpers } from "@/util";
 
 const StarSystemDirectoryEntry: FunctionalComponent<{
   onClick?: () => void;
@@ -21,7 +21,7 @@ const StarSystemDirectoryEntry: FunctionalComponent<{
       <td className="center">...</td>
       <td className="center">...</td>
       <td className="center">
-        {ThreeVector3ToString(props?.pos, "coord", {
+        {ThreeHelpers.ThreeVector3ToString(props?.pos, "coord", {
           compactDisplay: "short",
           minimumIntegerDigits: 3,
           minimumFractionDigits: 3,

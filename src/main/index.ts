@@ -29,6 +29,9 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 
 let win: BrowserWindow | null;
 
+/**
+ * Create window of app
+ */
 function createWindow() {
   win = new BrowserWindow({
     fullscreenable: true,
@@ -57,10 +60,16 @@ function createWindow() {
   });
 }
 
+/**
+ * Setup electron app
+ */
 function startApp() {
+  // create handles for ipc
   ipcMain.handle("ub:quit", () => app.quit());
   ipcMain.handle("ub:saveProjectFile", handleProjectSave);
   ipcMain.handle("ub:loadProjectFile", handleProjectLoad);
+
+  // create main window
   createWindow();
 }
 
@@ -82,8 +91,10 @@ app.on("activate", () => {
   }
 });
 
+// handle any important operations before fully closing
 app.on("before-quit", () => {
   console.log("App is about to quit...");
 });
 
+// boot up app once ready
 app.whenReady().then(startApp);

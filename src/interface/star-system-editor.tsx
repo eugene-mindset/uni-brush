@@ -5,6 +5,7 @@ import { useSignalEffect } from "@preact/signals";
 import { Entity, EntityTypes } from "@/models";
 import { useMainViewContext } from "@/store";
 import { ThreeHelpers } from "@/util";
+import { Panel } from "@/components";
 
 export const StarSystemEditor: FunctionalComponent<{}> = () => {
   const [starSystem, setStarSystem] = useState<Entity.StarSystem.EntityType | null>(null);
@@ -24,7 +25,6 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
     setName(event.currentTarget.value || "");
   };
 
-  console.log(starSystem?.visual.object3D);
   useSignalEffect(() => {
     const setRef = mainView.pointer.select.ref.value;
     // if (starSystem) return;
@@ -40,22 +40,47 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
   });
 
   if (starSystem) {
+    const panelTitle = starSystem.name || "Untitled";
+
     return (
-      <div id="system-viewer" className="panel core-div bottom">
-        <span>
-          System Name: {starSystem?.name} <input value={name} onInput={onInputName} />
-        </span>
-        <span>Name: {starSystem?.name || ""}</span>
-        <span>Description: {starSystem?.desc || ""}</span>
-        <span>
-          Galactic Position:{" "}
-          {ThreeHelpers.ThreeVector3ToString(starSystem?.initialPosition, "point")}
-        </span>
-        <span>Public ID: {starSystem?.publicId}</span>
+      <Panel
+        title={panelTitle}
+        className="small-editor"
+        position="absolute"
+        floatX="right"
+        floatY="bottom"
+        width="350px"
+        canToggle
+        canDrag
+      >
+        <div>
+          <span>System Name: {starSystem.name}</span>
+          <input value={name} onInput={onInputName} />
+        </div>
+
+        <div>
+          <span>Name: {starSystem.name || ""}</span>
+        </div>
+
+        <div>
+          <span>Description: {starSystem.desc || ""}</span>
+        </div>
+
+        <div>
+          <span>
+            Galactic Position:{" "}
+            {ThreeHelpers.ThreeVector3ToString(starSystem.initialPosition, "point")}
+          </span>
+        </div>
+
+        <div>
+          <span>Public ID: {starSystem.publicId}</span>
+        </div>
+
         <button className="bottom" onClick={saveChanges}>
           Submit
         </button>
-      </div>
+      </Panel>
     );
   }
 };

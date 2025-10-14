@@ -2,6 +2,7 @@ import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 import "@/styles/ui.css";
+import { SVGIcons } from "@/components";
 
 interface Props {
   routes: { name: string; options: string[] }[];
@@ -79,10 +80,10 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
       <button
         ref={toggleRef}
         id="main-toolbar-toggle"
-        className="core small square"
+        className="core square"
         onClick={onClickToggle}
       >
-        {showOptions ? `\u276E` : `\u276F`}
+        {showOptions ? <SVGIcons.CaretLeftFill /> : <SVGIcons.CaretRightFill />}
       </button>
       <div id="toolbar-container" className={showOptions ? "flex-col" : "flex-row"}>
         <div id="inner-toolbar">
@@ -92,7 +93,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
                 <button
                   ref={(el) => (buttonsRef.current[x.name] = el)}
                   key={x.name}
-                  className={`core small ${selectedMain === x.name ? "selected" : ""}`}
+                  className={`core ${selectedMain === x.name ? "selected" : ""}`}
                   onClick={(e) => onClickOption(x.name, "", e)}
                 >
                   {x.name}
@@ -110,7 +111,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
                       <button
                         ref={(el) => (buttonsRef.current[sub] = el)}
                         key={sub}
-                        className={`core small ${selectedSub === sub ? "selected" : ""}`}
+                        className={`core ${selectedSub === sub ? "selected" : ""}`}
                         onClick={(e) => onClickOption(main.name, sub, e)}
                       >
                         {sub}

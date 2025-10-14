@@ -48,10 +48,16 @@ export const AppMenu: FunctionalComponent<{}> = () => {
   }, []);
 
   return showMenu ? (
-    <dialog id="app-menu" className="panel">
-      <button onClick={onLoadClick}>Load</button>
-      <button onClick={onSaveClick}>Save</button>
-      <button onClick={onQuitClick}>Quit</button>
+    <dialog id="app-menu" className="core-div modal">
+      <button className="core large" onClick={onLoadClick}>
+        Load
+      </button>
+      <button className="core large" onClick={onSaveClick}>
+        Save
+      </button>
+      <button className="core large" onClick={onQuitClick}>
+        Quit
+      </button>
     </dialog>
   ) : (
     <Fragment />

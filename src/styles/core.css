@@ -7,12 +7,18 @@
 }
 
 button.core {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   box-sizing: border-box;
+  padding: 5px;
+
   color: var(--text-color);
   background-color: var(--background-color);
 
   border: 1px solid transparent;
-  border-radius: 5px 20px;
+  border-radius: 4px 15px;
   transition: box-shadow 0.2s;
 
   height: 40px;
@@ -33,17 +39,9 @@ button.core.large {
 }
 
 button.core.small {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   height: 30px;
-  border-radius: 2px 10px;
-}
-
-.panel.base {
-  background-color: var(--background-color);
-}
-
-.panel.wide {
-  width: 750px;
+  border-radius: 3px 10px;
 }
 
 .square {

@@ -5,16 +5,18 @@ import AppMenu from "./app-menu";
 import { StarSystemEditor } from "./star-system-editor";
 import { StarSystemDirectory } from "./star-system-directory";
 import MainToolbar from "./main-toolbar";
+import { GeographyEditor } from "./geography-editor";
 
 export const toolbarRoutes = [
-  { name: "Geography", options: ["Terrain Editor", "System Directory"] },
+  { name: "Geography", options: ["Editor", "Directory"] },
   { name: "Civilization", options: ["Nations", "Species", "Diplomacy & Warfare"] },
   { name: "Transportation", options: ["Routes"] },
   { name: "Cartography", options: ["Measurement"] },
 ];
 
 const panelToShow: Record<string, JSX.Element> = {
-  "Geography, System Directory": <StarSystemDirectory />,
+  "Geography, Directory": <StarSystemDirectory />,
+  "Geography, Editor": <GeographyEditor />,
 };
 
 export const FullInterface: FunctionalComponent<{}> = ({}) => {
@@ -30,17 +32,15 @@ export const FullInterface: FunctionalComponent<{}> = ({}) => {
     setSelectedPath(path);
   };
 
-  console.log(panelToDisplay);
-  console.log("render full interface");
   return (
     <div className="interface">
       <AppMenu />
-      <MainToolbar routes={toolbarRoutes} onPathSelected={onRouteSelected} path={selectedPath} />
-      <div className="interface-body">
-        {panelToDisplay !== "" && <div className="panels">{panelToShow[panelToDisplay]}</div>}
-        <div className="panels">
-          <StarSystemEditor />
-        </div>
+      <div class="interface fixed">
+        <MainToolbar routes={toolbarRoutes} onPathSelected={onRouteSelected} path={selectedPath} />
+        {panelToDisplay !== "" && panelToShow[panelToDisplay]}
+      </div>
+      <div className="interface dynamic">
+        <StarSystemEditor />
       </div>
     </div>
   );

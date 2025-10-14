@@ -1,7 +1,7 @@
 :root {
   height: 100%;
   width: 100%;
-  font-size: 10pt;
+  font-size: 8pt;
 
   font-family: monospace;
   line-height: 1.5;
@@ -85,16 +85,32 @@ dialog {
   border: 0;
 }
 
+svg {
+  width: 1em;
+  height: 1em;
+}
+
 .interface {
+  position: absolute;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: var(--general-spacing);
   padding: var(--general-spacing);
   height: 100%;
   width: 100%;
 
   pointer-events: none;
+}
+
+.interface.fixed {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--general-spacing);
+}
+
+.interface.dynamic {
+  position: relative;
+  top: -100%;
+  padding: 0;
 }
 
 .panels {
@@ -105,6 +121,7 @@ dialog {
   gap: var(--general-spacing);
 }
 
+/** move helpers to another file */
 .flex-col {
   display: flex;
   flex-direction: column;
@@ -123,4 +140,16 @@ dialog {
 .fill {
   width: 100%;
   height: 100%;
+}
+
+.inline-center {
+  margin-inline: auto;
+}
+
+.block-center {
+  margin-block: auto;
+}
+
+.center {
+  margin: auto;
 }

@@ -4,7 +4,11 @@
 
 #app-menu {
   pointer-events: all;
-  margin: auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  gap: var(--general-spacing);
 
   width: 150px;
   min-height: 400px;
@@ -16,22 +20,13 @@
   margin-top: auto;
 }
 
-.panel {
-  pointer-events: all;
-  padding: var(--general-spacing);
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  background-color: var(--background-color);
-}
-
-.scrollable-table {
+.scrollable {
   height: 300px;
   overflow-y: scroll;
   border: none;
 }
 
-.alt-row-table table {
+table.alt-row-table {
   border-collapse: collapse;
 }
 
@@ -55,11 +50,7 @@
 }
 
 .directory thead {
-  border-bottom: 1px solid white;
-}
-
-.directory tbody tr {
-  font-size: 0.85rem;
+  border-bottom: 2px solid white;
 }
 
 .directory tbody th {
@@ -78,12 +69,13 @@
 }
 
 #main-toolbar {
-  pointer-events: all;
   top: var(--general-spacing);
   left: var(--general-spacing);
   display: flex;
   flex-direction: row;
   gap: var(--general-spacing);
+
+  pointer-events: all;
 }
 
 #inner-toolbar {
@@ -102,19 +94,12 @@
   gap: var(--general-spacing);
 }
 
-.interface-body {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: var(--general-spacing);
-  height: 100%;
+.small-editor {
+  float: right;
 }
 
-#system-viewer {
-  min-height: 150px;
-  min-width: 300px;
-}
-
-.bottom {
-  margin-top: auto;
+.modal {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }

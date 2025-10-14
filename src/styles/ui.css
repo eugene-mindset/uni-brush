@@ -4,7 +4,11 @@
 
 #app-menu {
   pointer-events: all;
-  margin: auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  gap: var(--general-spacing);
 
   width: 150px;
   min-height: 400px;
@@ -14,15 +18,6 @@
 #app-menu > *:last-child {
   /* Selects the last direct child of .container */
   margin-top: auto;
-}
-
-.panel-old {
-  pointer-events: all;
-  padding: var(--general-spacing);
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  background-color: var(--background-color);
 }
 
 .scrollable {
@@ -101,4 +96,10 @@ table.alt-row-table {
 
 .small-editor {
   float: right;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }

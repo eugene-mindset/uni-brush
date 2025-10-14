@@ -44,14 +44,6 @@ button.core.small {
   border-radius: 3px 10px;
 }
 
-.panel-old.base {
-  background-color: var(--background-color);
-}
-
-.panel-old.wide {
-  width: 750px;
-}
-
 .square {
   aspect-ratio: 1;
 }

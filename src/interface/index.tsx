@@ -35,12 +35,12 @@ export const FullInterface: FunctionalComponent<{}> = ({}) => {
   return (
     <div className="interface">
       <AppMenu />
-      <MainToolbar routes={toolbarRoutes} onPathSelected={onRouteSelected} path={selectedPath} />
-      <div className="interface-body">
-        {panelToDisplay !== "" && <div className="panels">{panelToShow[panelToDisplay]}</div>}
-        <div className="panels">
-          <StarSystemEditor />
-        </div>
+      <div class="interface fixed">
+        <MainToolbar routes={toolbarRoutes} onPathSelected={onRouteSelected} path={selectedPath} />
+        {panelToDisplay !== "" && panelToShow[panelToDisplay]}
+      </div>
+      <div className="interface dynamic">
+        <StarSystemEditor />
       </div>
     </div>
   );

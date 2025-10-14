@@ -80,7 +80,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
       <button
         ref={toggleRef}
         id="main-toolbar-toggle"
-        className="core small square"
+        className="core square"
         onClick={onClickToggle}
       >
         {showOptions ? <SVGIcons.CaretLeftFill /> : <SVGIcons.CaretRightFill />}
@@ -93,7 +93,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
                 <button
                   ref={(el) => (buttonsRef.current[x.name] = el)}
                   key={x.name}
-                  className={`core small ${selectedMain === x.name ? "selected" : ""}`}
+                  className={`core ${selectedMain === x.name ? "selected" : ""}`}
                   onClick={(e) => onClickOption(x.name, "", e)}
                 >
                   {x.name}
@@ -111,7 +111,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
                       <button
                         ref={(el) => (buttonsRef.current[sub] = el)}
                         key={sub}
-                        className={`core small ${selectedSub === sub ? "selected" : ""}`}
+                        className={`core ${selectedSub === sub ? "selected" : ""}`}
                         onClick={(e) => onClickOption(main.name, sub, e)}
                       >
                         {sub}

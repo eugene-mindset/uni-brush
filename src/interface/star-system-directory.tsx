@@ -1,4 +1,4 @@
-import { FunctionalComponent, JSX } from "preact";
+import { FunctionalComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { Entity } from "@/models";
@@ -42,7 +42,6 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   // TODO: make a single spot to subscribe to all entity changes within a data manager
   const onUpdateDirectory = () => {
     setStarSystems(Entity.StarSystem.Manager.getAll());
-    console.log("refreshed star directory")!;
   };
 
   useEffect(() => {

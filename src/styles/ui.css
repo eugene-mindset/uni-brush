@@ -58,10 +58,6 @@ table.alt-row-table {
   border-bottom: 2px solid white;
 }
 
-.directory tbody tr {
-  font-size: 0.85rem;
-}
-
 .directory tbody th {
   border-collapse: separate;
   border-right: 2px solid white;
@@ -78,12 +74,13 @@ table.alt-row-table {
 }
 
 #main-toolbar {
-  pointer-events: all;
   top: var(--general-spacing);
   left: var(--general-spacing);
   display: flex;
   flex-direction: row;
   gap: var(--general-spacing);
+
+  pointer-events: all;
 }
 
 #inner-toolbar {
@@ -102,19 +99,6 @@ table.alt-row-table {
   gap: var(--general-spacing);
 }
 
-.interface-body {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: var(--general-spacing);
-  height: 100%;
-}
-
-#system-viewer {
-  min-height: 150px;
-  min-width: 300px;
-}
-
-.bottom {
-  margin-top: auto;
+.small-editor {
+  float: right;
 }

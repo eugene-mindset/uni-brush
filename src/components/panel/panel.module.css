@@ -19,6 +19,7 @@ h6 {
 .title {
   display: flex;
   flex-direction: row-reverse;
+  line-height: 2;
 }
 
 .title_toggle {
@@ -38,4 +39,16 @@ h6 {
 
 .title_text {
   flex: 1;
+}
+
+.draggable {
+  position: relative;
+}
+
+.draggable .title {
+  cursor: grab;
+}
+
+.dragging .title {
+  cursor: grabbing;
 }

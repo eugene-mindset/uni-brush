@@ -5,7 +5,7 @@ import { AppMenu } from "./app-menu";
 import { MainToolbar } from "./main-toolbar";
 import { StarSystemDirectory } from "./star-system-directory";
 import { StarSystemEditor } from "./star-system-editor";
-import { GeographyEditor } from "./geography-editor";
+import { GeographyEditor } from "@/features/galaxy-generation";
 
 export const toolbarRoutes = [
   { name: "Geography", options: ["Editor", "Directory"] },

@@ -90,3 +90,7 @@ export function clamp(x: number, lo: number, hi: number): number {
 export function lerp(start: number, end: number, alpha: number): number {
   return start * (1 - alpha) + end * alpha;
 }
+
+export function calculateEllipsoidDistRatio(point: Vector3, dim: Vector3): number {
+  return new Vector3(point.x / dim.x, point.y / dim.y, point.z / dim.z).length();
+}

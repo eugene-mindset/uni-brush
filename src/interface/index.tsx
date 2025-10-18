@@ -1,10 +1,10 @@
 import { FunctionalComponent, JSX } from "preact";
 import { useState } from "preact/hooks";
 
-import AppMenu from "./app-menu";
-import { StarSystemEditor } from "./star-system-editor";
+import { AppMenu } from "./app-menu";
+import { MainToolbar } from "./main-toolbar";
 import { StarSystemDirectory } from "./star-system-directory";
-import MainToolbar from "./main-toolbar";
+import { StarSystemEditor } from "./star-system-editor";
 import { GeographyEditor } from "./geography-editor";
 
 export const toolbarRoutes = [

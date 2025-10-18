@@ -125,5 +125,3 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
     </div>
   );
 };
-
-export default MainToolbar;

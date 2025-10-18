@@ -63,5 +63,3 @@ export const AppMenu: FunctionalComponent<{}> = () => {
     <Fragment />
   );
 };
-
-export default AppMenu;

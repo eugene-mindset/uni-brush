@@ -34,7 +34,7 @@ export default defineConfig(({ command }) => {
               },
               sourcemap,
               minify: isBuild,
-              outDir: "out/main",
+              outDir: "out",
             },
           },
         },
@@ -46,7 +46,7 @@ export default defineConfig(({ command }) => {
             build: {
               sourcemap: sourcemap ? "inline" : undefined, // #332
               minify: isBuild,
-              outDir: "out/preload",
+              outDir: "out",
             },
           },
         },

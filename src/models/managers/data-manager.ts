@@ -334,4 +334,5 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
 export namespace Base {
   export type EntityType = DataInstance;
+  export type ManagerType<Ext, Mod> = DataManager<Ext, Mod>;
 }

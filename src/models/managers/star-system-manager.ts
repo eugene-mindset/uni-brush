@@ -9,7 +9,7 @@
  * classes hide the underlying detail to what is just necessary.
  */
 import * as THREE from "three";
-import { StarSystemVisual } from "@/renderer/three";
+import { StarSystemVisual } from "@/renderer";
 
 import { DataInstance, DataInstanceInternal, DataManager, DataManagerClass } from "./data-manager";
 import { EntityTypes } from "./types";

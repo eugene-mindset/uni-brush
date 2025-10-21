@@ -113,27 +113,22 @@ table.alt-row-table {
   transform: translateY(-50%);
 }
 
-.row {
+.flex-row {
   display: flex;
   flex-direction: row;
-}
-
-.row input {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.row label {
-  flex: 0 1 auto;
-  margin-inline: var(--general-spacing);
-}
-
-.row label:first-child {
-  flex: 0 1 auto;
-  margin-left: 0;
 }
 
 .border {
   border: 1px solid white;
   padding: calc(var(--general-spacing) / 2);
+}
+
+.gap {
+  gap: var(--general-spacing);
+}
+
+.fit-in-container {
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
 }

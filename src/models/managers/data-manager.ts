@@ -37,7 +37,7 @@
  *
  *  export type ExampleManager = DataManager<Example>;
  *
- *  sonst ExampleManagerInternal = new ExampleManagerClass();
+ *  const ExampleManagerInternal = new ExampleManagerClass();
  *
  *  namespace ExampleInternal {
  *    export const Manager: ExampleManagerInternal;

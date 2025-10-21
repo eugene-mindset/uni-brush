@@ -90,6 +90,10 @@ svg {
   height: 1em;
 }
 
+input {
+  font-family: inherit;
+}
+
 .interface {
   position: absolute;
   box-sizing: border-box;
@@ -125,11 +129,6 @@ svg {
 .flex-col {
   display: flex;
   flex-direction: column;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
 }
 
 .clear {

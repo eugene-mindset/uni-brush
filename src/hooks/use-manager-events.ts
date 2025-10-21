@@ -15,8 +15,6 @@ export const useManagerEvents = <T extends Entity.Base.ManagerType<any, any>>(
   ...callbacks: ListenerPairs[]
 ) => {
   useEffect(() => {
-    console.log(callbacks);
-
     callbacks.forEach((x) => {
       x.events.forEach((event) => manager.addEventListener(event, x.callback));
     });

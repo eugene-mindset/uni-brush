@@ -52,3 +52,38 @@ h6 {
 .dragging .title {
   cursor: grabbing;
 }
+
+.group {
+  border-top: 1px dashed white;
+  border-left: 1px dashed white;
+
+  padding-top: var(--general-spacing);
+  padding-left: var(--general-spacing);
+}
+
+.input {
+  display: flex;
+  flex-direction: row;
+}
+
+.input label {
+  margin-right: var(--general-spacing);
+}
+
+.input input {
+  width: 100%;
+  flex: 1 1 0;
+  min-width: 0px;
+}
+
+/* .input input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+
+
+.input label:first-child {
+  flex: 0 1 auto;
+  margin-left: 0;
+} */

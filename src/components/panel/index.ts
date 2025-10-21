@@ -1,1 +1,1 @@
-export * from "./panel";
+export { Panel } from "./panel";

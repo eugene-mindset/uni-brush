@@ -1,25 +1,25 @@
-import { ComponentChildren, createContext, FunctionalComponent, toChildArray } from "preact";
+import { toChildArray } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import classNames from "classnames";
 
 import { SVGIcons } from "@/components";
-
-import styles from "./panel.module.css";
 import { useDraggable } from "@/hooks";
 
-interface PanelState {}
-const PanelContext = createContext<PanelState>({});
+import styles from "./panel.module.css";
+import { PanelContext } from "./context";
+import { PanelHeader } from "./panel-header";
+import { PanelGroup } from "./panel-group";
+import { PanelInput } from "./panel-input";
+import { CommonProps } from "./types";
 
-interface Props {
+interface Props extends CommonProps {
   title?: string;
   canToggle?: boolean;
   canDrag?: boolean;
-  children?: ComponentChildren;
   width?: string | number | null;
   height?: string | number | null;
   maxWidth?: string | number | null;
   maxHeight?: string | number | null;
-  className?: string;
   position?: "absolute" | "relative";
   floatX?: "left" | "right";
   floatY?: "top" | "bottom";
@@ -136,12 +136,6 @@ export function Panel(props: Props) {
   );
 }
 
-interface HeaderProps {
-  children?: ComponentChildren;
-}
-
-const PanelHeader: FunctionalComponent<HeaderProps> = (props) => {
-  return <div className={styles.header}>{props?.children}</div>;
-};
-
 Panel.Header = PanelHeader;
+Panel.Group = PanelGroup;
+Panel.Input = PanelInput;

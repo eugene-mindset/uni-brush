@@ -1,4 +1,4 @@
-import { BaseVisual } from "@/renderer/three";
+import { BaseVisual } from "@/renderer";
 import { Entity } from "@/models";
 
 export interface RenderIntersectData {

@@ -63,7 +63,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
 
   // TOOD: make into a hook
   useEffect(() => {
-    const handleClick = (event: PointerEvent) => {
+    const handleClick = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setShowMainOptions(false);
       }

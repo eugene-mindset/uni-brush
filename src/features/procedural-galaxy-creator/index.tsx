@@ -1,10 +1,14 @@
 import { FunctionalComponent } from "preact";
+import { useRef } from "preact/hooks";
 
 import { Panel } from "@/components";
 
-import "@/styles/ui.css";
+import * as CreatorView from "./components";
+import * as CreateModel from "./logic";
 
 export const ProceduralCreator: FunctionalComponent<{}> = () => {
+  const testModel = useRef(CreateModel.Generators.NormalDistribution.create(1000));
+
   return (
     <Panel title="Geography / Editor" canToggle width="650px">
       <Panel.Header>
@@ -16,15 +20,7 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
           <Panel.Header>
             <h2>Group 1</h2>
           </Panel.Header>
-          <Panel.Header>
-            <h3>1. Normal Distribution Generator</h3>
-          </Panel.Header>
-          <div className="flex-row gap fit-in-container">
-            <span>Position:</span>
-            <Panel.Input type="number" labelText="X" />
-            <Panel.Input type="number" labelText="Y" />
-            <Panel.Input type="number" labelText="Z" />
-          </div>
+          <CreatorView.Generators.NormalDistribution generator={testModel.current} order={1} />
         </Panel.Group>
       </div>
     </Panel>

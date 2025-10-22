@@ -17,7 +17,9 @@ export abstract class ModelOperator<I, O, K> {
     this._output_ready = !!output;
   }
 
-  public abstract create(): ModelOperator<I, O, K>;
+  public static create(): any {
+    throw new Error("Cannot call static of abstract class");
+  }
 
   public abstract clone(): ModelOperator<I, O, K>;
 

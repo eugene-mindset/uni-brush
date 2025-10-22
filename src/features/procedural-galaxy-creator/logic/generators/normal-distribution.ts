@@ -6,30 +6,30 @@ import { ModelGenerator } from "../base";
 
 interface Config {
   dim: Vector3;
-  normalSpread: number;
+  normalDev: number;
 }
 
-export class NormalDistributionGenerator extends ModelGenerator<Vector3, Config> {
-  public create(count: number): NormalDistributionGenerator {
-    return new NormalDistributionGenerator(
+export class NormalDistribution extends ModelGenerator<Vector3, Config> {
+  public static override create(count: number): NormalDistribution {
+    return new NormalDistribution(
       {
         dim: new Vector3(1000, 10, 1000),
-        normalSpread: 4 / 3.25,
+        normalDev: 4 / 3.25,
       },
       count
     );
   }
 
-  public clone(): NormalDistributionGenerator {
-    return new NormalDistributionGenerator(
+  public override clone(): NormalDistribution {
+    return new NormalDistribution(
       this.config,
       undefined,
       this.outputs.map((vec) => new Vector3(vec.x, vec.y, vec.z))
     );
   }
 
-  protected generateStep(): Vector3 {
-    const radius = Math.abs(MathHelpers.randomPercentFromNormal().z0 * this.config.normalSpread);
+  protected override generateStep(): Vector3 {
+    const radius = Math.abs(MathHelpers.randomPercentFromNormal().z0 * this.config.normalDev);
     let initPos = MathHelpers.randomVectorFromNormal().normalize();
     initPos = initPos.multiplyVectors(initPos, this.config.dim).multiplyScalar(radius);
 

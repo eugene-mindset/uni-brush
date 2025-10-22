@@ -11,6 +11,7 @@ import { PanelHeader } from "./panel-header";
 import { PanelGroup } from "./panel-group";
 import { PanelInput } from "./panel-input";
 import { CommonProps } from "./types";
+import { PanelVectorInput } from "./panel-vector-input";
 
 interface Props extends CommonProps {
   title?: string;
@@ -139,3 +140,4 @@ export function Panel(props: Props) {
 Panel.Header = PanelHeader;
 Panel.Group = PanelGroup;
 Panel.Input = PanelInput;
+Panel.VectorInput = PanelVectorInput;

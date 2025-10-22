@@ -22,7 +22,9 @@ export abstract class ModelGenerator<O, K> {
     }
   }
 
-  public abstract create(count: number): ModelGenerator<O, K>;
+  public static create(_count: number): any {
+    throw new Error("Cannot call static of abstract class");
+  }
 
   public abstract clone(): ModelGenerator<O, K>;
 

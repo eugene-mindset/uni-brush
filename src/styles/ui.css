@@ -94,7 +94,7 @@ table.alt-row-table {
   gap: var(--general-spacing);
 }
 
-.small-editor {
+.float-right {
   float: right;
 }
 
@@ -103,7 +103,6 @@ table.alt-row-table {
   flex-direction: column;
   justify-content: stretch;
   width: 100%;
-  border: 1 solid white;
   gap: var(--general-spacing);
 }
 
@@ -131,4 +130,12 @@ table.alt-row-table {
   max-width: 100%;
   max-height: 100%;
   box-sizing: border-box;
+}
+
+.space-top {
+  margin-top: var(--general-spacing);
+}
+
+.space-bottom {
+  margin-bottom: var(--general-spacing);
 }

@@ -273,6 +273,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.publicToInternal = {};
 
     this.batchInitializePropertyArray("publicId");
+    this.emit("reset");
   }
 
   public batchInitializeProperty<K extends keyof Mod>(key: K, array: Mod[K][]) {

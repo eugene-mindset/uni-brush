@@ -51,7 +51,7 @@ export class ModelGroup {
     this._operations.forEach((element, i, arr) => {
       const inputs = i > 0 ? arr[i - 1].outputs : initialInput;
 
-      element.setInputs(structuredClone([...inputs]));
+      element.setInputs([...inputs]);
       element.generate();
     });
   }

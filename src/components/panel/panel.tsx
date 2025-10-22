@@ -131,7 +131,7 @@ export function Panel(props: Props) {
           )}
           <h1 className={styles.title_text}>{props.title}</h1>
         </div>
-        <div className="panel-body">{toggle && toChildArray(props?.children)}</div>
+        <div>{toggle && toChildArray(props?.children)}</div>
       </div>
     </PanelContext.Provider>
   );

@@ -10,6 +10,17 @@ interface Config {
 }
 
 export class NormalDistribution extends ModelGenerator<Vector3, Config> {
+  public get outputs(): Vector3[] {
+    return this._output.map((x) => x.clone());
+  }
+
+  public get config(): Config {
+    return {
+      ...this._config,
+      dim: this._config.dim.clone(),
+    };
+  }
+
   public static override create(count: number): NormalDistribution {
     return new NormalDistribution(
       {
@@ -30,6 +41,7 @@ export class NormalDistribution extends ModelGenerator<Vector3, Config> {
 
   protected override generateStep(): Vector3 {
     const radius = Math.abs(MathHelpers.randomPercentFromNormal().z0 * this.config.normalDev);
+
     let initPos = MathHelpers.randomVectorFromNormal().normalize();
     initPos = initPos.multiplyVectors(initPos, this.config.dim).multiplyScalar(radius);
 

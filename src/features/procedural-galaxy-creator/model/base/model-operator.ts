@@ -1,20 +1,14 @@
-import { DeepReadonly } from "@/types";
-
 export abstract class ModelOperator<I, O, K> {
-  private _config: K;
+  protected _config: K;
 
   protected _inputs: I[] = [];
   protected _output: O[] = [];
-
-  private _output_ready: boolean = false;
 
   protected constructor(config: K, input?: I[], output?: O[]) {
     this._config = config;
 
     this._inputs = input || [];
-
     this._output = output || [];
-    this._output_ready = !!output;
   }
 
   public static create(): any {
@@ -25,18 +19,11 @@ export abstract class ModelOperator<I, O, K> {
 
   // properties
 
-  public get inputs(): DeepReadonly<I[]> {
-    return this._inputs as DeepReadonly<I[]>;
-  }
+  public abstract get inputs(): I[];
 
-  public get outputs(): DeepReadonly<O[]> {
-    if (this._output_ready) return [];
-    return this._output as DeepReadonly<O[]>;
-  }
+  public abstract get outputs(): O[];
 
-  public get config(): DeepReadonly<K> {
-    return this._config as DeepReadonly<K>;
-  }
+  public abstract get config(): K;
 
   // methods
 
@@ -49,17 +36,14 @@ export abstract class ModelOperator<I, O, K> {
   protected abstract generateStep(element: I): O;
 
   public generate() {
-    this._inputs.forEach((element) => {
-      this._output.push(structuredClone(this.generateStep(element)));
+    this.inputs.forEach((element) => {
+      this._output.push(this.generateStep(element));
     });
-
-    this._output_ready = true;
   }
 
   public reset() {
     this._inputs = [];
     this._output = [];
-    this._output_ready = false;
   }
 
   public setConfig(config: K) {

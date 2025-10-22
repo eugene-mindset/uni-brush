@@ -35,9 +35,11 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
   // setup to non-state events
   useEffect(() => {
     Entity.StarSystem.Manager.addEventListener("load", onRefreshNeeded);
+    Entity.StarSystem.Manager.addEventListener("reset", onRefreshNeeded);
 
     return () => {
       Entity.StarSystem.Manager.removeEventListener("load", onRefreshNeeded);
+      Entity.StarSystem.Manager.addEventListener("reset", onRefreshNeeded);
     };
   }, []);
 

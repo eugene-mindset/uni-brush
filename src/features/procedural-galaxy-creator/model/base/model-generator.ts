@@ -1,12 +1,8 @@
-import { DeepReadonly } from "@/types";
-
 export abstract class ModelGenerator<O, K> {
-  private _config: K;
+  protected _config: K;
 
   private _outputCount: number;
-  private _output: O[] = [];
-
-  private _output_ready: boolean = false;
+  protected _output: O[] = [];
 
   // constructors
 
@@ -16,7 +12,6 @@ export abstract class ModelGenerator<O, K> {
     if (output) {
       this._output = output;
       this._outputCount = output.length;
-      this._output_ready = true;
     } else {
       this._outputCount = count || 0;
     }
@@ -30,14 +25,9 @@ export abstract class ModelGenerator<O, K> {
 
   // properties
 
-  public get outputs(): DeepReadonly<O[]> {
-    if (this._output_ready) return [];
-    return this._output as DeepReadonly<O[]>;
-  }
+  public abstract get outputs(): O[];
 
-  public get config(): DeepReadonly<K> {
-    return this._config as DeepReadonly<K>;
-  }
+  public abstract get config(): K;
 
   // methods
 
@@ -47,15 +37,12 @@ export abstract class ModelGenerator<O, K> {
     this.reset();
 
     for (let i = 0; i < this._outputCount; i++) {
-      this._output.push(structuredClone(this.generateStep()));
+      this._output.push(this.generateStep());
     }
-
-    this._output_ready = true;
   }
 
   public reset() {
     this._output = [];
-    this._output_ready = false;
   }
 
   public setConfig(config: K) {

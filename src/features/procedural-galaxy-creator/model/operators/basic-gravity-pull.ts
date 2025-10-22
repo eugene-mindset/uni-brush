@@ -11,6 +11,21 @@ interface Config {
 }
 
 export class BasicGravityPull extends ModelOperator<Vector3, Vector3, Config> {
+  public get inputs(): Vector3[] {
+    return this._inputs.map((x) => x.clone());
+  }
+
+  public get outputs(): Vector3[] {
+    return this._outputs.map((x) => x.clone());
+  }
+
+  public get config(): Config {
+    return {
+      ...this._config,
+      dim: this._config.dim.clone(),
+    };
+  }
+
   public static override create(): BasicGravityPull {
     return new BasicGravityPull({
       dim: new Vector3(1000, 10, 1000),

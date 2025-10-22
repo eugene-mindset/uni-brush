@@ -1,10 +1,11 @@
 import { FunctionComponent } from "preact";
-import { useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 import { Panel } from "@/components";
 
 import { Generators } from "../../model";
 import { Vector3 } from "three";
+import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 interface Props {
   generator: Generators.NormalDistribution;
@@ -14,11 +15,26 @@ interface Props {
 export const NormalDistribution: FunctionComponent<Props> = (props) => {
   const { generator } = props;
 
-  const onVectorInput = (vec: Vector3) => {
-    props.generator.setConfig({ ...generator.config, dim: vec });
+  const [dim, setDim] = useState(generator.config.dim);
+  const [normalDev, setNormalDev] = useState(generator.config.normalDev);
+
+  const onDevInput = (value: string) => {
+    setNormalDev(parseFloat(value));
+    generator.setConfig({
+      dim,
+      normalDev: parseFloat(value),
+    });
   };
 
-  useEffect(() => {}, [generator.config]);
+  const onVectorInput = (vec: Vector3) => {
+    setDim(vec);
+    generator.setConfig({
+      dim: vec,
+      normalDev,
+    });
+  };
+
+  console.log(dim, normalDev);
 
   return (
     <Panel.Group>
@@ -30,6 +46,7 @@ export const NormalDistribution: FunctionComponent<Props> = (props) => {
           type="number"
           labelText="Normal Deviation Ratio"
           value={props.generator.config.normalDev}
+          onInput={(event) => onDevInput(event.currentTarget.value)}
         />
         <Panel.VectorInput
           labelText="Position"

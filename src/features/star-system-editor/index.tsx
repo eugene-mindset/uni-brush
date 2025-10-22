@@ -45,7 +45,6 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
     return (
       <Panel
         title={panelTitle}
-        className="small-editor"
         position="absolute"
         floatX="right"
         floatY="bottom"

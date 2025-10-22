@@ -3,7 +3,7 @@ import { useEffect } from "preact/hooks";
 
 import { Panel } from "@/components";
 
-import { Generators } from "../../logic";
+import { Generators } from "../../model";
 import { Vector3 } from "three";
 
 interface Props {

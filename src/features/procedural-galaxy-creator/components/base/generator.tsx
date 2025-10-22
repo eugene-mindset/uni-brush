@@ -1,7 +1,7 @@
 import { FunctionComponent } from "preact";
 
 import { Panel } from "@/components";
-import { ModelGenerator } from "../../logic/base";
+import { ModelGenerator } from "../../model/base";
 
 interface Props<T extends ModelGenerator<any, any>> {}
 

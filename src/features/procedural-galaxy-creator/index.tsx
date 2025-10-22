@@ -4,7 +4,7 @@ import { useRef } from "preact/hooks";
 import { Panel } from "@/components";
 
 import * as CreatorView from "./components";
-import * as CreateModel from "./logic";
+import * as CreateModel from "./model";
 
 export const ProceduralCreator: FunctionalComponent<{}> = () => {
   const testModel = useRef(CreateModel.Generators.NormalDistribution.create(1000));

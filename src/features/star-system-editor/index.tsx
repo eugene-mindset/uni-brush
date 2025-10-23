@@ -48,7 +48,7 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
         position="absolute"
         floatX="right"
         floatY="bottom"
-        width="350px"
+        width="450px"
         canToggle
         canDrag
       >

@@ -1,9 +1,9 @@
 import { Vector2, Vector3 } from "three";
+import memoize from "fast-memoize";
 
 import { MathHelpers } from "@/util";
 
 import { ModelOperator } from "../base";
-import memoize from "fast-memoize";
 
 interface Config {
   dim: Vector3;
@@ -17,22 +17,7 @@ interface Config {
   centerOverArmRatio: number;
 }
 
-export class ArmGravity extends ModelOperator<Vector3, Vector3, Config> {
-  public get inputs(): Vector3[] {
-    return this._inputs.map((x) => x.clone());
-  }
-
-  public get outputs(): Vector3[] {
-    return this._outputs.map((x) => x.clone());
-  }
-
-  public get config(): Config {
-    return {
-      ...this._config,
-      dim: this._config.dim.clone(),
-    };
-  }
-
+export class ArmGravity extends ModelOperator<Vector3, Config> {
   public static override create(): ArmGravity {
     return new ArmGravity({
       dim: new Vector3(1000, 10, 1000),
@@ -47,12 +32,15 @@ export class ArmGravity extends ModelOperator<Vector3, Vector3, Config> {
     });
   }
 
-  public override clone(): ArmGravity {
-    return new ArmGravity(
-      this.config,
-      this.inputs.map((vec) => new Vector3(vec.x, vec.y, vec.z)),
-      this.outputs.map((vec) => new Vector3(vec.x, vec.y, vec.z))
-    );
+  public clone(): ArmGravity {
+    return new ArmGravity({ ...this.config });
+  }
+
+  public get config(): Config {
+    return {
+      ...this._config,
+      dim: this._config.dim.clone(),
+    };
   }
 
   private precomputeConfig = memoize((config: Config) => {

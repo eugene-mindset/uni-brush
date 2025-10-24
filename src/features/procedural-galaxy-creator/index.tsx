@@ -5,33 +5,30 @@ import { Panel } from "@/components";
 
 import * as CreatorView from "./components";
 import * as CreateModel from "./model";
-import { ModelEntityCreator } from "./model/base";
+import { ModelValuePipeline } from "./model/base";
 import { Entity } from "@/models";
+import { Vector3 } from "three";
 
 export const ProceduralCreator: FunctionalComponent<{}> = () => {
   const count = Entity.StarSystem.Manager.capacity;
   const [modelLoaded, setModelLoaded] = useState(false);
 
-  const coreModelRef = useRef(new ModelEntityCreator());
+  const coreModelRef = useRef(new ModelValuePipeline<Vector3>());
   useEffect(() => {
     const model = coreModelRef.current;
-    model.createGroup(count);
-    model.setGenerator(0, CreateModel.Generators.NormalDistribution);
-    model.createOperator(0, CreateModel.Operators.BasicGravityPull);
-    model.createOperator(0, CreateModel.Operators.ArmGravityPull);
+    model.setGenerator(CreateModel.Generators.NormalDistribution);
+    model.createOperator(CreateModel.Operators.BasicGravityPull);
+    model.createOperator(CreateModel.Operators.ArmGravityPull);
 
     setModelLoaded(true);
   }, []);
 
   console.log(coreModelRef.current);
   const onClickGenerate = (event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
-    coreModelRef.current.generate();
+    coreModelRef.current.generate(count);
 
     Entity.StarSystem.Manager.fullReset();
-    Entity.StarSystem.Manager.batchInitializeProperty(
-      "initPos",
-      coreModelRef.current.groups[0].finalOutput
-    );
+    Entity.StarSystem.Manager.batchInitializeProperty("initPos", coreModelRef.current.output);
   };
 
   return (
@@ -48,7 +45,7 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
                 <h2>Group 1</h2>
               </Panel.Header>
               <CreatorView.Generators.NormalDistribution
-                step={coreModelRef.current.groups[0].generator}
+                step={coreModelRef.current.generator}
                 order={1}
               />
             </Panel.Group>

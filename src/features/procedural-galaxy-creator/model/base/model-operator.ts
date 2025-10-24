@@ -1,52 +1,23 @@
-export abstract class ModelOperator<I, O, K> {
-  protected _config: K;
+import { ModelStep } from "./model-step";
 
-  protected _inputs: I[] = [];
-  protected _outputs: O[] = [];
+export abstract class ModelOperator<O, K extends Object> extends ModelStep<O, K> {
+  // methods
 
-  protected constructor(config: K, input?: I[], output?: O[]) {
-    this._config = config;
-
-    this._inputs = input || [];
-    this._outputs = output || [];
-  }
-
-  public static create(): any {
+  public static create(): ModelOperator<any, any> {
     throw new Error("Cannot call static of abstract class");
   }
 
-  public abstract clone(): ModelOperator<I, O, K>;
+  public abstract clone(): ModelOperator<O, K>;
 
-  // properties
+  protected abstract override generateStep(input: O): O;
 
-  public abstract get inputs(): I[];
+  public generate(inputs: O[]): O[] {
+    const out: O[] = [];
 
-  public abstract get outputs(): O[];
-
-  public abstract get config(): K;
-
-  // methods
-
-  public setInputs(input: I[]) {
-    input.forEach((element) => {
-      this._inputs.push(element);
+    inputs.forEach((element) => {
+      out.push(this.generateStep(element));
     });
-  }
 
-  protected abstract generateStep(element: I): O;
-
-  public generate() {
-    this.inputs.forEach((element) => {
-      this._outputs.push(this.generateStep(element));
-    });
-  }
-
-  public reset() {
-    this._inputs = [];
-    this._outputs = [];
-  }
-
-  public setConfig(config: K) {
-    this._config = config;
+    return out;
   }
 }

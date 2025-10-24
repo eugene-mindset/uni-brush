@@ -1,7 +1,6 @@
 import { Vector3 } from "three";
 
 import { MathHelpers } from "@/util";
-
 import { ModelOperator } from "../base";
 
 interface Config {
@@ -10,22 +9,7 @@ interface Config {
   falloff: number;
 }
 
-export class BasicGravity extends ModelOperator<Vector3, Vector3, Config> {
-  public get inputs(): Vector3[] {
-    return this._inputs.map((x) => x.clone());
-  }
-
-  public get outputs(): Vector3[] {
-    return this._outputs.map((x) => x.clone());
-  }
-
-  public get config(): Config {
-    return {
-      ...this._config,
-      dim: this._config.dim.clone(),
-    };
-  }
-
+export class BasicGravity extends ModelOperator<Vector3, Config> {
   public static override create(): BasicGravity {
     return new BasicGravity({
       dim: new Vector3(1000, 10, 1000),
@@ -34,12 +18,15 @@ export class BasicGravity extends ModelOperator<Vector3, Vector3, Config> {
     });
   }
 
-  public override clone(): BasicGravity {
-    return new BasicGravity(
-      this.config,
-      this.inputs.map((vec) => new Vector3(vec.x, vec.y, vec.z)),
-      this.outputs.map((vec) => new Vector3(vec.x, vec.y, vec.z))
-    );
+  public clone(): BasicGravity {
+    return new BasicGravity({ ...this.config });
+  }
+
+  public get config(): Config {
+    return {
+      ...this._config,
+      dim: this._config.dim.clone(),
+    };
   }
 
   protected override generateStep(element: Vector3): Vector3 {

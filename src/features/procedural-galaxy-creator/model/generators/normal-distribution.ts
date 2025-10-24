@@ -10,8 +10,15 @@ interface Config {
 }
 
 export class NormalDistribution extends ModelGenerator<Vector3, Config> {
-  public get outputs(): Vector3[] {
-    return this._output.map((x) => x.clone());
+  public static override create(): NormalDistribution {
+    return new NormalDistribution({
+      dim: new Vector3(1000, 10, 1000),
+      normalDev: 4 / 3.25,
+    });
+  }
+
+  public clone(): NormalDistribution {
+    return new NormalDistribution({ ...this.config });
   }
 
   public get config(): Config {
@@ -19,24 +26,6 @@ export class NormalDistribution extends ModelGenerator<Vector3, Config> {
       ...this._config,
       dim: this._config.dim.clone(),
     };
-  }
-
-  public static override create(count: number): NormalDistribution {
-    return new NormalDistribution(
-      {
-        dim: new Vector3(1000, 10, 1000),
-        normalDev: 4 / 3.25,
-      },
-      count
-    );
-  }
-
-  public override clone(): NormalDistribution {
-    return new NormalDistribution(
-      this.config,
-      undefined,
-      this.outputs.map((vec) => new Vector3(vec.x, vec.y, vec.z))
-    );
   }
 
   protected override generateStep(): Vector3 {

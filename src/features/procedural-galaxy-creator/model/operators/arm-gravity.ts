@@ -17,7 +17,7 @@ interface Config {
   centerOverArmRatio: number;
 }
 
-export class ArmGravityPull extends ModelOperator<Vector3, Vector3, Config> {
+export class ArmGravity extends ModelOperator<Vector3, Vector3, Config> {
   public get inputs(): Vector3[] {
     return this._inputs.map((x) => x.clone());
   }
@@ -33,8 +33,8 @@ export class ArmGravityPull extends ModelOperator<Vector3, Vector3, Config> {
     };
   }
 
-  public static override create(): ArmGravityPull {
-    return new ArmGravityPull({
+  public static override create(): ArmGravity {
+    return new ArmGravity({
       dim: new Vector3(1000, 10, 1000),
       normalSpread: 4 / 3.25,
       armCount: 4,
@@ -47,8 +47,8 @@ export class ArmGravityPull extends ModelOperator<Vector3, Vector3, Config> {
     });
   }
 
-  public override clone(): ArmGravityPull {
-    return new ArmGravityPull(
+  public override clone(): ArmGravity {
+    return new ArmGravity(
       this.config,
       this.inputs.map((vec) => new Vector3(vec.x, vec.y, vec.z)),
       this.outputs.map((vec) => new Vector3(vec.x, vec.y, vec.z))

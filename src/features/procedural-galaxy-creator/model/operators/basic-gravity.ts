@@ -10,7 +10,7 @@ interface Config {
   falloff: number;
 }
 
-export class BasicGravityPull extends ModelOperator<Vector3, Vector3, Config> {
+export class BasicGravity extends ModelOperator<Vector3, Vector3, Config> {
   public get inputs(): Vector3[] {
     return this._inputs.map((x) => x.clone());
   }
@@ -26,16 +26,16 @@ export class BasicGravityPull extends ModelOperator<Vector3, Vector3, Config> {
     };
   }
 
-  public static override create(): BasicGravityPull {
-    return new BasicGravityPull({
+  public static override create(): BasicGravity {
+    return new BasicGravity({
       dim: new Vector3(1000, 10, 1000),
       strength: 0.1,
       falloff: 0.1,
     });
   }
 
-  public override clone(): BasicGravityPull {
-    return new BasicGravityPull(
+  public override clone(): BasicGravity {
+    return new BasicGravity(
       this.config,
       this.inputs.map((vec) => new Vector3(vec.x, vec.y, vec.z)),
       this.outputs.map((vec) => new Vector3(vec.x, vec.y, vec.z))

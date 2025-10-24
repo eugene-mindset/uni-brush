@@ -4,7 +4,7 @@ import { ModelOperator } from "./model-operator";
 export class ModelGroup {
   private _entityCount: number = 1000;
   private _generator?: ModelGenerator<any, any>;
-  private _operations: ModelOperator<any, any, any>[] = [];
+  private _operators: ModelOperator<any, any, any>[] = [];
 
   public constructor(count: number) {
     this._entityCount = count;
@@ -16,8 +16,8 @@ export class ModelGroup {
     return this._generator;
   }
 
-  public get operations(): ModelOperator<any, any, any>[] {
-    return [...this._operations];
+  public get operators(): ModelOperator<any, any, any>[] {
+    return [...this._operators];
   }
 
   public get entityCount(): number {
@@ -38,8 +38,8 @@ export class ModelGroup {
   }
 
   public get finalOutput(): readonly any[] {
-    if (this._operations.length === 0) return [];
-    return this._operations[this._operations.length - 1].outputs;
+    if (this._operators.length === 0) return this._generator?.outputs || [];
+    return this._operators[this._operators.length - 1].outputs;
   }
 
   public generate() {
@@ -48,7 +48,7 @@ export class ModelGroup {
     this._generator.generate();
     const initialInput = this._generator.outputs;
 
-    this._operations.forEach((element, i, arr) => {
+    this._operators.forEach((element, i, arr) => {
       const inputs = i > 0 ? arr[i - 1].outputs : initialInput;
 
       element.setInputs([...inputs]);
@@ -57,42 +57,51 @@ export class ModelGroup {
   }
 
   public reset() {
-    this._operations.forEach((element) => {
+    this._operators.forEach((element) => {
       element.reset();
     });
   }
 
   // generator
 
-  public setGenerator(generator?: ModelGenerator<any, any>) {
-    this._generator = generator;
+  public setGenerator(generator?: typeof ModelGenerator<any, any>) {
+    this._generator = generator?.create(this._entityCount);
     this.reset();
   }
 
-  // operations
+  public configGenerator(config: Object) {
+    this._generator?.setConfig(config);
+    this.reset();
+  }
 
-  public addOperation(operation: ModelOperator<any, any, any>, index?: number) {
+  // operators
+
+  public addOperator(operator: ModelOperator<any, any, any>, index?: number) {
     if (!index) {
-      this._operations.push(operation);
+      this._operators.push(operator);
     } else {
-      this._operations.splice(index, 0, operation);
+      this._operators.splice(index, 0, operator);
     }
 
     this.reset();
   }
 
-  public removeOperation(index: number) {
-    this._operations.splice(index, 1);
+  public createOperator(operator: typeof ModelOperator<any, any, any>) {
+    this._operators.push(operator.create());
+  }
+
+  public removeOperator(index: number) {
+    this._operators.splice(index, 1);
     this.reset();
   }
 
-  public duplicateOperation(index: number) {
-    const clone = this._operations[index].clone();
-    this.addOperation(clone);
+  public duplicateOperator(index: number) {
+    const clone = this._operators[index].clone();
+    this.addOperator(clone);
   }
 
-  public configOperation(index: number, config: Object) {
-    this._operations[index].setConfig(config);
+  public configOperator(index: number, config: Object) {
+    this._operators[index].setConfig(config);
     this.reset();
   }
 }

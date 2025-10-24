@@ -2,13 +2,13 @@ export abstract class ModelOperator<I, O, K> {
   protected _config: K;
 
   protected _inputs: I[] = [];
-  protected _output: O[] = [];
+  protected _outputs: O[] = [];
 
   protected constructor(config: K, input?: I[], output?: O[]) {
     this._config = config;
 
     this._inputs = input || [];
-    this._output = output || [];
+    this._outputs = output || [];
   }
 
   public static create(): any {
@@ -29,7 +29,7 @@ export abstract class ModelOperator<I, O, K> {
 
   public setInputs(input: I[]) {
     input.forEach((element) => {
-      this._inputs.push({ ...element });
+      this._inputs.push(element);
     });
   }
 
@@ -37,13 +37,13 @@ export abstract class ModelOperator<I, O, K> {
 
   public generate() {
     this.inputs.forEach((element) => {
-      this._output.push(this.generateStep(element));
+      this._outputs.push(this.generateStep(element));
     });
   }
 
   public reset() {
     this._inputs = [];
-    this._output = [];
+    this._outputs = [];
   }
 
   public setConfig(config: K) {

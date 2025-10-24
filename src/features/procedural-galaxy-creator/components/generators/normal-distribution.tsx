@@ -5,15 +5,14 @@ import { Panel } from "@/components";
 
 import { Generators } from "../../model";
 import { Vector3 } from "three";
-import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 interface Props {
-  generator: Generators.NormalDistribution;
+  step: Generators.NormalDistribution;
   order: number;
 }
 
 export const NormalDistribution: FunctionComponent<Props> = (props) => {
-  const { generator } = props;
+  const { step: generator } = props;
 
   const [dim, setDim] = useState(generator.config.dim);
   const [normalDev, setNormalDev] = useState(generator.config.normalDev);
@@ -34,8 +33,6 @@ export const NormalDistribution: FunctionComponent<Props> = (props) => {
     });
   };
 
-  console.log(dim, normalDev);
-
   return (
     <Panel.Group>
       <Panel.Header>
@@ -45,12 +42,12 @@ export const NormalDistribution: FunctionComponent<Props> = (props) => {
         <Panel.Input
           type="number"
           labelText="Normal Deviation Ratio"
-          value={props.generator.config.normalDev}
+          value={props.step.config.normalDev}
           onInput={(event) => onDevInput(event.currentTarget.value)}
         />
         <Panel.VectorInput
           labelText="Position"
-          value={props.generator.config.dim}
+          value={props.step.config.dim}
           setValue={onVectorInput}
         />
       </div>

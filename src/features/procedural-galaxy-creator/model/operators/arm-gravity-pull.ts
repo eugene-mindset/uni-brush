@@ -41,8 +41,8 @@ export class ArmGravityPull extends ModelOperator<Vector3, Vector3, Config> {
       armOffset: Math.PI / 4,
       armSpeed: 15,
       armShape: 10,
-      armSpread: 0.25,
-      armTaperSpread: 0.5,
+      armSpread: 0.1,
+      armTaperSpread: 0.25,
       centerOverArmRatio: 0.1,
     });
   }

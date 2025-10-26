@@ -19,7 +19,7 @@ export abstract class ModelStep<O, K extends Object> {
 
   // methods
 
-  protected abstract generateStep(...args: any[]): O;
+  protected abstract generateStep(idx: number, ...args: any[]): O;
 
   public abstract generate(...args: any[]): O[];
 

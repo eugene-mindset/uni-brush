@@ -13,7 +13,7 @@ export abstract class ModelGenerator<O, K extends Object> extends ModelStep<O, K
     const out: O[] = [];
 
     for (let i = 0; i < count; i++) {
-      out.push(this.generateStep());
+      out.push(this.generateStep(i));
     }
 
     return out;

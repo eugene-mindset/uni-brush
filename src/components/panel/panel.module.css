@@ -57,8 +57,12 @@ h6 {
   border-top: 1px dashed white;
   border-left: 1px dashed white;
 
-  padding-top: var(--general-spacing);
+  padding-block: var(--general-spacing);
   padding-left: var(--general-spacing);
+}
+
+.group:last-of-type {
+  border-bottom: 1px dashed white;
 }
 
 .input {
@@ -87,3 +91,8 @@ h6 {
   flex: 0 1 auto;
   margin-left: 0;
 } */
+
+.full {
+  white-space: nowrap;
+  width: fit-content;
+}

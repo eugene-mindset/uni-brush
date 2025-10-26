@@ -4,7 +4,8 @@ import { MathHelpers } from "@/util";
 import { ModelOperator } from "../base";
 
 interface Config {
-  dim: Vector3;
+  size: Vector3;
+  location: Vector3;
   strength: number;
   falloff: number;
 }
@@ -12,8 +13,9 @@ interface Config {
 export class BasicGravity extends ModelOperator<Vector3, Config> {
   public static override create(): BasicGravity {
     return new BasicGravity({
-      dim: new Vector3(1000, 10, 1000),
-      strength: 0.1,
+      size: new Vector3(100, 100, 100),
+      location: new Vector3(),
+      strength: 0.5,
       falloff: 0.1,
     });
   }
@@ -25,16 +27,18 @@ export class BasicGravity extends ModelOperator<Vector3, Config> {
   public get config(): Config {
     return {
       ...this._config,
-      dim: this._config.dim.clone(),
+      size: this._config.size.clone(),
+      location: this._config.location.clone(),
     };
   }
 
-  protected override generateStep(element: Vector3): Vector3 {
-    const distanceRatio = MathHelpers.calculateEllipsoidDistRatio(element, this.config.dim);
-    const posPulled = element.multiplyScalar(
+  protected override generateStep(_idx: number, element: Vector3): Vector3 {
+    const relVector = new Vector3().subVectors(element, this._config.location);
+    const distanceRatio = MathHelpers.calculateEllipsoidDistRatio(relVector, this.config.size);
+    const posPulled = relVector.multiplyScalar(
       Math.pow(MathHelpers.clamp(this.config.falloff, distanceRatio, 1), this.config.strength)
     );
 
-    return posPulled;
+    return posPulled.add(this._config.location);
   }
 }

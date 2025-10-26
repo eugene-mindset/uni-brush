@@ -9,13 +9,13 @@ export abstract class ModelOperator<O, K extends Object> extends ModelStep<O, K>
 
   public abstract clone(): ModelOperator<O, K>;
 
-  protected abstract override generateStep(input: O): O;
+  protected abstract override generateStep(idx: number, input: O): O;
 
   public generate(inputs: O[]): O[] {
     const out: O[] = [];
 
-    inputs.forEach((element) => {
-      out.push(this.generateStep(element));
+    inputs.forEach((element, idx) => {
+      out.push(this.generateStep(idx, element));
     });
 
     return out;

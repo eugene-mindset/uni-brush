@@ -1,10 +1,11 @@
 import { FunctionComponent } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 import { Panel } from "@/components";
 
 import { Generators } from "../../model";
 import { Vector3 } from "three";
+import { updateConfig } from "../base/utils";
 
 interface Props {
   step: Generators.NormalDistribution;
@@ -12,25 +13,19 @@ interface Props {
 }
 
 export const NormalDistribution: FunctionComponent<Props> = (props) => {
-  const { step: generator } = props;
+  const { step } = props;
 
-  const [dim, setDim] = useState(generator.config.dim);
-  const [normalDev, setNormalDev] = useState(generator.config.normalDev);
+  const [_dim, setDim] = useState(step.config.dim);
+  const [_normalDev, setNormalDev] = useState(step.config.normalDev);
 
   const onDevInput = (value: string) => {
     setNormalDev(parseFloat(value));
-    generator.setConfig({
-      dim,
-      normalDev: parseFloat(value),
-    });
+    updateConfig(step, { normalDev: parseFloat(value) });
   };
 
   const onVectorInput = (vec: Vector3) => {
     setDim(vec);
-    generator.setConfig({
-      dim: vec,
-      normalDev,
-    });
+    updateConfig(step, { dim: vec });
   };
 
   return (
@@ -46,7 +41,7 @@ export const NormalDistribution: FunctionComponent<Props> = (props) => {
           onInput={(event) => onDevInput(event.currentTarget.value)}
         />
         <Panel.VectorInput
-          labelText="Position"
+          labelText="Galaxy Size"
           value={props.step.config.dim}
           setValue={onVectorInput}
         />

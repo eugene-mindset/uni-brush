@@ -1,2 +1,2 @@
-export { BasicGravity as BasicGravityPull } from "./basic-gravity";
-export { ArmGravity as ArmGravityPull } from "./arm-gravity";
+export { BasicGravity } from "./basic-gravity";
+export { ArmGravity } from "./arm-gravity";

@@ -17,8 +17,8 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
   useEffect(() => {
     const model = coreModelRef.current;
     model.setGenerator(CreateModel.Generators.NormalDistribution);
-    model.createOperator(CreateModel.Operators.BasicGravityPull);
-    model.createOperator(CreateModel.Operators.ArmGravityPull);
+    model.createOperator(CreateModel.Operators.BasicGravity);
+    //model.createOperator(CreateModel.Operators.ArmGravity);
 
     setModelLoaded(true);
   }, []);
@@ -45,8 +45,12 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
                 <h2>Group 1</h2>
               </Panel.Header>
               <CreatorView.Generators.NormalDistribution
-                step={coreModelRef.current.generator}
+                step={coreModelRef.current.generator as CreateModel.Generators.NormalDistribution}
                 order={1}
+              />
+              <CreatorView.Operators.BasicGravity
+                step={coreModelRef.current.operators[0] as CreateModel.Operators.BasicGravity}
+                order={2}
               />
             </Panel.Group>
           </div>

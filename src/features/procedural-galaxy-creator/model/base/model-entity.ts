@@ -1,6 +1,6 @@
 import { MathHelpers } from "@/util";
 import { ModelOperator } from "./model-operator";
-import { ModelGroup } from "./model-group";
+import { ModelGroup } from "./model-group-pipeline";
 import { ModelGenerator } from "./model-generator";
 
 interface ModelOperatorIndex {

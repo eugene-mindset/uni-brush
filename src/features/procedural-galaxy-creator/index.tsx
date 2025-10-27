@@ -62,7 +62,8 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
                 ))}
             </Panel.Group>
           </div>
-          <div className="space-top">
+          <div className="space-top gap flex-row justify-right">
+            <button className="core float-right">Save</button>
             <button className="core float-right" onClick={onClickGenerate}>
               Generate
             </button>

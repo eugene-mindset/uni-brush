@@ -12,11 +12,11 @@ const starSpriteMaterial = new THREE.SpriteMaterial({
   color: "#cccbef",
 });
 
-const starLowSpriteTexture = new THREE.TextureLoader().load("src/assets//sprite1.png");
-const starLowSpriteMaterial = new THREE.SpriteMaterial({
-  map: starLowSpriteTexture,
-  color: "#cccbef",
-});
+// const starLowSpriteTexture = new THREE.TextureLoader().load("src/assets//sprite1.png");
+// const starLowSpriteMaterial = new THREE.SpriteMaterial({
+//   map: starLowSpriteTexture,
+//   color: "#cccbef",
+// });
 
 export class StarSystemVisual extends BaseVisual {
   private geometry?: THREE.BufferGeometry;
@@ -62,9 +62,9 @@ export class StarSystemVisual extends BaseVisual {
     spriteMesh.scale.multiplyScalar(this.radius * 2);
     lod.addLevel(spriteMesh, 10);
 
-    const lowSpriteMesh = new THREE.Sprite(starLowSpriteMaterial);
-    lowSpriteMesh.scale.multiplyScalar(this.radius * 2);
-    lod.addLevel(lowSpriteMesh, 100);
+    // const lowSpriteMesh = new THREE.Sprite(starLowSpriteMaterial);
+    // lowSpriteMesh.scale.multiplyScalar(this.radius * 2);
+    // lod.addLevel(lowSpriteMesh, 250);
 
     this._obj3D = lod;
     this._obj3D.layers.enable(Global.Layers.BLOOM_LAYER);

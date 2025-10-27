@@ -139,3 +139,7 @@ table.alt-row-table {
 .space-bottom {
   margin-bottom: var(--general-spacing);
 }
+
+.justify-right {
+  justify-content: flex-end;
+}

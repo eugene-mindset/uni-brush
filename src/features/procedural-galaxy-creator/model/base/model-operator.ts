@@ -1,6 +1,7 @@
 import { ModelStep } from "./model-step";
 
 export abstract class ModelOperator<O, K extends Object> extends ModelStep<O, K> {
+  public readonly stepKey: string = "Operator";
   // methods
 
   public static create(): ModelOperator<any, any> {

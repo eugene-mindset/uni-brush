@@ -10,6 +10,8 @@ interface Config {
 }
 
 export class NormalDistribution extends ModelGenerator<Vector3, Config> {
+  public override readonly stepKey: string = "Generator:NormalDistribution";
+
   public static override create(): NormalDistribution {
     return new NormalDistribution({
       dim: new Vector3(1000, 10, 1000),

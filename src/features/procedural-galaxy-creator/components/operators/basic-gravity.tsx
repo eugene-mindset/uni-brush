@@ -13,7 +13,6 @@ interface Props {
 export const BasicGravity: FunctionComponent<Props> = (props) => {
   const { step } = props;
 
-  // TODO: need to fix number inputs not taking negative
   // NOTE: negative strength pushes rather than pulls
   return (
     <Panel.Group>

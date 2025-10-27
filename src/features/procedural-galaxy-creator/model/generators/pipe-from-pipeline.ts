@@ -5,6 +5,8 @@ interface Config<T> {
 }
 
 export class PipeFromPipeline<T> extends ModelGenerator<T, Config<T>> {
+  public override readonly stepKey: string = "Generator:PipeFromPipeline";
+
   public static override create<T>(): PipeFromPipeline<T> {
     return new PipeFromPipeline<T>({
       outputs: [],

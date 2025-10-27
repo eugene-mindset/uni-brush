@@ -18,6 +18,8 @@ interface Config {
 }
 
 export class ArmGravity extends ModelOperator<Vector3, Config> {
+  public override readonly stepKey: string = "Operator:ArmGravity";
+
   public static override create(): ArmGravity {
     return new ArmGravity({
       dim: new Vector3(1000, 10, 1000),

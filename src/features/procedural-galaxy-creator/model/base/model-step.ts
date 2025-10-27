@@ -1,6 +1,8 @@
 export abstract class ModelStep<O, K extends Object> {
   protected _config: K;
 
+  public readonly stepKey: string = "Base";
+
   // constructors
 
   protected constructor(config: K) {

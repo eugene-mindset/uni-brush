@@ -1,6 +1,7 @@
 import { ModelStep } from "./model-step";
 
 export abstract class ModelGenerator<O, K extends Object> extends ModelStep<O, K> {
+  public readonly stepKey: string = "Generator";
   // methods
 
   public static create(): ModelGenerator<any, any> {

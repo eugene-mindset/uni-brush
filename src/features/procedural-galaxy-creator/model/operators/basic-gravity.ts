@@ -11,6 +11,8 @@ interface Config {
 }
 
 export class BasicGravity extends ModelOperator<Vector3, Config> {
+  public override readonly stepKey: string = "Operator:BasicGravity";
+
   public static override create(): BasicGravity {
     return new BasicGravity({
       size: new Vector3(100, 100, 100),

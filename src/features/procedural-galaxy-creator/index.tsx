@@ -18,13 +18,12 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
     const model = coreModelRef.current;
     model.setGenerator(CreateModel.Generators.NormalDistribution);
     model.createOperator(CreateModel.Operators.BasicGravity);
-    //model.createOperator(CreateModel.Operators.ArmGravity);
+    model.createOperator(CreateModel.Operators.ArmGravity);
 
     setModelLoaded(true);
   }, []);
 
-  console.log(coreModelRef.current);
-  const onClickGenerate = (event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
+  const onClickGenerate = (_event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
     coreModelRef.current.generate(count);
 
     Entity.StarSystem.Manager.fullReset();
@@ -44,14 +43,23 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
               <Panel.Header>
                 <h2>Group 1</h2>
               </Panel.Header>
-              <CreatorView.Generators.NormalDistribution
-                step={coreModelRef.current.generator as CreateModel.Generators.NormalDistribution}
-                order={1}
-              />
-              <CreatorView.Operators.BasicGravity
-                step={coreModelRef.current.operators[0] as CreateModel.Operators.BasicGravity}
-                order={2}
-              />
+              {coreModelRef.current.generator && (
+                <CreatorView.BaseStepComponent<
+                  typeof coreModelRef.current.generator.config,
+                  typeof coreModelRef.current.generator
+                >
+                  step={coreModelRef.current.generator}
+                  order={1}
+                />
+              )}
+              {coreModelRef.current.operators &&
+                coreModelRef.current.operators.map((x, i) => (
+                  <CreatorView.BaseStepComponent<typeof x.config, typeof x>
+                    key={`x.stepKey_${i}`}
+                    step={x}
+                    order={i + 2}
+                  />
+                ))}
             </Panel.Group>
           </div>
           <div className="space-top">

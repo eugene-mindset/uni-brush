@@ -10,16 +10,16 @@ export class ValuePipeline<T> {
 
   // properties
 
-  public get generator(): Generator<any, any> | undefined {
+  public get generator(): Generator<T, any> | undefined {
     return this._generator;
   }
 
-  public get operators(): Operator<any, any>[] {
+  public get operators(): Operator<T, any>[] {
     return [...this._operators];
   }
 
-  public get orderOfOperations(): Step<any, any>[] {
-    return [this._generator, ...this._operators] as Step<any, any>[];
+  public get orderOfOperations(): Step<T, any>[] {
+    return [this._generator, ...this._operators] as Step<T, any>[];
   }
 
   public get output(): T[] {
@@ -46,9 +46,11 @@ export class ValuePipeline<T> {
 
   // generator
 
-  public setGenerator(generator?: typeof Generator<any, any>) {
+  public setGenerator(generator?: typeof Generator<any, any>): Generator<any, any> | undefined {
     this._generator = generator?.create();
     this.reset();
+
+    return this._generator;
   }
 
   public configGenerator(config: Object) {
@@ -58,9 +60,12 @@ export class ValuePipeline<T> {
 
   // operators
 
-  public createOperator(operator: typeof Operator<any, any>) {
-    this._operators.push(operator.create());
+  public createOperator(operator: typeof Operator<any, any>): Operator<any, any> {
+    const newOp = operator.create();
+    this._operators.push(newOp);
     this.reset();
+
+    return newOp;
   }
 
   public removeOperator(index: number) {

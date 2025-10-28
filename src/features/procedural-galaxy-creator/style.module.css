@@ -1,0 +1,7 @@
+.entity_pipeline {
+  margin-bottom: var(--general-spacing);
+}
+
+.entity_pipeline:last-child {
+  margin-bottom: 0;
+}

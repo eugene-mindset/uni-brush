@@ -307,7 +307,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return this.dataInstances.map(pred);
   }
 
-  private resizeStore(_?: number): void {
+  private resizeStore(_number?: number): void {
     throw new Error("Method not implemented yet. Need to allocate more space to create entities.");
   }
 

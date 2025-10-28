@@ -1,1 +1,1 @@
-export { BaseStepComponent, BasePipelineComponent } from "./base";
+export { BaseStepComponent, BasePipelineComponent, BaseFactoryComponent } from "./base";

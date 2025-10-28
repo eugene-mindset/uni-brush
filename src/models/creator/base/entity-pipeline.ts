@@ -1,15 +1,15 @@
 import { Entity } from "@/models";
-import { ModelValuePipeline } from "./value-pipeline";
+import { ValuePipeline } from "./value-pipeline";
 
 export type propertyToPipeline<T extends Entity.Base.EntityType> = {
-  [key in keyof T]?: ModelValuePipeline<T[key]>;
+  [key in keyof T]?: ValuePipeline<T[key]>;
 };
 
 export type propertyToValues<T extends Entity.Base.EntityType> = {
   [key in keyof T]?: T[key][];
 };
 
-export class ModelEntityPipeline<T extends Entity.Base.EntityType> {
+export class EntityPipeline<T extends Entity.Base.EntityType> {
   protected _propertyPipeline: propertyToPipeline<T> = {};
 
   // constructors
@@ -35,7 +35,7 @@ export class ModelEntityPipeline<T extends Entity.Base.EntityType> {
       throw new Error("Cannot define pipeline for manager attributes");
     if (this._propertyPipeline[property]) throw new Error("Already have pipeline for property");
 
-    this._propertyPipeline[property] = new ModelValuePipeline<T[keyof T]>();
+    this._propertyPipeline[property] = new ValuePipeline<T[keyof T]>();
   }
 
   public deletePipeline(property: keyof T) {

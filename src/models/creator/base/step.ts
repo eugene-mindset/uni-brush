@@ -1,4 +1,4 @@
-export abstract class ModelStep<O, K extends Object> {
+export abstract class Step<O, K extends Object> {
   protected _config: K;
 
   public readonly stepKey: string = "Base";
@@ -9,11 +9,11 @@ export abstract class ModelStep<O, K extends Object> {
     this._config = config;
   }
 
-  public static create(): ModelStep<any, any> {
+  public static create(): Step<any, any> {
     throw new Error("Cannot call static of abstract class");
   }
 
-  public abstract clone(): ModelStep<O, K>;
+  public abstract clone(): Step<O, K>;
 
   // properties
 

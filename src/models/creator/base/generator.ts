@@ -1,14 +1,14 @@
-import { ModelStep } from "./step";
+import { Step } from "./step";
 
-export abstract class ModelGenerator<O, K extends Object> extends ModelStep<O, K> {
+export abstract class Generator<O, K extends Object> extends Step<O, K> {
   public readonly stepKey: string = "Generator";
   // methods
 
-  public static create(): ModelGenerator<any, any> {
+  public static create(): Generator<any, any> {
     throw new Error("Cannot call static of abstract class");
   }
 
-  public abstract clone(): ModelGenerator<O, K>;
+  public abstract clone(): Generator<O, K>;
 
   public generate(count: number): O[] {
     const out: O[] = [];

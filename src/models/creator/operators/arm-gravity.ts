@@ -3,7 +3,7 @@ import memoize from "fast-memoize";
 
 import { MathHelpers } from "@/util";
 
-import { ModelOperator } from "../base";
+import { Operator } from "../base";
 
 interface Config {
   dim: Vector3;
@@ -17,7 +17,7 @@ interface Config {
   centerOverArmRatio: number;
 }
 
-export class ArmGravity extends ModelOperator<Vector3, Config> {
+export class ArmGravity extends Operator<Vector3, Config> {
   public override readonly stepKey: string = "Operator:ArmGravity";
 
   public static override create(): ArmGravity {

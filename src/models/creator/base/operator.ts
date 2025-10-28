@@ -1,14 +1,14 @@
-import { ModelStep } from "./step";
+import { Step } from "./step";
 
-export abstract class ModelOperator<O, K extends Object> extends ModelStep<O, K> {
+export abstract class Operator<O, K extends Object> extends Step<O, K> {
   public readonly stepKey: string = "Operator";
   // methods
 
-  public static create(): ModelOperator<any, any> {
+  public static create(): Operator<any, any> {
     throw new Error("Cannot call static of abstract class");
   }
 
-  public abstract clone(): ModelOperator<O, K>;
+  public abstract clone(): Operator<O, K>;
 
   protected abstract override generateStep(idx: number, input: O): O;
 

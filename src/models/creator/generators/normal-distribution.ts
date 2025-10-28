@@ -2,14 +2,14 @@ import { Vector3 } from "three";
 
 import { MathHelpers } from "@/util";
 
-import { ModelGenerator } from "../base";
+import { Generator } from "../base";
 
 interface Config {
   dim: Vector3;
   normalDev: number;
 }
 
-export class NormalDistribution extends ModelGenerator<Vector3, Config> {
+export class NormalDistribution extends Generator<Vector3, Config> {
   public override readonly stepKey: string = "Generator:NormalDistribution";
 
   public static override create(): NormalDistribution {

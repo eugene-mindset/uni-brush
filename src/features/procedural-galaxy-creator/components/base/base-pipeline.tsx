@@ -4,12 +4,12 @@ import { CreatorModel } from "@/models";
 import { BaseStepComponent } from "./base-step";
 import { ToggleComponent } from "@/components/toggle";
 
-interface Props<V, T extends CreatorModel.Base.ModelValuePipeline<V>> {
+interface Props<V, T extends CreatorModel.Base.ValuePipeline<V>> {
   pipeline: T;
   property?: string;
 }
 
-export const BasePipelineComponent = <V, T extends CreatorModel.Base.ModelValuePipeline<V>>(
+export const BasePipelineComponent = <V, T extends CreatorModel.Base.ValuePipeline<V>>(
   props: Props<V, T>
 ) => {
   const { pipeline } = props;

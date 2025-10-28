@@ -1,10 +1,10 @@
-import { ModelGenerator } from "../base";
+import { Generator } from "../base";
 
 interface Config<T> {
   defaultValue: T | null;
 }
 
-export class DefaultValue<T> extends ModelGenerator<T | null, Config<T>> {
+export class DefaultValue<T> extends Generator<T | null, Config<T>> {
   public override readonly stepKey: string = "Generator:DefaultValue";
 
   public static override create(): DefaultValue<any> {

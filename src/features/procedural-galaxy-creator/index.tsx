@@ -9,7 +9,7 @@ import { Entity } from "@/models";
 import { Vector3 } from "three";
 
 const initModel = () => {
-  const model = new CreatorModel.Base.ModelEntityPipeline<Entity.StarSystem.EntityType>();
+  const model = new CreatorModel.Base.EntityPipeline<Entity.StarSystem.EntityType>();
   model.createPipeline("initialPosition");
   model.createPipeline("name");
 

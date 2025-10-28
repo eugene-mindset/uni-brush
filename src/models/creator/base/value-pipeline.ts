@@ -1,25 +1,25 @@
-import { ModelGenerator } from "./generator";
-import { ModelOperator } from "./operator";
-import { ModelStep } from "./step";
+import { Generator } from "./generator";
+import { Operator } from "./operator";
+import { Step } from "./step";
 
-export class ModelValuePipeline<T> {
-  private _generator?: ModelGenerator<T, any>;
-  private _operators: ModelOperator<T, any>[] = [];
+export class ValuePipeline<T> {
+  private _generator?: Generator<T, any>;
+  private _operators: Operator<T, any>[] = [];
 
   private _outputs: T[][] = [];
 
   // properties
 
-  public get generator(): ModelGenerator<any, any> | undefined {
+  public get generator(): Generator<any, any> | undefined {
     return this._generator;
   }
 
-  public get operators(): ModelOperator<any, any>[] {
+  public get operators(): Operator<any, any>[] {
     return [...this._operators];
   }
 
-  public get orderOfOperations(): ModelStep<any, any>[] {
-    return [this._generator, ...this._operators] as ModelStep<any, any>[];
+  public get orderOfOperations(): Step<any, any>[] {
+    return [this._generator, ...this._operators] as Step<any, any>[];
   }
 
   public get output(): T[] {
@@ -46,7 +46,7 @@ export class ModelValuePipeline<T> {
 
   // generator
 
-  public setGenerator(generator?: typeof ModelGenerator<any, any>) {
+  public setGenerator(generator?: typeof Generator<any, any>) {
     this._generator = generator?.create();
     this.reset();
   }
@@ -58,7 +58,7 @@ export class ModelValuePipeline<T> {
 
   // operators
 
-  public createOperator(operator: typeof ModelOperator<any, any>) {
+  public createOperator(operator: typeof Operator<any, any>) {
     this._operators.push(operator.create());
     this.reset();
   }

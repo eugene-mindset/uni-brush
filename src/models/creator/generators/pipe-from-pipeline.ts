@@ -1,10 +1,10 @@
-import { ModelGenerator } from "../base";
+import { Generator } from "../base";
 
 interface Config<T> {
   outputs: T[];
 }
 
-export class PipeFromPipeline<T> extends ModelGenerator<T, Config<T>> {
+export class PipeFromPipeline<T> extends Generator<T, Config<T>> {
   public override readonly stepKey: string = "Generator:PipeFromPipeline";
 
   public static override create<T>(): PipeFromPipeline<T> {

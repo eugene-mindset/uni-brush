@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 
 import { MathHelpers } from "@/util";
-import { ModelOperator } from "../base";
+import { Operator } from "../base";
 
 interface Config {
   size: Vector3;
@@ -10,7 +10,7 @@ interface Config {
   falloff: number;
 }
 
-export class BasicGravity extends ModelOperator<Vector3, Config> {
+export class BasicGravity extends Operator<Vector3, Config> {
   public override readonly stepKey: string = "Operator:BasicGravity";
 
   public static override create(): BasicGravity {

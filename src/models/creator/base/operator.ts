@@ -1,4 +1,4 @@
-import { ModelStep } from "./model-step";
+import { ModelStep } from "./step";
 
 export abstract class ModelOperator<O, K extends Object> extends ModelStep<O, K> {
   public readonly stepKey: string = "Operator";

@@ -1,5 +1,5 @@
 import { Entity } from "@/models";
-import { ModelValuePipeline } from "./model-value-pipeline";
+import { ModelValuePipeline } from "./value-pipeline";
 
 export type propertyToPipeline<T extends Entity.Base.EntityType> = {
   [key in keyof T]?: ModelValuePipeline<T[key]>;

@@ -1,6 +1,6 @@
-import { ModelGenerator } from "./model-generator";
-import { ModelOperator } from "./model-operator";
-import { ModelStep } from "./model-step";
+import { ModelGenerator } from "./generator";
+import { ModelOperator } from "./operator";
+import { ModelStep } from "./step";
 
 export class ModelValuePipeline<T> {
   private _generator?: ModelGenerator<T, any>;

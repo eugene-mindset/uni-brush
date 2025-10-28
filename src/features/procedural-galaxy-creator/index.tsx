@@ -1,5 +1,5 @@
 import { FunctionalComponent, JSX } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useRef } from "preact/hooks";
 
 import { Panel } from "@/components";
 
@@ -8,7 +8,8 @@ import { CreatorModel } from "@/models";
 import { Entity } from "@/models";
 import { Vector3 } from "three";
 
-const initModel = (model: CreatorModel.Base.ModelEntityPipeline<Entity.StarSystem.EntityType>) => {
+const initModel = () => {
+  const model = new CreatorModel.Base.ModelEntityPipeline<Entity.StarSystem.EntityType>();
   model.createPipeline("initialPosition");
   model.createPipeline("name");
 
@@ -18,21 +19,14 @@ const initModel = (model: CreatorModel.Base.ModelEntityPipeline<Entity.StarSyste
 
   model.pipelines["name"]?.setGenerator(CreatorModel.Generators.DefaultValue<string>);
   model.pipelines["name"]?.generator?.setConfig({ defaultValue: "Test Star" });
+
+  return model;
 };
 
 export const ProceduralCreator: FunctionalComponent<{}> = () => {
+  const coreModelRef = useRef(initModel());
+
   const count = Entity.StarSystem.Manager.capacity;
-  const [modelLoaded, setModelLoaded] = useState(false);
-
-  const coreModelRef = useRef(
-    new CreatorModel.Base.ModelEntityPipeline<Entity.StarSystem.EntityType>()
-  );
-  useEffect(() => {
-    const model = coreModelRef.current;
-    initModel(model);
-
-    setModelLoaded(true);
-  }, []);
 
   const onClickGenerate = (_event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
     coreModelRef.current.generate(count);
@@ -51,39 +45,35 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
 
   return (
     <Panel title="Geography / Editor" canToggle width="650px" maxHeight="1000px">
-      {modelLoaded && (
-        <>
+      <Panel.Header>
+        <h2>Base Config</h2>
+      </Panel.Header>
+      <div className="form-list">
+        <Panel.Input type="text" labelText="Generator Name" />
+        <h3>Entities</h3>
+        <Panel.Input type="checkbox" labelText="Star Systems" />
+        <Panel.Header>
+          <h2>Star Systems</h2>
+        </Panel.Header>
+        <Panel.Group>
           <Panel.Header>
-            <h2>Base Config</h2>
+            <h3>Group 1 - [ADD NAME]</h3>
           </Panel.Header>
-          <div className="form-list">
-            <Panel.Input type="text" labelText="Generator Name" />
-            <h3>Entities</h3>
-            <Panel.Input type="checkbox" labelText="Star Systems" />
-            <Panel.Header>
-              <h2>Star Systems</h2>
-            </Panel.Header>
-            <Panel.Group>
-              <Panel.Header>
-                <h3>Group 1 - [ADD NAME]</h3>
-              </Panel.Header>
-              {Object.keys(pipelines).map((x) => {
-                const pipeline = pipelines[x as keyof typeof pipelines];
-                console.log(x);
-                if (!pipeline) return null;
+          {Object.keys(pipelines).map((x) => {
+            const pipeline = pipelines[x as keyof typeof pipelines];
+            console.log(x);
+            if (!pipeline) return null;
 
-                return <CreatorView.BasePipelineComponent pipeline={pipeline} property={x} />;
-              })}
-            </Panel.Group>
-          </div>
-          <div className="space-top gap flex-row justify-right">
-            <button className="core float-right">Save</button>
-            <button className="core float-right" onClick={onClickGenerate}>
-              Generate
-            </button>
-          </div>
-        </>
-      )}
+            return <CreatorView.BasePipelineComponent key={x} pipeline={pipeline} property={x} />;
+          })}
+        </Panel.Group>
+      </div>
+      <div className="space-top gap flex-row justify-right">
+        <button className="core float-right">Save</button>
+        <button className="core float-right" onClick={onClickGenerate}>
+          Generate
+        </button>
+      </div>
     </Panel>
   );
 };

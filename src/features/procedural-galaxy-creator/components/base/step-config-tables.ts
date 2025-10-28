@@ -28,6 +28,15 @@ export const StepConfigTable: configTable = {
       },
     },
   },
+  "Generator:DefaultValue": {
+    header: "Default Value",
+    config: {
+      defaultValue: {
+        type: "text",
+        text: "Default Value",
+      },
+    },
+  },
   "Operator:BasicGravity": {
     header: "Basic Gravity Effect",
     config: {

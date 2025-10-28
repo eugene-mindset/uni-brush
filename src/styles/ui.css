@@ -21,7 +21,6 @@
 }
 
 .scrollable {
-  height: 300px;
   overflow-y: scroll;
   border: none;
 }
@@ -142,4 +141,8 @@ table.alt-row-table {
 
 .justify-right {
   justify-content: flex-end;
+}
+
+.flex-fill {
+  flex: 1;
 }

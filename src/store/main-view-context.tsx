@@ -1,4 +1,4 @@
-import { createContext, Provider } from "preact";
+import { createContext, Provider, toChildArray } from "preact";
 import { Signal, useSignal } from "@preact/signals";
 import { useContext } from "preact/hooks";
 
@@ -81,7 +81,7 @@ export const MainViewContextProvider: Provider<{}> = ({ children }) => {
     },
   };
 
-  return <MainViewContext.Provider value={out}>{children}</MainViewContext.Provider>;
+  return <MainViewContext.Provider value={out}>{toChildArray(children)}</MainViewContext.Provider>;
 };
 
 /**

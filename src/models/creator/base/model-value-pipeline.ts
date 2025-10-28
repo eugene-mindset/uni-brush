@@ -23,7 +23,7 @@ export class ModelValuePipeline<T> {
   }
 
   public get output(): T[] {
-    if (this._operators.length === 0) return [];
+    if (this._outputs.length === 0) return [];
     return this._outputs[this._outputs.length - 1];
   }
 

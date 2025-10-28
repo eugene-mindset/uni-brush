@@ -2,11 +2,11 @@ import { Entity } from "@/models";
 import { ModelValuePipeline } from "./model-value-pipeline";
 
 export type propertyToPipeline<T extends Entity.Base.EntityType> = {
-  [key in keyof T]?: ModelValuePipeline<T[keyof T]>;
+  [key in keyof T]?: ModelValuePipeline<T[key]>;
 };
 
 export type propertyToValues<T extends Entity.Base.EntityType> = {
-  [key in keyof T]?: T[keyof T][];
+  [key in keyof T]?: T[key][];
 };
 
 export class ModelEntityPipeline<T extends Entity.Base.EntityType> {

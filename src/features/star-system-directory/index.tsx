@@ -52,7 +52,7 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   });
 
   return (
-    <Panel title="Geography / Directory" width="700px" canToggle>
+    <Panel title="Geography / Directory" width="700px" maxHeight="450px" canToggle>
       <div className="flex-col scrollable">
         <table className="directory alt-row-table">
           <thead>

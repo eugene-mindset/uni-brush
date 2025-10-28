@@ -37,6 +37,7 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
   const onClickGenerate = (_event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
     coreModelRef.current.generate(count);
     const outputs = coreModelRef.current.getOutputs();
+    console.log(coreModelRef);
 
     Entity.StarSystem.Manager.fullReset();
     Entity.StarSystem.Manager.batchInitializeProperty(
@@ -46,8 +47,10 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
     Entity.StarSystem.Manager.batchInitializeProperty("name", outputs.name as string[]);
   };
 
+  const pipelines = coreModelRef.current.pipelines;
+
   return (
-    <Panel title="Geography / Editor" canToggle width="650px">
+    <Panel title="Geography / Editor" canToggle width="650px" maxHeight="1000px">
       {modelLoaded && (
         <>
           <Panel.Header>
@@ -55,27 +58,22 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
           </Panel.Header>
           <div className="form-list">
             <Panel.Input type="text" labelText="Generator Name" />
+            <h3>Entities</h3>
+            <Panel.Input type="checkbox" labelText="Star Systems" />
+            <Panel.Header>
+              <h2>Star Systems</h2>
+            </Panel.Header>
             <Panel.Group>
               <Panel.Header>
-                <h2>Group 1</h2>
+                <h3>Group 1 - [ADD NAME]</h3>
               </Panel.Header>
-              {coreModelRef.current.generator && (
-                <CreatorView.BaseStepComponent<
-                  typeof coreModelRef.current.generator.config,
-                  typeof coreModelRef.current.generator
-                >
-                  step={coreModelRef.current.generator}
-                  order={1}
-                />
-              )}
-              {coreModelRef.current.operators &&
-                coreModelRef.current.operators.map((x, i) => (
-                  <CreatorView.BaseStepComponent<typeof x.config, typeof x>
-                    key={`x.stepKey_${i}`}
-                    step={x}
-                    order={i + 2}
-                  />
-                ))}
+              {Object.keys(pipelines).map((x) => {
+                const pipeline = pipelines[x as keyof typeof pipelines];
+                console.log(x);
+                if (!pipeline) return null;
+
+                return <CreatorView.BasePipelineComponent pipeline={pipeline} property={x} />;
+              })}
             </Panel.Group>
           </div>
           <div className="space-top gap flex-row justify-right">

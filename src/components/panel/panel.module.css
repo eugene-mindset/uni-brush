@@ -34,7 +34,22 @@ h6 {
 
 .header {
   border-bottom: 1px solid white;
+  padding-bottom: var(--general-spacing);
   margin-bottom: var(--general-spacing);
+}
+
+.header:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.hover {
+  transition: color 0.3s;
+}
+
+.hover:hover {
+  color: var(--highlight-color);
 }
 
 .title_text {
@@ -55,10 +70,9 @@ h6 {
 
 .group {
   border-top: 1px dashed white;
-  border-left: 1px dashed white;
+  border-inline: 1px dashed white;
 
-  padding-block: var(--general-spacing);
-  padding-left: var(--general-spacing);
+  padding: var(--general-spacing);
 }
 
 .group:last-of-type {

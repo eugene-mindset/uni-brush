@@ -2,7 +2,6 @@ import { toChildArray } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import classNames from "classnames";
 
-import { SVGIcons } from "@/components";
 import { useDraggable } from "@/hooks";
 
 import styles from "./panel.module.css";
@@ -12,6 +11,7 @@ import { PanelGroup } from "./panel-group";
 import { PanelInput } from "./panel-input";
 import { CommonProps } from "./types";
 import { PanelVectorInput } from "./panel-vector-input";
+import { ToggleButton } from "../buttons";
 
 interface Props extends CommonProps {
   title?: string;
@@ -125,13 +125,11 @@ export function Panel(props: Props) {
           onPointerDown={onDragStart}
         >
           {props.canToggle && (
-            <button className="core square" onClick={() => setToggle((x) => !x)}>
-              {toggle ? <SVGIcons.CaretUpFill /> : <SVGIcons.CaretDownFill />}
-            </button>
+            <ToggleButton toggle={toggle} onToggle={() => setToggle((x) => !x)} />
           )}
           <h1 className={styles.title_text}>{props.title}</h1>
         </div>
-        <div>{toggle && toChildArray(props?.children)}</div>
+        <div className="scrollable">{toggle && toChildArray(props?.children)}</div>
       </div>
     </PanelContext.Provider>
   );

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FunctionalComponent, JSX, Ref } from "preact";
+import { FunctionalComponent, JSX, Ref, toChildArray } from "preact";
 
 import { useRef } from "preact/hooks";
 import { HTMLInputTypeAttribute } from "react-dom/src";
@@ -29,7 +29,7 @@ export const PanelInput: FunctionalComponent<Props> = (props: Props) => {
     <div className={classNames(styles.input, props.className)}>
       <label>{props.labelText}</label>
       <input ref={inputRef} type={props.type} value={props.value} onInput={onInput} />
-      {props?.children}
+      {toChildArray(props?.children)}
     </div>
   );
 };

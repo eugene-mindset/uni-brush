@@ -3,15 +3,15 @@ import { Panel } from "@/components";
 import { ModelStepInput, ModelStepVectorInput } from "../base";
 import StepConfigTable from "./step-config-tables";
 
-import { CreatorModel } from "@/models";
+import { Creator } from "@/models";
 import { ToggleComponent } from "@/components/toggle";
 
-interface Props<K extends Object, T extends CreatorModel.Base.Step<any, K>> {
+interface Props<K extends Object, T extends Creator.Base.Step<any, K>> {
   step: T;
   order: number;
 }
 
-export const BaseStepComponent = <K extends Object, T extends CreatorModel.Base.Step<any, K>>(
+export const BaseStepComponent = <K extends Object, T extends Creator.Base.Step<any, K>>(
   props: Props<K, T>
 ) => {
   const { step } = props;

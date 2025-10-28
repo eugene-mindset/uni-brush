@@ -4,20 +4,20 @@ import { useRef } from "preact/hooks";
 import { Panel } from "@/components";
 
 import * as CreatorView from "./components";
-import { CreatorModel } from "@/models";
+import { Creator } from "@/models";
 import { Entity } from "@/models";
 import { Vector3 } from "three";
 
 const initModel = () => {
-  const model = new CreatorModel.Base.EntityPipeline<Entity.StarSystem.EntityType>();
+  const model = new Creator.Base.EntityPipeline<Entity.StarSystem.EntityType>();
   model.createPipeline("initialPosition");
   model.createPipeline("name");
 
-  model.pipelines["initialPosition"]?.setGenerator(CreatorModel.Generators.NormalDistribution);
-  model.pipelines["initialPosition"]?.createOperator(CreatorModel.Operators.BasicGravity);
-  model.pipelines["initialPosition"]?.createOperator(CreatorModel.Operators.ArmGravity);
+  model.pipelines["initialPosition"]?.setGenerator(Creator.Generators.NormalDistribution);
+  model.pipelines["initialPosition"]?.createOperator(Creator.Operators.BasicGravity);
+  model.pipelines["initialPosition"]?.createOperator(Creator.Operators.ArmGravity);
 
-  model.pipelines["name"]?.setGenerator(CreatorModel.Generators.DefaultValue<string>);
+  model.pipelines["name"]?.setGenerator(Creator.Generators.DefaultValue<string>);
   model.pipelines["name"]?.generator?.setConfig({ defaultValue: "Test Star" });
 
   return model;

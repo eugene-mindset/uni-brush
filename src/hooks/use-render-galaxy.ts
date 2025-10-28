@@ -72,7 +72,7 @@ export const useRenderGalaxy = (
     raycastRef.current?.setFromCamera(pointerRef.current, cameraRef.current);
     const intersects = raycastRef.current.intersectObjects(sceneRef.current?.children);
 
-    if (intersects.length == 0) return;
+    if (intersects.length === 0) return;
 
     const intersect = intersects[0];
     const userData = ThreeHelpers.findAncestor(

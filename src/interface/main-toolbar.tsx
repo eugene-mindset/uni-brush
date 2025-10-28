@@ -31,7 +31,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
         setSelectedSub("");
       }
     } else if (oldRoute === route) {
-      if (subRoute == "") {
+      if (subRoute === "") {
         setSelectedMain("");
       } else {
         setSelectedSub(subRoute);

@@ -4,30 +4,46 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { Panel } from "@/components";
 
 import * as CreatorView from "./components";
-import * as CreateModel from "./model";
-import { ModelValuePipeline } from "./model/base";
+import { CreatorModel } from "@/models";
 import { Entity } from "@/models";
 import { Vector3 } from "three";
+
+const initModel = (model: CreatorModel.Base.ModelEntityPipeline<Entity.StarSystem.EntityType>) => {
+  model.createPipeline("initialPosition");
+  model.createPipeline("name");
+
+  model.pipelines["initialPosition"]?.setGenerator(CreatorModel.Generators.NormalDistribution);
+  model.pipelines["initialPosition"]?.createOperator(CreatorModel.Operators.BasicGravity);
+  model.pipelines["initialPosition"]?.createOperator(CreatorModel.Operators.ArmGravity);
+
+  model.pipelines["name"]?.setGenerator(CreatorModel.Generators.DefaultValue<string>);
+  model.pipelines["name"]?.generator?.setConfig({ defaultValue: "Test Star" });
+};
 
 export const ProceduralCreator: FunctionalComponent<{}> = () => {
   const count = Entity.StarSystem.Manager.capacity;
   const [modelLoaded, setModelLoaded] = useState(false);
 
-  const coreModelRef = useRef(new ModelValuePipeline<Vector3>());
+  const coreModelRef = useRef(
+    new CreatorModel.Base.ModelEntityPipeline<Entity.StarSystem.EntityType>()
+  );
   useEffect(() => {
     const model = coreModelRef.current;
-    model.setGenerator(CreateModel.Generators.NormalDistribution);
-    model.createOperator(CreateModel.Operators.BasicGravity);
-    model.createOperator(CreateModel.Operators.ArmGravity);
+    initModel(model);
 
     setModelLoaded(true);
   }, []);
 
   const onClickGenerate = (_event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
     coreModelRef.current.generate(count);
+    const outputs = coreModelRef.current.getOutputs();
 
     Entity.StarSystem.Manager.fullReset();
-    Entity.StarSystem.Manager.batchInitializeProperty("initPos", coreModelRef.current.output);
+    Entity.StarSystem.Manager.batchInitializeProperty(
+      "initPos",
+      outputs.initialPosition as Vector3[]
+    );
+    Entity.StarSystem.Manager.batchInitializeProperty("name", outputs.name as string[]);
   };
 
   return (

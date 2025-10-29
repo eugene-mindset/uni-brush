@@ -15,8 +15,8 @@ type configTable = {
 // TODO: move these settings to classes, like a view model property
 
 export const StepConfigTable: configTable = {
-  "Generator:NormalDistribution": {
-    header: "Normal Distribution Generator",
+  "Generator:NormalDistributionVector": {
+    header: "Normal Distribution Vector Generator",
     config: {
       normalDev: {
         type: "number",

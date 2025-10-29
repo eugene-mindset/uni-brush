@@ -57,7 +57,13 @@ export const ProceduralCreator: FunctionalComponent<{}> = () => {
       <div className="form-list">
         <Panel.Input type="text" labelText="Generator Name" />
         <h3>Entities</h3>
-        <Panel.Input type="checkbox" labelText="Star Systems" />
+        <div className="grid-5">
+          <Panel.Input type="checkbox" labelText="Star Systems" />
+          <Panel.Input type="checkbox" labelText="Star Dust" />
+          <Panel.Input type="checkbox" labelText="Special Structures" />
+          <Panel.Input type="checkbox" labelText="Lanes" />
+          <Panel.Input type="checkbox" labelText="Lanes" />
+        </div>
       </div>
       <CreatorView.BaseFactoryComponent
         factory={coreModelRef.current}

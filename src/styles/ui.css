@@ -150,3 +150,13 @@ table.alt-row-table {
 .margin-block {
   margin-block: var(--general-spacing);
 }
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.grid-5 {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+}

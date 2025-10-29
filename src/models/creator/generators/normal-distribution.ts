@@ -9,18 +9,18 @@ interface Config {
   normalDev: number;
 }
 
-export class NormalDistribution extends Generator<Vector3, Config> {
-  public override readonly stepKey: string = "Generator:NormalDistribution";
+export class NormalDistributionVector extends Generator<Vector3, Config> {
+  public override readonly stepKey: string = "Generator:NormalDistributionVector";
 
-  public static override create(): NormalDistribution {
-    return new NormalDistribution({
+  public static override create(): NormalDistributionVector {
+    return new NormalDistributionVector({
       dim: new Vector3(1000, 10, 1000),
       normalDev: 4 / 3.25,
     });
   }
 
-  public clone(): NormalDistribution {
-    return new NormalDistribution({ ...this.config });
+  public clone(): NormalDistributionVector {
+    return new NormalDistributionVector({ ...this.config });
   }
 
   public get config(): Config {

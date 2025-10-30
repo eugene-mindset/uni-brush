@@ -1,14 +1,15 @@
 import { FunctionalComponent, JSX } from "preact";
 import { useState } from "preact/hooks";
 
-import AppMenu from "./app-menu";
-import { StarSystemEditor } from "./star-system-editor";
-import { StarSystemDirectory } from "./star-system-directory";
-import MainToolbar from "./main-toolbar";
-import { GeographyEditor } from "./geography-editor";
+import { StarSystemDirectory } from "@/features/star-system-directory";
+import { StarSystemEditor } from "@/features/star-system-editor";
+import { ProceduralCreator } from "@/features/procedural-galaxy-creator";
+
+import { AppMenu } from "./app-menu";
+import { MainToolbar } from "./main-toolbar";
 
 export const toolbarRoutes = [
-  { name: "Geography", options: ["Editor", "Directory"] },
+  { name: "Geography", options: ["Procedural Creator", "Directory"] },
   { name: "Civilization", options: ["Nations", "Species", "Diplomacy & Warfare"] },
   { name: "Transportation", options: ["Routes"] },
   { name: "Cartography", options: ["Measurement"] },
@@ -16,7 +17,7 @@ export const toolbarRoutes = [
 
 const panelToShow: Record<string, JSX.Element> = {
   "Geography, Directory": <StarSystemDirectory />,
-  "Geography, Editor": <GeographyEditor />,
+  "Geography, Procedural Creator": <ProceduralCreator />,
 };
 
 export const FullInterface: FunctionalComponent<{}> = ({}) => {

@@ -38,7 +38,7 @@ function createWindow() {
     fullscreen: true,
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
-      preload: path.join(__dirname, "../preload/index.mjs"),
+      preload: path.join(__dirname, "./preload.mjs"),
     },
   });
 

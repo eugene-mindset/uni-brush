@@ -21,7 +21,6 @@
 }
 
 .scrollable {
-  height: 300px;
   overflow-y: scroll;
   border: none;
 }
@@ -94,12 +93,70 @@ table.alt-row-table {
   gap: var(--general-spacing);
 }
 
-.small-editor {
+.float-right {
   float: right;
+}
+
+.form-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  width: 100%;
+  gap: var(--general-spacing);
 }
 
 .modal {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.border {
+  border: 1px solid white;
+  padding: calc(var(--general-spacing) / 2);
+}
+
+.gap {
+  gap: var(--general-spacing);
+}
+
+.fit-in-container {
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+}
+
+.space-top {
+  margin-top: var(--general-spacing);
+}
+
+.space-bottom {
+  margin-bottom: var(--general-spacing);
+}
+
+.justify-right {
+  justify-content: flex-end;
+}
+
+.flex-fill {
+  flex: 1;
+}
+
+.margin-block {
+  margin-block: var(--general-spacing);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.grid-5 {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
 }

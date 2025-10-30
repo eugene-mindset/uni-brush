@@ -1,24 +1,16 @@
 import { RefObject } from "preact";
 import { useCallback, useEffect, useRef } from "preact/hooks";
-import * as THREE from "three";
-import Stats from "stats.js";
-
-import { Entity } from "@/models";
-import { createGalaxyScene } from "@/renderer/galaxy-viewer/create-galaxy-scene";
-import { BaseVisual } from "@/renderer";
-import { useMainViewFullContext } from "@/store/main-view-context";
-import { BaseGalaxyConfig } from "@/models/procedural-generators";
-import { config } from "@/config";
-import {
-  enablePipeline,
-  initCore,
-  initRenderer,
-  RenderPassPipeline,
-  renderPipeline,
-} from "./init-calls";
-import { ThreeHelpers } from "@/util";
-import { MapControls } from "three/examples/jsm/Addons.js";
 import { useSignalEffect } from "@preact/signals";
+import Stats from "stats.js";
+import * as THREE from "three";
+import { MapControls } from "three/examples/jsm/Addons.js";
+
+import { config } from "@/config";
+import { Entity } from "@/models";
+import { Procedural } from "@/models";
+import { createGalaxyScene, BaseVisual, RenderSetup } from "@/renderer";
+import { useMainViewFullContext } from "@/store";
+import { ThreeHelpers } from "@/util";
 
 export interface RenderGalaxyData {
   scene?: THREE.Scene;
@@ -40,7 +32,7 @@ export interface RendererControls {
 // TODO: split this up between hook to control the renderer and hook to control scene
 export const useRenderGalaxy = (
   canvasRef: RefObject<HTMLCanvasElement>
-): [RenderGalaxyData, BaseGalaxyConfig, RendererControls] => {
+): [RenderGalaxyData, Procedural.BaseGalaxyConfig, RendererControls] => {
   // base three objects
   const sceneRef = useRef<THREE.Scene>();
   const cameraRef = useRef<THREE.PerspectiveCamera>();
@@ -51,11 +43,11 @@ export const useRenderGalaxy = (
 
   // render stuff
   const rendererRef = useRef<THREE.WebGLRenderer>();
-  const pipelineRef = useRef<RenderPassPipeline>();
+  const pipelineRef = useRef<RenderSetup.RenderPassPipeline>();
   const renderCallback = useCallback(() => {
     if (!pipelineRef.current) return;
 
-    renderPipeline(pipelineRef.current);
+    RenderSetup.renderPipeline(pipelineRef.current);
   }, [pipelineRef.current]);
 
   // handle for animation loop
@@ -80,7 +72,7 @@ export const useRenderGalaxy = (
     raycastRef.current?.setFromCamera(pointerRef.current, cameraRef.current);
     const intersects = raycastRef.current.intersectObjects(sceneRef.current?.children);
 
-    if (intersects.length == 0) return;
+    if (intersects.length === 0) return;
 
     const intersect = intersects[0];
     const userData = ThreeHelpers.findAncestor(
@@ -175,10 +167,10 @@ export const useRenderGalaxy = (
   const initialize = () => {
     console.log("init renderer");
     if (!canvasRef.current) return;
-    const { scene, camera, controls, clock } = initCore(canvasRef.current);
+    const { scene, camera, controls, clock } = RenderSetup.initCore(canvasRef.current);
 
-    const { renderer, pipeline } = initRenderer(canvasRef.current, scene, camera);
-    enablePipeline(camera, pipeline);
+    const { renderer, pipeline } = RenderSetup.initRenderer(canvasRef.current, scene, camera);
+    RenderSetup.enablePipeline(camera, pipeline);
 
     // load 3d visuals into scene
     createGalaxyScene(scene, config);

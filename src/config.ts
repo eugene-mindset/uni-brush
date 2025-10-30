@@ -4,16 +4,16 @@ import { Vector3 } from "three";
 
 export const config: BaseGalaxyConfig = {
   numOfEntities: Entity.StarSystem.Manager.capacity,
-  dim: new Vector3(1250, 20, 1250),
-  mainGravityStrength: 0.075,
-  mainGravityFallOff: 0.05,
+  dim: new Vector3(1000, 10, 1000),
+  mainGravityStrength: 0.1,
+  mainGravityFallOff: 0.1,
   armShapeStrength: 10,
   numArms: 4,
   showDebug: false,
-  armSpeed: -1,
+  armSpeed: 15,
   armSpread: 0.25,
   armOffset: Math.PI / 4,
   armSpreadDistance: 0.5,
-  centerOverArmRatio: 0.15,
+  centerOverArmRatio: 0.1,
   armSharpness: 0.4,
 };

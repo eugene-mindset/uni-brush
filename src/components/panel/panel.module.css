@@ -34,7 +34,22 @@ h6 {
 
 .header {
   border-bottom: 1px solid white;
+  padding-bottom: var(--general-spacing);
   margin-bottom: var(--general-spacing);
+}
+
+.header:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.hover {
+  transition: color 0.3s;
+}
+
+.hover:hover {
+  color: var(--highlight-color);
 }
 
 .title_text {
@@ -51,4 +66,47 @@ h6 {
 
 .dragging .title {
   cursor: grabbing;
+}
+
+.group {
+  border-top: 1px dashed white;
+  border-inline: 1px dashed white;
+
+  padding: var(--general-spacing);
+}
+
+.group:last-of-type {
+  border-bottom: 1px dashed white;
+}
+
+.input {
+  display: flex;
+  flex-direction: row;
+}
+
+.input label {
+  margin-right: var(--general-spacing);
+}
+
+.input input {
+  width: 100%;
+  flex: 1 1 0;
+  min-width: 0px;
+}
+
+/* .input input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+
+
+.input label:first-child {
+  flex: 0 1 auto;
+  margin-left: 0;
+} */
+
+.full {
+  white-space: nowrap;
+  width: fit-content;
 }

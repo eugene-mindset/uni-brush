@@ -37,7 +37,7 @@
  *
  *  export type ExampleManager = DataManager<Example>;
  *
- *  sonst ExampleManagerInternal = new ExampleManagerClass();
+ *  const ExampleManagerInternal = new ExampleManagerClass();
  *
  *  namespace ExampleInternal {
  *    export const Manager: ExampleManagerInternal;
@@ -273,6 +273,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.publicToInternal = {};
 
     this.batchInitializePropertyArray("publicId");
+    this.emit("reset");
   }
 
   public batchInitializeProperty<K extends keyof Mod>(key: K, array: Mod[K][]) {
@@ -306,7 +307,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return this.dataInstances.map(pred);
   }
 
-  private resizeStore(_?: number): void {
+  private resizeStore(_number?: number): void {
     throw new Error("Method not implemented yet. Need to allocate more space to create entities.");
   }
 
@@ -334,4 +335,5 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
 export namespace Base {
   export type EntityType = DataInstance;
+  export type ManagerType<Ext, Mod> = DataManager<Ext, Mod>;
 }

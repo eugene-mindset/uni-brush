@@ -73,7 +73,7 @@ export function generateGalaxyBase(config: BaseGalaxyConfig): Vector3[] {
  * @returns positions
  */
 export function armsGalaxyModifier(positions: Vector3[], config: BaseGalaxyConfig): Vector3[] {
-  if (config.numArms == GalaxyArmCount.NoArms) return positions;
+  if (config.numArms === GalaxyArmCount.NoArms) return positions;
 
   const armArc = (2 * Math.PI) / config.numArms;
 

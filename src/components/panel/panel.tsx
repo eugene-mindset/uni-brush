@@ -1,25 +1,26 @@
-import { ComponentChildren, createContext, FunctionalComponent, toChildArray } from "preact";
+import { toChildArray } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import classNames from "classnames";
 
-import { SVGIcons } from "@/components";
-
-import styles from "./panel.module.css";
 import { useDraggable } from "@/hooks";
 
-interface PanelState {}
-const PanelContext = createContext<PanelState>({});
+import styles from "./panel.module.css";
+import { PanelContext } from "./context";
+import { PanelHeader } from "./panel-header";
+import { PanelGroup } from "./panel-group";
+import { PanelInput } from "./panel-input";
+import { CommonProps } from "./types";
+import { PanelVectorInput } from "./panel-vector-input";
+import { ToggleButton } from "../buttons";
 
-interface Props {
+interface Props extends CommonProps {
   title?: string;
   canToggle?: boolean;
   canDrag?: boolean;
-  children?: ComponentChildren;
   width?: string | number | null;
   height?: string | number | null;
   maxWidth?: string | number | null;
   maxHeight?: string | number | null;
-  className?: string;
   position?: "absolute" | "relative";
   floatX?: "left" | "right";
   floatY?: "top" | "bottom";
@@ -124,24 +125,17 @@ export function Panel(props: Props) {
           onPointerDown={onDragStart}
         >
           {props.canToggle && (
-            <button className="core square" onClick={() => setToggle((x) => !x)}>
-              {toggle ? <SVGIcons.CaretUpFill /> : <SVGIcons.CaretDownFill />}
-            </button>
+            <ToggleButton toggle={toggle} onToggle={() => setToggle((x) => !x)} />
           )}
           <h1 className={styles.title_text}>{props.title}</h1>
         </div>
-        <div className="panel-body">{toggle && toChildArray(props?.children)}</div>
+        <div className="scrollable">{toggle && toChildArray(props?.children)}</div>
       </div>
     </PanelContext.Provider>
   );
 }
 
-interface HeaderProps {
-  children?: ComponentChildren;
-}
-
-const PanelHeader: FunctionalComponent<HeaderProps> = (props) => {
-  return <div className={styles.header}>{props?.children}</div>;
-};
-
 Panel.Header = PanelHeader;
+Panel.Group = PanelGroup;
+Panel.Input = PanelInput;
+Panel.VectorInput = PanelVectorInput;

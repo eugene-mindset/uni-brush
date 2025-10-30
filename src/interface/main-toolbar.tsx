@@ -31,7 +31,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
         setSelectedSub("");
       }
     } else if (oldRoute === route) {
-      if (subRoute == "") {
+      if (subRoute === "") {
         setSelectedMain("");
       } else {
         setSelectedSub(subRoute);
@@ -63,7 +63,7 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
 
   // TOOD: make into a hook
   useEffect(() => {
-    const handleClick = (event: PointerEvent) => {
+    const handleClick = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setShowMainOptions(false);
       }
@@ -125,5 +125,3 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
     </div>
   );
 };
-
-export default MainToolbar;

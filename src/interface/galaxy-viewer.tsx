@@ -1,10 +1,10 @@
 import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
+import { useRenderGalaxy } from "@/hooks";
 import { Entity, Procedural } from "@/models";
-import "@/styles/three.css";
 
-import { useRenderGalaxy } from "./render-galaxy";
+import "@/styles/three.css";
 
 export interface GalaxyViewerProps {}
 
@@ -35,9 +35,11 @@ const GalaxyViewer: FunctionalComponent<GalaxyViewerProps> = (_: GalaxyViewerPro
   // setup to non-state events
   useEffect(() => {
     Entity.StarSystem.Manager.addEventListener("load", onRefreshNeeded);
+    Entity.StarSystem.Manager.addEventListener("reset", onRefreshNeeded);
 
     return () => {
       Entity.StarSystem.Manager.removeEventListener("load", onRefreshNeeded);
+      Entity.StarSystem.Manager.addEventListener("reset", onRefreshNeeded);
     };
   }, []);
 

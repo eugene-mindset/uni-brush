@@ -1,12 +1,9 @@
 import * as THREE from "three";
 
-import { StarSystemVisual } from "../visual-models";
-import { Entity } from "@/models";
-import { Procedural } from "@/models";
-import { BaseGalaxyConfig } from "@/models/procedural-generators";
-import { Global } from "@/renderer";
+import { Entity, Procedural } from "@/models";
+import { Global, StarSystemVisual } from "@/renderer";
 
-export const createGalaxyScene = (scene: THREE.Scene, config: BaseGalaxyConfig) => {
+export const createGalaxyScene = (scene: THREE.Scene, config: Procedural.BaseGalaxyConfig) => {
   // TODO: very expensive to recreate stars, for small changes will need to track and change individual
   // ones
 

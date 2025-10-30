@@ -1,7 +1,7 @@
 :root {
   height: 100%;
   width: 100%;
-  font-size: 8pt;
+  font-size: 10pt;
 
   font-family: monospace;
   line-height: 1.5;
@@ -90,6 +90,10 @@ svg {
   height: 1em;
 }
 
+input {
+  font-family: inherit;
+}
+
 .interface {
   position: absolute;
   box-sizing: border-box;
@@ -125,11 +129,6 @@ svg {
 .flex-col {
   display: flex;
   flex-direction: column;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
 }
 
 .clear {

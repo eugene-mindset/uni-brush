@@ -1,11 +1,12 @@
 import { FunctionalComponent } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useCallback, useState } from "preact/hooks";
+import { Vector3 } from "three";
 
 import { Entity } from "@/models";
 import { useMainViewContext } from "@/store";
-import { Vector3 } from "three";
 import { ThreeHelpers } from "@/util";
 import { Panel } from "@/components";
+import { useManagerEvents } from "@/hooks";
 
 const StarSystemDirectoryEntry: FunctionalComponent<{
   onClick?: () => void;
@@ -40,23 +41,18 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   const [starSystems, setStarSystems] = useState<Entity.StarSystem.EntityType[]>([]);
 
   // TODO: make a single spot to subscribe to all entity changes within a data manager
-  const onUpdateDirectory = () => {
+  const onUpdateDirectory = useCallback(() => {
     setStarSystems(Entity.StarSystem.Manager.getAll());
-  };
-
-  useEffect(() => {
-    Entity.StarSystem.Manager.addEventListener("load", onUpdateDirectory);
-    Entity.StarSystem.Manager.addEventListener("refresh", onUpdateDirectory);
-    onUpdateDirectory();
-
-    return () => {
-      Entity.StarSystem.Manager.removeEventListener("load", onUpdateDirectory);
-      Entity.StarSystem.Manager.removeEventListener("refresh", onUpdateDirectory);
-    };
   }, []);
 
+  useManagerEvents(Entity.StarSystem.Manager, [], {
+    events: ["load", "refresh"],
+    callback: onUpdateDirectory,
+    init: true,
+  });
+
   return (
-    <Panel title="Geography / Directory" width="700px" canToggle>
+    <Panel title="Geography / Directory" width="700px" maxHeight="450px" canToggle>
       <div className="flex-col scrollable">
         <table className="directory alt-row-table">
           <thead>

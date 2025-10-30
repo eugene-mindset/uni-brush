@@ -1,6 +1,6 @@
 import { Panel } from "@/components";
 
-import { ModelStepInput, ModelStepVectorInput } from "../base";
+import { ModelStepDynamicInput } from "../base";
 import StepConfigTable from "./step-config-tables";
 
 import { Creator } from "@/models";
@@ -27,32 +27,10 @@ export const BaseStepComponent = <K extends Object, T extends Creator.Base.Step<
         </Panel.Header>
         <ToggleComponent.Area>
           <div className="flex-col gap">
-            {Object.keys(step.config).map((value) => {
-              // TODO: add ordering
-              const properties = stepProperties.config[value];
-
-              if (!properties.type) return;
-              if (properties.type === "vector") {
-                return (
-                  <ModelStepVectorInput<typeof step.config, T>
-                    key={value}
-                    step={step}
-                    configKey={value as keyof K}
-                    labelText={properties.text}
-                  />
-                );
-              } else {
-                return (
-                  <ModelStepInput<typeof step.config, T>
-                    key={value}
-                    inputType={properties.type}
-                    step={step}
-                    configKey={value as keyof K}
-                    labelText={properties.text}
-                  />
-                );
-              }
-            })}
+            {/* // TODO: add ordering */}
+            {Object.keys(step.config).map((value) => (
+              <ModelStepDynamicInput step={step} configKey={value as keyof K} />
+            ))}
           </div>
         </ToggleComponent.Area>
       </ToggleComponent>

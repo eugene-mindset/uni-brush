@@ -2,29 +2,30 @@ import { useState } from "preact/hooks";
 
 import { Panel } from "@/components";
 
-import { Base } from "../../model";
 import { JSXInternal } from "node_modules/preact/src/jsx";
 import { Vector3 } from "three";
+import StepConfigTable from "./step-config-tables";
+import { Creator } from "@/models";
 
-export const updateConfig = <K extends Object, T extends Base.ModelStep<any, K>>(
+export const updateConfig = <K extends Object, T extends Creator.Base.Step<any, K>>(
   step: T,
   newConfig: Partial<K>
 ) => {
   step.setConfig({ ...step.config, ...newConfig });
 };
 
-interface BaseInputProps<K extends Object, T extends Base.ModelStep<any, K>> {
+interface BaseInputProps<K extends Object, T extends Creator.Base.Step<any, K>> {
   step: T;
   configKey: keyof K;
   labelText?: string;
 }
 
-interface InputProps<K extends Object, T extends Base.ModelStep<any, K>>
+interface InputProps<K extends Object, T extends Creator.Base.Step<any, K>>
   extends BaseInputProps<K, T> {
   inputType: JSXInternal.HTMLInputTypeAttribute;
 }
 
-export const ModelStepInput = <K extends Object, T extends Base.ModelStep<any, K>>(
+export const ModelStepInput = <K extends Object, T extends Creator.Base.Step<any, K>>(
   props: InputProps<K, T>
 ) => {
   const { step, configKey, inputType } = props;
@@ -53,7 +54,7 @@ export const ModelStepInput = <K extends Object, T extends Base.ModelStep<any, K
   );
 };
 
-export const ModelStepVectorInput = <K extends Object, T extends Base.ModelStep<any, K>>(
+export const ModelStepVectorInput = <K extends Object, T extends Creator.Base.Step<any, K>>(
   props: BaseInputProps<K, T>
 ) => {
   const { step, configKey } = props;
@@ -72,4 +73,39 @@ export const ModelStepVectorInput = <K extends Object, T extends Base.ModelStep<
       setValue={onInput}
     />
   );
+};
+
+interface DynamicInputProps<K extends Object, T extends Creator.Base.Step<any, K>> {
+  step: T;
+  configKey: keyof K;
+}
+
+export const ModelStepDynamicInput = <K extends Object, T extends Creator.Base.Step<any, K>>(
+  props: DynamicInputProps<K, T>
+) => {
+  const { step, configKey } = props;
+  const stepProperties = StepConfigTable[step.stepKey];
+  const properties = stepProperties.config[configKey as string];
+
+  if (!properties.type) return;
+  if (properties.type === "vector") {
+    return (
+      <ModelStepVectorInput
+        key={configKey}
+        step={step}
+        configKey={configKey as keyof K}
+        labelText={properties.text}
+      />
+    );
+  } else {
+    return (
+      <ModelStepInput
+        key={configKey}
+        inputType={properties.type}
+        step={step}
+        configKey={configKey as keyof K}
+        labelText={properties.text}
+      />
+    );
+  }
 };

@@ -16,7 +16,7 @@ type configTable = {
 
 export const StepConfigTable: configTable = {
   "Generator:NormalDistributionVector": {
-    header: "Normal Distribution Vector Generator",
+    header: "Normal Distribution",
     config: {
       normalDev: {
         type: "number",
@@ -24,7 +24,7 @@ export const StepConfigTable: configTable = {
       },
       dim: {
         type: "vector",
-        text: "Galaxy Size",
+        text: "Dimensions",
       },
     },
   },
@@ -38,7 +38,7 @@ export const StepConfigTable: configTable = {
     },
   },
   "Operator:BasicGravity": {
-    header: "Basic Gravity Effect",
+    header: "Basic Gravity",
     config: {
       size: {
         type: "vector",
@@ -59,7 +59,7 @@ export const StepConfigTable: configTable = {
     },
   },
   "Operator:ArmGravity": {
-    header: "Arm Gravity Effect",
+    header: "Arm Gravity",
     config: {
       dim: {
         type: "vector",

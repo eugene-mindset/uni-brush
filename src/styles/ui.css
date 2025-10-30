@@ -147,6 +147,10 @@ table.alt-row-table {
   flex: 1;
 }
 
+.flex-no-fill {
+  flex: 0;
+}
+
 .margin-block {
   margin-block: var(--general-spacing);
 }

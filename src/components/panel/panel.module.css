@@ -94,6 +94,12 @@ h6 {
   min-width: 0px;
 }
 
+.input input[type="checkbox"] {
+  margin-inline: 0;
+  min-width: 20px;
+  flex: 0;
+}
+
 /* .input input {
   flex: 1 1 0;
   min-width: 0;
@@ -107,6 +113,8 @@ h6 {
 } */
 
 .full {
+  flex: 1;
   white-space: nowrap;
-  width: fit-content;
+  width: 100%;
+  min-width: max-content;
 }

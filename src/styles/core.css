@@ -19,13 +19,19 @@ button.core {
 
   border: 1px solid transparent;
   border-radius: 4px 15px;
-  transition: box-shadow 0.2s;
+  transition: background-color 0.2s;
 
   height: 40px;
 }
 
 button.core:hover {
-  box-shadow: inset -1em 1em 2em var(--highlight-color);
+  background-color: color-mix(in srgb, var(--highlight-color) 50%, var(--background-color) 50%);
+  border: 1px solid transparent;
+}
+
+button.core:focus {
+  background-color: var(--highlight-color);
+  border: 1px solid black;
 }
 
 button.core.selected {
@@ -41,6 +47,16 @@ button.core.large {
 button.core.small {
   font-size: 0.8rem;
   height: 30px;
+  border-radius: 3px 10px;
+}
+
+button.core.fit {
+  height: inherit;
+  border-radius: 10% 33.3%;
+}
+
+button.core.xs {
+  height: 25px;
   border-radius: 3px 10px;
 }
 

@@ -1,9 +1,8 @@
-import { Panel } from "@/components";
-
+import { ToggleComponent, Panel } from "@/components";
+import { useTriggerUpdate } from "@/hooks";
 import { Creator } from "@/models";
+
 import { BaseStepComponent } from "./base-step";
-import { ToggleComponent } from "@/components/toggle";
-import { useEffect } from "preact/hooks";
 
 interface Props<V, T extends Creator.Base.ValuePipeline<V>> {
   pipeline: T;
@@ -15,7 +14,22 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
 ) => {
   const { pipeline } = props;
 
-  useEffect(() => {}, [pipeline.generator, pipeline.operators]);
+  const triggerStateChange = useTriggerUpdate();
+
+  const onDeleteGenerator = () => {
+    pipeline.setGenerator();
+    triggerStateChange();
+  };
+
+  const onDeleteOperator = (index: number) => {
+    pipeline.removeOperator(index);
+    triggerStateChange();
+  };
+
+  const onDuplicateOperator = (index: number) => {
+    pipeline.duplicateOperator(index);
+    triggerStateChange();
+  };
 
   return (
     <Panel.Group>
@@ -25,11 +39,7 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
         </Panel.Header>
         <ToggleComponent.Area>
           {pipeline?.generator && (
-            <BaseStepComponent
-              step={pipeline.generator}
-              order={1}
-              onDelete={() => pipeline.setGenerator()}
-            />
+            <BaseStepComponent step={pipeline.generator} order={1} onDelete={onDeleteGenerator} />
           )}
           {pipeline?.operators &&
             pipeline.operators.map((x, i) => (
@@ -37,7 +47,8 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
                 key={`x.stepKey_${i}`}
                 step={x}
                 order={i + 2}
-                onDelete={() => pipeline.removeOperator(i)}
+                onDelete={() => onDeleteOperator(i)}
+                onDuplicate={() => onDuplicateOperator(i)}
               />
             ))}
         </ToggleComponent.Area>

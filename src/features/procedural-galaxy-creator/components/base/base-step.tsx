@@ -1,7 +1,7 @@
 import { Panel, SVGIcons } from "@/components";
 
 import { ModelStepDynamicInput } from "../base";
-import StepConfigTable from "./step-config-tables";
+import ConfigTables from "./step-config-tables";
 
 import { Creator } from "@/models";
 import { ToggleComponent } from "@/components/toggle";
@@ -13,11 +13,13 @@ interface Props<K extends Object, T extends Creator.Base.Step<any, K>> {
   onDelete?: () => void;
   onMove?: (dir: "up" | "down") => void;
   onDuplicate?: () => void;
+  onSet?: () => void;
 }
 
 export const BaseStepComponent = <K extends Object, T extends Creator.Base.Step<any, K>>(
   props: Props<K, T>
 ) => {
+  const { StepConfigTable } = ConfigTables;
   const { step } = props;
   const stepProperties = StepConfigTable[step.stepKey];
 
@@ -28,6 +30,11 @@ export const BaseStepComponent = <K extends Object, T extends Creator.Base.Step<
           <h5 className="flex-fill">
             {props.order}: {stepProperties.header}
           </h5>
+          {props.onSet && (
+            <ActionOnlyButton className="core xs" onClick={props.onSet}>
+              <SVGIcons.ArrowClockwise />
+            </ActionOnlyButton>
+          )}
           {props.onMove && (
             <ActionOnlyButton
               className="core xs"

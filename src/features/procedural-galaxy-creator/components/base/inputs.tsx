@@ -4,7 +4,7 @@ import { Panel } from "@/components";
 
 import { JSXInternal } from "node_modules/preact/src/jsx";
 import { Vector3 } from "three";
-import StepConfigTable from "./step-config-tables";
+import ConfigTables from "./step-config-tables";
 import { Creator } from "@/models";
 
 export const updateConfig = <K extends Object, T extends Creator.Base.Step<any, K>>(
@@ -67,7 +67,7 @@ export const ModelStepVectorInput = <K extends Object, T extends Creator.Base.St
   };
 
   return (
-    <Panel.VectorInput
+    <Panel.Vector
       labelText={props.labelText}
       value={step.config[configKey] as Vector3}
       setValue={onInput}
@@ -84,6 +84,8 @@ export const ModelStepDynamicInput = <K extends Object, T extends Creator.Base.S
   props: DynamicInputProps<K, T>
 ) => {
   const { step, configKey } = props;
+  const { StepConfigTable } = ConfigTables;
+
   const stepProperties = StepConfigTable[step.stepKey];
   const properties = stepProperties.config[configKey as string];
 
@@ -97,6 +99,8 @@ export const ModelStepDynamicInput = <K extends Object, T extends Creator.Base.S
         labelText={properties.text}
       />
     );
+  } else if (properties.type === "select") {
+    return <div>Need to create model select component, config: {properties.selectOptions}</div>;
   } else {
     return (
       <ModelStepInput

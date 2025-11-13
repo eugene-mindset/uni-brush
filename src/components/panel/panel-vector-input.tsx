@@ -1,10 +1,10 @@
 import { FunctionalComponent } from "preact";
-import { useState } from "preact/hooks";
 import { Vector3 } from "three";
 
 import styles from "./panel.module.css";
 
 import { PanelInput } from "./panel-input";
+import classNames from "classnames";
 
 interface Props {
   labelText?: string;
@@ -21,8 +21,8 @@ export const PanelVectorInput: FunctionalComponent<Props> = (props: Props) => {
   };
 
   return (
-    <div className="flex-row gap fit-in-container">
-      {props?.labelText && <span className={styles.full}>{props.labelText}</span>}
+    <div className={classNames(styles.input, "flex-row", "gap", "fit-in-container")}>
+      {props?.labelText && <label className={styles.full}>{props.labelText}</label>}
       <PanelInput
         type="number"
         labelText="x = "

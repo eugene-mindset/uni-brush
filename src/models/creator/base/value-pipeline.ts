@@ -59,6 +59,13 @@ export class ValuePipeline<T> {
   }
 
   // operators
+  public setOperator(index: number, operator: typeof Operator<any, any>): Operator<any, any> {
+    const newOp = operator.create();
+    this._operators[index] = newOp;
+    this.reset();
+
+    return newOp;
+  }
 
   public createOperator(operator: typeof Operator<any, any>): Operator<any, any> {
     const newOp = operator.create();

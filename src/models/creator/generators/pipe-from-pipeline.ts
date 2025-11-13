@@ -5,7 +5,7 @@ interface Config<T> {
 }
 
 export class PipeFromPipeline<T> extends Generator<T, Config<T>> {
-  public override readonly stepKey: string = "Generator:PipeFromPipeline";
+  public static override readonly stepKey: string = "Generator:PipeFromPipeline";
 
   public static override create<T>(): PipeFromPipeline<T> {
     return new PipeFromPipeline<T>({
@@ -15,6 +15,10 @@ export class PipeFromPipeline<T> extends Generator<T, Config<T>> {
 
   public clone(): PipeFromPipeline<T> {
     return new PipeFromPipeline<T>({ ...this.config });
+  }
+
+  public override get stepKey(): string {
+    return PipeFromPipeline.stepKey;
   }
 
   public get config(): Config<T> {

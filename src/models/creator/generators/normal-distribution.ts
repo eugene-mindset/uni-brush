@@ -10,7 +10,7 @@ interface Config {
 }
 
 export class NormalDistributionVector extends Generator<Vector3, Config> {
-  public override readonly stepKey: string = "Generator:NormalDistributionVector";
+  public static override readonly stepKey: string = "Generator:NormalDistributionVector";
 
   public static override create(): NormalDistributionVector {
     return new NormalDistributionVector({
@@ -21,6 +21,10 @@ export class NormalDistributionVector extends Generator<Vector3, Config> {
 
   public clone(): NormalDistributionVector {
     return new NormalDistributionVector({ ...this.config });
+  }
+
+  public override get stepKey(): string {
+    return NormalDistributionVector.stepKey;
   }
 
   public get config(): Config {

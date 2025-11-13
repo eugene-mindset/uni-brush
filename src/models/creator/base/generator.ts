@@ -1,7 +1,14 @@
 import { Step } from "./step";
 
 export abstract class Generator<O, K extends Object> extends Step<O, K> {
-  public readonly stepKey: string = "Generator";
+  public static readonly stepKey: string = "Generator";
+
+  // properties
+
+  public override get stepKey(): string {
+    return Generator.stepKey;
+  }
+
   // methods
 
   public static create(): Generator<any, any> {

@@ -88,7 +88,8 @@ h6 {
   margin-right: var(--general-spacing);
 }
 
-.input input {
+.input input,
+.input select {
   width: 100%;
   flex: 1 1 0;
   min-width: 0px;
@@ -117,4 +118,8 @@ h6 {
   white-space: nowrap;
   width: 100%;
   min-width: max-content;
+}
+
+dialog:has(.container) {
+  background-color: transparent;
 }

@@ -2,6 +2,8 @@ import { Panel } from "@/components";
 import { Creator, Entity, EntityTypes } from "@/models";
 
 import { BasePipelineComponent } from "./base-pipeline";
+import ConfigTables from "./step-config-tables";
+
 import styles from "../../style.module.css";
 
 interface Props<V extends Entity.Base.EntityType> {

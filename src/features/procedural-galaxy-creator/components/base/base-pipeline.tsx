@@ -15,21 +15,19 @@ interface Props<V, T extends Creator.Base.ValuePipeline<V>> {
 const { AllGenerators, AllOperators } = ConfigTables;
 
 interface SetStateModalProps {
-  index: number;
+  index?: number;
   onConfirm: (stepKey: string) => void;
+  onClose: () => void;
 }
 
 const SetStateModal = forwardRef(
   (props: SetStateModalProps, ref: Ref<HTMLDialogElement | null>) => {
     const { index } = props;
-    const typeText = index > -1 ? "Operator" : "Generator";
+    const typeText = index !== undefined ? (index > -1 ? "Operator" : "Generator") : "";
 
     const modalRef = useRef<HTMLDialogElement>(null);
 
-    const options = useMemo(() => {
-      return index > -1 ? AllOperators : AllGenerators;
-    }, [index]);
-
+    const options = index !== undefined ? (index > -1 ? AllOperators : AllGenerators) : [];
     const [value, setValue] = useState<string>(Object.keys(options)[0]);
 
     useImperativeHandle(ref, () => modalRef.current, []);
@@ -39,7 +37,7 @@ const SetStateModal = forwardRef(
         <Panel maxWidth="500px">
           <Panel.Header className="flex-row">
             <h5 className="flex-fill">
-              Step {index + 2}: Set {typeText}
+              Step {index !== undefined ? index + 2 : 0}: Set {typeText}
             </h5>
             <ActionOnlyButton className="core xs" onClick={() => modalRef.current?.close()}>
               <SVGIcons.Delete />
@@ -55,7 +53,7 @@ const SetStateModal = forwardRef(
             <button className="core float-right" onClick={() => value && props.onConfirm(value)}>
               Save
             </button>
-            <button className="core float-right" onClick={() => modalRef.current?.close()}>
+            <button className="core float-right" onClick={props.onClose}>
               Cancel
             </button>
           </div>
@@ -106,7 +104,12 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
     }
 
     setModalRef.current?.close();
+    setSelectedIndex(undefined);
     triggerStateChange();
+  };
+
+  const onSetStepCancel = () => {
+    setModalRef.current?.close();
   };
 
   const onAddStep = () => {
@@ -117,6 +120,10 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
     pipeline.createOperator(AllOperators[stepKey]);
     addModalRef.current?.close();
     triggerStateChange();
+  };
+
+  const onAddStepCancel = () => {
+    addModalRef.current?.close();
   };
 
   return (
@@ -152,11 +159,17 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
           </ToggleComponent.Area>
         </ToggleComponent>
       </Panel.Group>
-      <SetStateModal ref={setModalRef} index={selectedIndex || 0} onConfirm={onSetStepConfirm} />
+      <SetStateModal
+        ref={setModalRef}
+        index={selectedIndex}
+        onConfirm={onSetStepConfirm}
+        onClose={onSetStepCancel}
+      />
       <SetStateModal
         ref={addModalRef}
         index={pipeline.operators.length}
         onConfirm={onAddStepConfirm}
+        onClose={onAddStepCancel}
       />
     </>
   );

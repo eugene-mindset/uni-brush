@@ -32,7 +32,7 @@ export interface MainViewContextFullState extends MainViewContextReadOnlyState {
      * Set pointer info
      * @param action whether to set the hovered or selected value
      * @param entity entity to set as
-     * @param intersect info on intersecton
+     * @param intersect info on intersection
      */
     setPointer: (
       action: "hover" | "select",

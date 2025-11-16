@@ -36,20 +36,20 @@ export const BaseStepComponent = <K extends Object, T extends Creator.Base.Step<
             </ActionOnlyButton>
           )}
           {props.onMove && (
-            <ActionOnlyButton
-              className="core xs"
-              onClick={() => props?.onMove && props.onMove("up")}
-            >
-              <SVGIcons.ArrowUp />
-            </ActionOnlyButton>
-          )}
-          {props.onMove && (
-            <ActionOnlyButton
-              className="core xs"
-              onClick={() => props?.onMove && props.onMove("down")}
-            >
-              <SVGIcons.ArrowDown />
-            </ActionOnlyButton>
+            <>
+              <ActionOnlyButton
+                className="core xs"
+                onClick={() => props?.onMove && props.onMove("down")}
+              >
+                <SVGIcons.ArrowDown />
+              </ActionOnlyButton>
+              <ActionOnlyButton
+                className="core xs"
+                onClick={() => props?.onMove && props.onMove("up")}
+              >
+                <SVGIcons.ArrowUp />
+              </ActionOnlyButton>
+            </>
           )}
           {props.onDuplicate && (
             <ActionOnlyButton className="core xs" onClick={props.onDuplicate}>

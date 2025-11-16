@@ -126,6 +126,11 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
     addModalRef.current?.close();
   };
 
+  const onMoveStep = (index: number, dir: "up" | "down") => {
+    pipeline.moveOperator(index, dir);
+    triggerStateChange();
+  };
+
   return (
     <>
       <Panel.Group>
@@ -154,6 +159,7 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
                   onDelete={() => onDeleteOperator(i)}
                   onDuplicate={() => onDuplicateOperator(i)}
                   onSet={() => onSetStep(i)}
+                  onMove={(dir: "up" | "down") => onMoveStep(i, dir)}
                 />
               ))}
           </ToggleComponent.Area>

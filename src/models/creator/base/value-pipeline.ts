@@ -90,4 +90,17 @@ export class ValuePipeline<T> {
     this._operators[index].setConfig(config);
     this.reset();
   }
+
+  public moveOperator(index: number, dir: "up" | "down") {
+    const delta = dir === "up" ? -1 : 1;
+    const dest = index + delta;
+
+    if (dest < 0 || dest >= this._operators.length) {
+      return;
+    }
+
+    const temp = this._operators[index];
+    this._operators[index] = this._operators[dest];
+    this._operators[dest] = temp;
+  }
 }

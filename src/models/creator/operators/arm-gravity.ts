@@ -18,7 +18,7 @@ interface Config {
 }
 
 export class ArmGravity extends Operator<Vector3, Config> {
-  public override readonly stepKey: string = "Operator:ArmGravity";
+  public static override readonly stepKey: string = "Operator:ArmGravity";
 
   public static override create(): ArmGravity {
     return new ArmGravity({
@@ -36,6 +36,10 @@ export class ArmGravity extends Operator<Vector3, Config> {
 
   public clone(): ArmGravity {
     return new ArmGravity({ ...this.config });
+  }
+
+  public override get stepKey(): string {
+    return ArmGravity.stepKey;
   }
 
   public get config(): Config {

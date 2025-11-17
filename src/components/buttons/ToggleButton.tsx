@@ -1,7 +1,7 @@
 import { FunctionalComponent } from "preact";
 
 import { SVGIcons } from "@/components";
-import classNames from "classnames";
+import { ActionOnlyButton } from "./ActionOnlyButton";
 
 interface Props {
   toggle: boolean;
@@ -10,9 +10,13 @@ interface Props {
 }
 
 export const ToggleButton: FunctionalComponent<Props> = (props) => {
+  const onClick = () => {
+    props.onToggle();
+  };
+
   return (
-    <button className={classNames("core", "square", props?.className)} onClick={props.onToggle}>
+    <ActionOnlyButton onClick={onClick} className={props?.className}>
       {props.toggle ? <SVGIcons.CaretUpFill /> : <SVGIcons.CaretDownFill />}
-    </button>
+    </ActionOnlyButton>
   );
 };

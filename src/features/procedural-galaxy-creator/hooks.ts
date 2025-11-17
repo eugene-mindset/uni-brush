@@ -10,7 +10,9 @@ const initModel = () => {
   mainEntityPipe.createPipeline("initialPosition");
   mainEntityPipe.createPipeline("name");
 
-  mainEntityPipe.pipelines["initialPosition"]?.setGenerator(Creator.Generators.NormalDistribution);
+  mainEntityPipe.pipelines["initialPosition"]?.setGenerator(
+    Creator.Generators.NormalDistributionVector
+  );
   mainEntityPipe.pipelines["initialPosition"]?.createOperator(Creator.Operators.BasicGravity);
   mainEntityPipe.pipelines["initialPosition"]?.createOperator(Creator.Operators.ArmGravity);
 
@@ -21,7 +23,9 @@ const initModel = () => {
   testEntityPipe.createPipeline("initialPosition");
   testEntityPipe.createPipeline("name");
 
-  testEntityPipe.pipelines["initialPosition"]?.setGenerator(Creator.Generators.NormalDistribution);
+  testEntityPipe.pipelines["initialPosition"]?.setGenerator(
+    Creator.Generators.NormalDistributionVector
+  );
 
   testEntityPipe.pipelines["name"]?.setGenerator(Creator.Generators.DefaultValue<string>);
   testEntityPipe.pipelines["name"]?.generator?.setConfig({ defaultValue: "Secondary Star" });

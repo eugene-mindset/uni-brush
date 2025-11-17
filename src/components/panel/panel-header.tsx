@@ -3,11 +3,11 @@ import classNames from "classnames";
 
 import styles from "./panel.module.css";
 import { CommonProps } from "./types";
-import { useToggle } from "../toggle";
+import { ToggleComponent, useToggle } from "../toggle";
 import { SVGIcons } from "../icons";
 
 interface Props extends CommonProps {
-  canToggle?: "header";
+  canToggle?: "header-small" | "header-big";
 }
 
 export const PanelHeader: FunctionalComponent<Props> = (props: Props) => {
@@ -19,12 +19,14 @@ export const PanelHeader: FunctionalComponent<Props> = (props: Props) => {
         "flex-row",
         styles.header,
         props.className,
-        props.canToggle && styles.hover
+        props.canToggle === "header-small" && styles.hover
       )}
-      onClick={props.canToggle && onToggle}
+      onClick={props.canToggle === "header-small" ? onToggle : undefined}
     >
       {toChildArray(props?.children)}
-      {props.canToggle && (toggle ? <SVGIcons.CaretUpFill /> : <SVGIcons.CaretDownFill />)}
+      {props.canToggle === "header-small" &&
+        (toggle ? <SVGIcons.CaretUpFill /> : <SVGIcons.CaretDownFill />)}
+      {props.canToggle === "header-big" && <ToggleComponent.Button className="fit" />}
     </div>
   );
 };

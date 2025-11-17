@@ -10,8 +10,9 @@ interface Config {
   falloff: number;
 }
 
+// not working as intended when location is not origin
 export class BasicGravity extends Operator<Vector3, Config> {
-  public override readonly stepKey: string = "Operator:BasicGravity";
+  public static override readonly stepKey: string = "Operator:BasicGravity";
 
   public static override create(): BasicGravity {
     return new BasicGravity({
@@ -24,6 +25,10 @@ export class BasicGravity extends Operator<Vector3, Config> {
 
   public clone(): BasicGravity {
     return new BasicGravity({ ...this.config });
+  }
+
+  public override get stepKey(): string {
+    return BasicGravity.stepKey;
   }
 
   public get config(): Config {

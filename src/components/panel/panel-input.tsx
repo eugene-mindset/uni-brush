@@ -28,7 +28,13 @@ export const PanelInput: FunctionalComponent<Props> = (props: Props) => {
   return (
     <div className={classNames(styles.input, props.className)}>
       <label>{props.labelText}</label>
-      <input ref={inputRef} type={props.type} value={props.value} onInput={onInput} />
+      <input
+        className={classNames(props.type === "checkbox" && "flex-no-fill")}
+        ref={inputRef}
+        type={props.type}
+        value={props.value}
+        onInput={onInput}
+      />
       {toChildArray(props?.children)}
     </div>
   );

@@ -147,6 +147,10 @@ table.alt-row-table {
   flex: 1;
 }
 
+.flex-no-fill {
+  flex: 0;
+}
+
 .margin-block {
   margin-block: var(--general-spacing);
 }
@@ -159,4 +163,12 @@ table.alt-row-table {
 .grid-5 {
   display: grid;
   grid-template-columns: auto auto auto auto auto;
+}
+
+.true-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
 }

@@ -1,3 +1,4 @@
+import { Creator } from "@/models";
 import { JSXInternal } from "node_modules/preact/src/jsx";
 
 type configTable = {
@@ -5,8 +6,9 @@ type configTable = {
     header: string;
     config: {
       [key: string]: {
-        type: JSXInternal.HTMLInputTypeAttribute | "vector";
+        type: JSXInternal.HTMLInputTypeAttribute | "vector" | "select";
         text?: string;
+        selectOptions?: { text: string; value: string | number }[];
       };
     };
   };
@@ -15,8 +17,8 @@ type configTable = {
 // TODO: move these settings to classes, like a view model property
 
 export const StepConfigTable: configTable = {
-  "Generator:NormalDistributionVector": {
-    header: "Normal Distribution Vector Generator",
+  [Creator.Generators.NormalDistributionVector.stepKey]: {
+    header: "Normal Distribution",
     config: {
       normalDev: {
         type: "number",
@@ -24,11 +26,11 @@ export const StepConfigTable: configTable = {
       },
       dim: {
         type: "vector",
-        text: "Galaxy Size",
+        text: "Dimensions",
       },
     },
   },
-  "Generator:DefaultValue": {
+  [Creator.Generators.DefaultValue.stepKey]: {
     header: "Default Value",
     config: {
       defaultValue: {
@@ -37,8 +39,8 @@ export const StepConfigTable: configTable = {
       },
     },
   },
-  "Operator:BasicGravity": {
-    header: "Basic Gravity Effect",
+  [Creator.Operators.BasicGravity.stepKey]: {
+    header: "Basic Gravity",
     config: {
       size: {
         type: "vector",
@@ -58,8 +60,8 @@ export const StepConfigTable: configTable = {
       },
     },
   },
-  "Operator:ArmGravity": {
-    header: "Arm Gravity Effect",
+  [Creator.Operators.ArmGravity.stepKey]: {
+    header: "Arm Gravity",
     config: {
       dim: {
         type: "vector",
@@ -101,4 +103,15 @@ export const StepConfigTable: configTable = {
   },
 };
 
-export default StepConfigTable;
+export const AllGenerators = {
+  [Creator.Generators.DefaultValue.stepKey]: Creator.Generators.DefaultValue,
+  [Creator.Generators.NormalDistributionVector.stepKey]:
+    Creator.Generators.NormalDistributionVector,
+};
+
+export const AllOperators = {
+  [Creator.Operators.BasicGravity.stepKey]: Creator.Operators.BasicGravity,
+  [Creator.Operators.ArmGravity.stepKey]: Creator.Operators.ArmGravity,
+};
+
+export default { StepConfigTable, AllGenerators, AllOperators };

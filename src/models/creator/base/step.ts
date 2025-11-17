@@ -1,7 +1,7 @@
 export abstract class Step<O, K extends Object> {
   protected _config: K;
 
-  public readonly stepKey: string = "Base";
+  public static readonly stepKey: string = "Base";
 
   // constructors
 
@@ -18,6 +18,10 @@ export abstract class Step<O, K extends Object> {
   // properties
 
   public abstract get config(): K;
+
+  public get stepKey(): string {
+    return Step.stepKey;
+  }
 
   // methods
 

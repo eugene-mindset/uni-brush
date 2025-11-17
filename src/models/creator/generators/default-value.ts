@@ -5,7 +5,7 @@ interface Config<T> {
 }
 
 export class DefaultValue<T> extends Generator<T | null, Config<T>> {
-  public override readonly stepKey: string = "Generator:DefaultValue";
+  public static override readonly stepKey: string = "Generator:DefaultValue";
 
   public static override create(): DefaultValue<any> {
     return new DefaultValue({
@@ -15,6 +15,10 @@ export class DefaultValue<T> extends Generator<T | null, Config<T>> {
 
   public clone(): DefaultValue<T> {
     return new DefaultValue<T>({ ...this.config });
+  }
+
+  public override get stepKey(): string {
+    return DefaultValue.stepKey;
   }
 
   public get config(): Config<T> {

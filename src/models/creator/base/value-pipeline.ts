@@ -59,6 +59,13 @@ export class ValuePipeline<T> {
   }
 
   // operators
+  public setOperator(index: number, operator: typeof Operator<any, any>): Operator<any, any> {
+    const newOp = operator.create();
+    this._operators[index] = newOp;
+    this.reset();
+
+    return newOp;
+  }
 
   public createOperator(operator: typeof Operator<any, any>): Operator<any, any> {
     const newOp = operator.create();
@@ -82,5 +89,18 @@ export class ValuePipeline<T> {
   public configOperator(index: number, config: Object) {
     this._operators[index].setConfig(config);
     this.reset();
+  }
+
+  public moveOperator(index: number, dir: "up" | "down") {
+    const delta = dir === "up" ? -1 : 1;
+    const dest = index + delta;
+
+    if (dest < 0 || dest >= this._operators.length) {
+      return;
+    }
+
+    const temp = this._operators[index];
+    this._operators[index] = this._operators[dest];
+    this._operators[dest] = temp;
   }
 }

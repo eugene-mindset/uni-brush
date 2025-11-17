@@ -1,7 +1,14 @@
 import { Step } from "./step";
 
 export abstract class Operator<O, K extends Object> extends Step<O, K> {
-  public readonly stepKey: string = "Operator";
+  public static readonly stepKey: string = "Operator";
+
+  // properties
+
+  public override get stepKey(): string {
+    return Operator.stepKey;
+  }
+
   // methods
 
   public static create(): Operator<any, any> {

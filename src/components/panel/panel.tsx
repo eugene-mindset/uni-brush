@@ -12,6 +12,7 @@ import { PanelInput } from "./panel-input";
 import { CommonProps } from "./types";
 import { PanelVectorInput } from "./panel-vector-input";
 import { ToggleButton } from "../buttons";
+import { PanelSelectInput } from "./panel-select-input";
 
 interface Props extends CommonProps {
   title?: string;
@@ -117,18 +118,20 @@ export function Panel(props: Props) {
           props.canDrag && isDragging && styles.dragging
         )}
       >
-        <div
-          ref={(x) => {
-            titleRef.current = x;
-          }}
-          className={classNames(styles.title, toggle && styles.title_toggle)}
-          onPointerDown={onDragStart}
-        >
-          {props.canToggle && (
-            <ToggleButton toggle={toggle} onToggle={() => setToggle((x) => !x)} />
-          )}
-          <h1 className={styles.title_text}>{props.title}</h1>
-        </div>
+        {props.title && (
+          <div
+            ref={(x) => {
+              titleRef.current = x;
+            }}
+            className={classNames(styles.title, toggle && styles.title_toggle)}
+            onPointerDown={onDragStart}
+          >
+            {props.canToggle && (
+              <ToggleButton toggle={toggle} onToggle={() => setToggle((x) => !x)} />
+            )}
+            <h1 className={styles.title_text}>{props.title}</h1>
+          </div>
+        )}
         <div className="scrollable">{toggle && toChildArray(props?.children)}</div>
       </div>
     </PanelContext.Provider>
@@ -138,4 +141,5 @@ export function Panel(props: Props) {
 Panel.Header = PanelHeader;
 Panel.Group = PanelGroup;
 Panel.Input = PanelInput;
-Panel.VectorInput = PanelVectorInput;
+Panel.Vector = PanelVectorInput;
+Panel.Dropdown = PanelSelectInput;

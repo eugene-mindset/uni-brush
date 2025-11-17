@@ -97,6 +97,7 @@ export namespace RenderSetup {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.5;
+    // renderer.setClearColor(0xffffff, 1);
 
     const renderPass = new RenderPass(scene, camera);
     const bloomComposer = createBloomComposer({ renderer, renderPass });

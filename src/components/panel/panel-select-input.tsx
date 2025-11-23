@@ -1,5 +1,5 @@
 import { FunctionalComponent } from "preact";
-import styles from "./panel.module.css";
+import styles from "./style.module.css";
 import classNames from "classnames";
 
 interface Props {

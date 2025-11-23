@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 import { useDraggable } from "@/hooks";
 
-import styles from "./panel.module.css";
+import styles from "./style.module.css";
 import { PanelContext } from "./context";
 import { PanelHeader } from "./panel-header";
 import { PanelGroup } from "./panel-group";

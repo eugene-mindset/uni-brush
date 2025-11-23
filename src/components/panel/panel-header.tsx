@@ -1,7 +1,7 @@
 import { FunctionalComponent, toChildArray } from "preact";
 import classNames from "classnames";
 
-import styles from "./panel.module.css";
+import styles from "./style.module.css";
 import { CommonProps } from "./types";
 import { ToggleComponent, useToggle } from "../toggle";
 import { SVGIcons } from "../icons";

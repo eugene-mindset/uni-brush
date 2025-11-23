@@ -1,7 +1,12 @@
+* {
+  z-index: 1;
+}
+
 :root {
   height: 100%;
   width: 100%;
   font-size: 9pt;
+  z-index: 0;
 
   font-family: monospace;
   line-height: 1.5;
@@ -121,36 +126,3 @@ h6 {
 select {
   font: inherit;
 }
-
-.interface {
-  position: absolute;
-  box-sizing: border-box;
-  padding: var(--general-spacing);
-  height: 100%;
-  width: 100%;
-
-  pointer-events: none;
-}
-
-.interface.fixed {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--general-spacing);
-}
-
-.interface.dynamic {
-  position: relative;
-  top: -100%;
-  padding: 0;
-}
-
-.panels {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow-y: hidden;
-  gap: var(--general-spacing);
-}
-
-/** move helpers to another file */

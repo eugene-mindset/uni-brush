@@ -1,25 +1,3 @@
-* {
-  z-index: 1;
-}
-
-#app-menu {
-  pointer-events: all;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  gap: var(--general-spacing);
-
-  width: 150px;
-  min-height: 400px;
-  z-index: 10;
-}
-
-#app-menu > *:last-child {
-  /* Selects the last direct child of .container */
-  margin-top: auto;
-}
-
 .flex-col {
   display: flex;
   flex-direction: column;
@@ -92,26 +70,6 @@ table.alt-row-table {
 .directory tbody td:last-child {
   border-collapse: separate;
   border-right: none;
-}
-
-#main-toolbar {
-  top: var(--general-spacing);
-  left: var(--general-spacing);
-  display: flex;
-  flex-direction: row;
-  gap: var(--general-spacing);
-
-  pointer-events: all;
-}
-
-#inner-toolbar {
-  display: flex;
-  flex-direction: row;
-  gap: var(--general-spacing);
-}
-
-#toolbar-container {
-  gap: var(--general-spacing);
 }
 
 .sub-toolbar {

@@ -83,7 +83,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
   private publicToIndex: Record<string, number>;
   /** The default values to grant for each entity's attributes */
   private defaultAttributeValues: {
-    [key in keyof Attributes]: { value?: Attributes[key]; generator?: () => Attributes[key] };
+    [key in keyof Attributes]?: { value?: Attributes[key]; generator?: () => Attributes[key] };
   };
   /** Attributes to not including when serializing or deserializing entities */
   private notSerializedAttributes: Set<keyof typeof this.dataStore>;
@@ -270,12 +270,8 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
   }
 
   public resetAttributeForAll<K extends keyof typeof this.dataStore>(key: K) {
-    if (key === "publicId") {
-      throw new Error("Cannot reset all ids!");
-    } else {
-      const { value, generator } = this.defaultAttributeValues[key as keyof Attributes];
-      this.setAttributeForAll(key, value, generator);
-    }
+    const defaults = this.defaultAttributeValues[key as keyof Attributes];
+    this.setAttributeForAll(key, defaults?.value, defaults?.generator);
     this.emit("refresh", { who: "all" });
   }
 

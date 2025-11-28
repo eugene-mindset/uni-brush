@@ -1,22 +1,23 @@
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+/// <reference types="vitest/config" />
 
+import { defineConfig, defineViteConfig, externalizeDepsPlugin } from "electron-vite";
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
 
 export default defineConfig(({ command }) => {
   // rmSync('out', { recursive: true, force: true })
 
-  const isServe = command === 'serve'
+  const isServe = command === "serve";
   const isBuild = false; // command === 'build'
-  const sourcemap = isServe || !!process.env.VSCODE_DEBUG
+  const sourcemap = isServe || !!process.env.VSCODE_DEBUG;
 
   return {
     main: {
       plugins: [externalizeDepsPlugin()],
       build: {
-        sourcemap, 
+        sourcemap,
         rollupOptions: {
-          input: "src/main/index.ts"
+          input: "src/main/index.ts",
         },
         // external: ["src/utils"],
         minify: isBuild,
@@ -28,27 +29,26 @@ export default defineConfig(({ command }) => {
       build: {
         sourcemap: sourcemap ? "inline" : undefined,
         rollupOptions: {
-          input: "src/preload/index.ts"
+          input: "src/preload/index.ts",
         },
         minify: isBuild,
-      }
+      },
     },
-    renderer: {
+    renderer: defineViteConfig({
       root: resolve("src"),
       plugins: [react()],
       build: {
         rollupOptions: {
-          input: 'src/index.html'
+          input: "src/index.html",
         },
         minify: isBuild,
       },
       resolve: {
         alias: {
-          "@": resolve("src")
+          "@": resolve("src"),
         },
-        preserveSymlinks: true
+        preserveSymlinks: true,
       },
-    }
-    
-  }
-})
+    }),
+  };
+});

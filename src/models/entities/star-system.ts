@@ -36,11 +36,11 @@ export class StarSystemEntity extends Entity {
     this.manager = manager;
   }
 
-  get visual(): StarSystemVisual | undefined {
+  get obj3D(): StarSystemVisual | undefined {
     return this.manager.getAttributeFor(this._index, "obj3D");
   }
 
-  set visual(objRef: StarSystemVisual) {
+  set obj3D(objRef: StarSystemVisual) {
     this.manager.setAttributeFor(this._index, "obj3D", objRef);
   }
 
@@ -70,14 +70,12 @@ export class StarSystemManager extends EntityManager<
     super(
       StarSystemEntity,
       {
-        obj3D: {},
         name: {
           value: "Unnamed",
         },
         desc: {
           value: "N/A",
         },
-        initialPosition: {},
       },
       2500,
       ["obj3D"],

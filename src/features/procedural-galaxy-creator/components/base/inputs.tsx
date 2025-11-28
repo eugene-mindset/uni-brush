@@ -74,12 +74,12 @@ export const ModelStepVectorInput = <K extends object, T extends Creator.Base.St
   );
 };
 
-export interface DynamicInputProps<K extends object, T extends Creator.Base.Step<any, K>> {
+export interface DynamicInputProps<K extends object, T extends Creator.Base.Step<never, K>> {
   step: T;
   configKey: keyof K;
 }
 
-export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.Step<any, K>>(
+export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.Step<never, K>>(
   props: DynamicInputProps<K, T>,
 ) => {
   const { step, configKey } = props;

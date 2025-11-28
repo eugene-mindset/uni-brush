@@ -9,6 +9,8 @@ import { MainViewContextProvider } from "@/store/main-view-context";
 import GalaxyViewer from "@/interface/galaxy-viewer";
 import FullInterface from "@/interface";
 
+import "bootstrap-icons/font/bootstrap-icons.css";
+
 import "@/styles/base.css";
 import "@/styles/three.css";
 import "@/styles/ui.css";
@@ -18,7 +20,7 @@ import "@/styles/other.css";
 const App: React.FC = () => {
   return (
     <AppContextProvider value={{}}>
-      <MainViewContextProvider value={{}}>
+      <MainViewContextProvider value={null}>
         <GalaxyViewer />
         <FullInterface />
       </MainViewContextProvider>

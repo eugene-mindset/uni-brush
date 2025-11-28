@@ -7,7 +7,7 @@ interface Config<T> {
 export class DefaultValue<T> extends Generator<T | null, Config<T>> {
   public static override readonly stepKey: string = "Generator:DefaultValue";
 
-  public static override create(): DefaultValue<any> {
+  public static override create(): DefaultValue<never> {
     return new DefaultValue({
       defaultValue: null,
     });

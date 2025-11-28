@@ -9,7 +9,7 @@ export abstract class Step<O, K extends Object> {
     this._config = config;
   }
 
-  public static create(): Step<any, any> {
+  public static create(): Step<never, never> {
     throw new Error("Cannot call static of abstract class");
   }
 
@@ -25,9 +25,9 @@ export abstract class Step<O, K extends Object> {
 
   // methods
 
-  protected abstract generateStep(idx: number, ...args: any[]): O;
+  protected abstract generateStep(idx: number, ...args: never[]): O;
 
-  public abstract generate(...args: any[]): O[];
+  public abstract generate(...args: never[]): O[];
 
   public setConfig(config: K) {
     this._config = { ...config };

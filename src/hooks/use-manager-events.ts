@@ -9,7 +9,7 @@ interface ListenerPairs {
   initArgs?: never[];
 }
 
-export const useManagerEvents = <T extends Entity.Base.ManagerType<any, any>>(
+export const useManagerEvents = <T extends Entity.Base.ManagerType<never, never>>(
   manager: T,
   dependencies: never[],
   ...callbacks: ListenerPairs[]

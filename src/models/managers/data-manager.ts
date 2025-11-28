@@ -63,7 +63,7 @@ export class DataInstanceInternal {
   public static type: EntityTypes = EntityTypes.BASE;
   private _internalId: number;
 
-  constructor(_newId: number, ..._: any[]) {
+  constructor(_newId: number, ..._: never[]) {
     this._internalId = _newId;
   }
 
@@ -103,7 +103,7 @@ export interface DataManager<Ext, Mod> {
   mapEntities: <R>(pred: (x: Ext) => R) => R[];
 }
 
-type DataManagerEventCallback = (...args: any[]) => void;
+type DataManagerEventCallback = (...args: never[]) => void;
 
 export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   implements DataManager<Ext, Mod>
@@ -124,7 +124,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   private isInit: boolean = false;
 
   public constructor(
-    type: new (_newId: number, ...args: any[]) => Int,
+    type: new (_newId: number, ...args: never[]) => Int,
     initCapacity?: number,
     excludeProperties?: (keyof typeof this.dataStore)[],
   ) {
@@ -232,7 +232,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return this.dataInstances.map((x) => x[key]);
   }
 
-  protected getPropertyForInstance(id: number, key: keyof typeof this.dataStore): any {
+  protected getPropertyForInstance(id: number, key: keyof typeof this.dataStore): never {
     return this.dataStore[key][id];
   }
 

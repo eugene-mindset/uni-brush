@@ -11,7 +11,7 @@ export abstract class Operator<O, K extends Object> extends Step<O, K> {
 
   // methods
 
-  public static create(): Operator<any, any> {
+  public static create(): Operator<never, never> {
     throw new Error("Cannot call static of abstract class");
   }
 

@@ -2,7 +2,6 @@ import { Fragment, FunctionalComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { Entity } from "@/models";
-import "@/styles/ui.css";
 
 // TODO: UI needs to get cleaned up
 export const AppMenu: FunctionalComponent<{}> = () => {

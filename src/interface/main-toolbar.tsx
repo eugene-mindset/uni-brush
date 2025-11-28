@@ -1,7 +1,6 @@
 import { FunctionalComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
-import "@/styles/ui.css";
 import { SVGIcons } from "@/components";
 
 interface Props {

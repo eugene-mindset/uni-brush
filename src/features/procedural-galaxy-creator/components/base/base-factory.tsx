@@ -2,7 +2,6 @@ import { Panel } from "@/components";
 import { Creator, Entity, EntityTypes } from "@/models";
 
 import { BasePipelineComponent } from "./base-pipeline";
-import ConfigTables from "./step-config-tables";
 
 import styles from "../../style.module.css";
 
@@ -19,8 +18,8 @@ export const BaseFactoryComponent = <V extends Entity.Base.EntityType>(props: Pr
         <h2>{entity}</h2>
       </Panel.Header>
       <Panel.Group>
-        {factory.pipelines.map((entityPipeline) => (
-          <div className={styles.entity_pipeline}>
+        {factory.pipelines.map((entityPipeline, index) => (
+          <div key={`${entityPipeline.name}_${index}`} className={styles.entity_pipeline}>
             <Panel.Header>
               <h3>{entityPipeline.name}</h3>
             </Panel.Header>

@@ -1,5 +1,5 @@
-import { createContext, Provider } from "preact";
-import { useContext } from "preact/hooks";
+import { ContextProvider } from "@/types";
+import { createContext, useContext } from "react";
 
 /** General app state*/
 export interface AppContextState {
@@ -17,10 +17,8 @@ const AppContext = createContext({ file: "" } as AppContextState);
  * @param param0
  * @returns JSX
  */
-export const AppContextProvider: Provider<{}> = ({ children }) => {
-  return (
-    <AppContext.Provider value={{ file: "" } as AppContextState}>{children}</AppContext.Provider>
-  );
+export const AppContextProvider: ContextProvider<{}> = ({ children }) => {
+  return <AppContext.Provider value={{ file: "" }}>{children}</AppContext.Provider>;
 };
 
 /**

@@ -1,5 +1,6 @@
+import { useRef, useState } from "react";
+
 import { MathHelpers } from "@/util";
-import { useRef, useState } from "preact/hooks";
 
 interface Args {
   enabled?: boolean;
@@ -17,7 +18,7 @@ export const useDraggable = (args: Args) => {
   const isDragging = useRef(false);
   const startOffset = useRef({ x: 0, y: 0 });
 
-  const onPointerDown = (e: PointerEvent) => {
+  const onPointerDown = (e: React.PointerEvent) => {
     if (!args.enabled) return;
 
     isDragging.current = true;
@@ -51,7 +52,7 @@ export const useDraggable = (args: Args) => {
     setPosition({ x: newX, y: newY });
   };
 
-  const onPointerUp = () => {
+  const onPointerUp = (_e: PointerEvent) => {
     if (!args.enabled) return;
 
     isDragging.current = false;

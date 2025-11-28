@@ -1,9 +1,10 @@
-import { createContext, Provider, toChildArray } from "preact";
-import { Signal, useSignal } from "@preact/signals";
-import { useContext } from "preact/hooks";
+import React, { createContext, useContext, useEffect } from "react";
 
-import { RenderIntersectData } from "@/types";
+import { ContextProvider, RenderIntersectData } from "@/types";
 import { Intersection } from "three";
+import { atom, getDefaultStore, PrimitiveAtom } from "jotai";
+import { Entity, Procedural } from "@/models";
+import { config } from "@/config";
 
 /**
  * Info thats enough to to react to events within canvas.
@@ -12,13 +13,13 @@ export interface MainViewContextReadOnlyState {
   pointer: {
     /** Object currently hovered on within the main view */
     hover: {
-      ref: Signal<RenderIntersectData | null>;
-      intersect: Signal<Intersection | null>;
+      ref: PrimitiveAtom<RenderIntersectData | null>;
+      intersect: PrimitiveAtom<Intersection | null>;
     };
     /** Object currently selected within the main view */
     select: {
-      ref: Signal<RenderIntersectData | null>;
-      intersect: Signal<Intersection | null>;
+      ref: PrimitiveAtom<RenderIntersectData | null>;
+      intersect: PrimitiveAtom<Intersection | null>;
     };
   };
 }
@@ -37,7 +38,7 @@ export interface MainViewContextFullState extends MainViewContextReadOnlyState {
     setPointer: (
       action: "hover" | "select",
       entity?: RenderIntersectData,
-      intersect?: Intersection
+      intersect?: Intersection,
     ) => void;
   } & MainViewContextReadOnlyState["pointer"];
 }
@@ -52,36 +53,56 @@ const MainViewContext = createContext({} as MainViewContextFullState);
  * @param props
  * @returns JSX
  */
-export const MainViewContextProvider: Provider<{}> = ({ children }) => {
-  const hoverEntity = useSignal<RenderIntersectData | null>(null);
-  const hoverIntersect = useSignal<Intersection | null>(null);
+export const MainViewContextProvider: ContextProvider<null> = ({ children }) => {
+  const hoverEntityAtom = atom<RenderIntersectData | null>(null);
+  const hoverIntersectAtom = atom<Intersection | null>(null);
 
-  const selectEntity = useSignal<RenderIntersectData | null>(null);
-  const selectIntersect = useSignal<Intersection | null>(null);
+  const selectEntityAtom = atom<RenderIntersectData | null>(null);
+  const selectIntersectAtom = atom<Intersection | null>(null);
+
+  const store = getDefaultStore();
+
+  // generate a random layout upon initial visit
+
+  useEffect(() => {
+    const newVectors = Procedural.generateGalaxyBase(config);
+    const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
+
+    const finalVectors = config.showDebug ? newVectors : afterArm;
+
+    if (!Entity.StarSystem.Manager.isInitialized) {
+      Entity.StarSystem.Manager.batchInitializeProperty("initPos", finalVectors);
+      Entity.StarSystem.Manager.batchInitializeEntities();
+    }
+  }, []);
 
   const setIntersect = (
     action: "hover" | "select",
     entity?: RenderIntersectData,
-    intersect?: Intersection
+    intersect?: Intersection,
   ) => {
     if (action === "select") {
-      selectEntity.value = hoverEntity.value;
-      selectIntersect.value = entity ? hoverIntersect.value : intersect || null;
+      store.set(selectEntityAtom, store.get(hoverEntityAtom));
+      store.set(selectEntityAtom, store.get(hoverEntityAtom));
     } else {
-      hoverEntity.value = entity || null;
-      hoverIntersect.value = intersect || null;
+      store.set(hoverEntityAtom, entity || null);
+      store.set(hoverIntersectAtom, intersect || null);
     }
   };
 
   const out: MainViewContextFullState = {
     pointer: {
-      hover: { ref: hoverEntity, intersect: hoverIntersect },
-      select: { ref: selectEntity, intersect: selectIntersect },
+      hover: { ref: hoverEntityAtom, intersect: hoverIntersectAtom },
+      select: { ref: selectEntityAtom, intersect: selectIntersectAtom },
       setPointer: setIntersect,
     },
   };
 
-  return <MainViewContext.Provider value={out}>{toChildArray(children)}</MainViewContext.Provider>;
+  return (
+    <MainViewContext.Provider value={out}>
+      {React.Children.toArray(children)}
+    </MainViewContext.Provider>
+  );
 };
 
 /**

@@ -1,14 +1,12 @@
-import { FunctionalComponent, JSX } from "preact";
-
+import { useRef, HTMLAttributes } from "react";
 import classNames from "classnames";
-import { useRef } from "preact/hooks";
 
-interface Props extends JSX.HTMLAttributes<HTMLButtonElement> {}
+interface Props extends HTMLAttributes<HTMLButtonElement> {}
 
-export const ActionOnlyButton: FunctionalComponent<Props> = (props) => {
+export const ActionOnlyButton: React.FC<Props> = (props) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const onClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     props?.onClick && props.onClick(event);
     buttonRef.current?.blur();
   };

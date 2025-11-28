@@ -1,5 +1,6 @@
-.vscode-test/
-out/
-dist/
-test-fixtures/
-node_modules/
+out
+dist
+pnpm-lock.yaml
+LICENSE.md
+tsconfig.json
+tsconfig.*.json

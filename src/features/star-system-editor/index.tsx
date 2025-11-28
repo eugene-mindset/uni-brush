@@ -1,16 +1,17 @@
-import { FunctionalComponent, JSX } from "preact";
-import { useState } from "preact/hooks";
-import { useSignalEffect } from "@preact/signals";
+import { useEffect, useState } from "react";
 
 import { Entity, EntityTypes } from "@/models";
 import { useMainViewContext } from "@/store";
 import { ThreeHelpers } from "@/util";
 import { Panel } from "@/components";
+import { useAtomValue } from "jotai";
+import React from "react";
 
-export const StarSystemEditor: FunctionalComponent<{}> = () => {
-  const [starSystem, setStarSystem] = useState<Entity.StarSystem.EntityType | null>(null);
+export const StarSystemEditor: React.FC<{}> = () => {
   const mainView = useMainViewContext();
 
+  const selectValue = useAtomValue(mainView.pointer.select.ref);
+  const [starSystem, setStarSystem] = useState<Entity.StarSystem.EntityType | null>(null);
   const [name, setName] = useState<string>("");
 
   const saveChanges = () => {
@@ -21,23 +22,20 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
     starSystem.name = name;
   };
 
-  const onInputName = (event: JSX.TargetedEvent<HTMLInputElement, Event>) => {
+  const onInputName = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
     setName(event.currentTarget.value || "");
   };
 
-  useSignalEffect(() => {
-    const setRef = mainView.pointer.select.ref.value;
-    // if (starSystem) return;
-
-    if (setRef?.refType === EntityTypes.STAR_SYSTEM) {
+  useEffect(() => {
+    if (selectValue?.refType === EntityTypes.STAR_SYSTEM) {
       saveChanges();
-      const newStarSystem = setRef?.refEntity as Entity.StarSystem.EntityType;
+      const newStarSystem = selectValue?.refEntity as Entity.StarSystem.EntityType;
       setStarSystem(newStarSystem);
       setName(newStarSystem.name || "");
     } else {
       setStarSystem(null);
     }
-  });
+  }, [selectValue]);
 
   if (starSystem) {
     const panelTitle = starSystem.name || "Untitled";
@@ -82,4 +80,6 @@ export const StarSystemEditor: FunctionalComponent<{}> = () => {
       </Panel>
     );
   }
+
+  return <React.Fragment />
 };

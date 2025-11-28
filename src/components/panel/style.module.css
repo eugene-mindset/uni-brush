@@ -38,12 +38,6 @@ h6 {
   margin-bottom: var(--general-spacing);
 }
 
-.header:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
 .hover {
   transition: color 0.3s;
 }

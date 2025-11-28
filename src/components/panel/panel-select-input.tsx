@@ -1,4 +1,3 @@
-import { FunctionalComponent } from "preact";
 import styles from "./style.module.css";
 import classNames from "classnames";
 
@@ -9,7 +8,7 @@ interface Props {
   setValue?: (val?: string | number) => void;
 }
 
-export const PanelSelectInput: FunctionalComponent<Props> = (props: Props) => {
+export const PanelSelectInput: React.FC<Props> = (props: Props) => {
   const { value, options } = props;
 
   const onSelect = (value?: string | number) => {
@@ -21,7 +20,9 @@ export const PanelSelectInput: FunctionalComponent<Props> = (props: Props) => {
       {props?.labelText && <label>{props.labelText}</label>}
       <select value={value} onInput={(event) => onSelect(event.currentTarget.value)}>
         {options.map((x) => (
-          <option value={x.value}>{x.text}</option>
+          <option key={x.text} value={x.value}>
+            {x.text}
+          </option>
         ))}
       </select>
     </div>

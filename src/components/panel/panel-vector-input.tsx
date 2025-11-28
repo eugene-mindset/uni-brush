@@ -1,4 +1,3 @@
-import { FunctionalComponent } from "preact";
 import { Vector3 } from "three";
 
 import styles from "./style.module.css";
@@ -12,7 +11,7 @@ interface Props {
   setValue: (vec: Vector3) => void;
 }
 
-export const PanelVectorInput: FunctionalComponent<Props> = (props: Props) => {
+export const PanelVectorInput: React.FC<Props> = (props: Props) => {
   const onVectorInput = (axis: "x" | "y" | "z", value: string) => {
     const newVec = props.value.clone();
     newVec[axis] = parseFloat(value);

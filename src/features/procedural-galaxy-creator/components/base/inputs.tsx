@@ -1,32 +1,31 @@
-import { useState } from "preact/hooks";
+import { HTMLInputTypeAttribute, useState } from "react";
 
 import { Panel } from "@/components";
 
-import { JSXInternal } from "node_modules/preact/src/jsx";
 import { Vector3 } from "three";
 import ConfigTables from "./step-config-tables";
 import { Creator } from "@/models";
 
-export const updateConfig = <K extends Object, T extends Creator.Base.Step<any, K>>(
+export const updateConfig = <K extends object, T extends Creator.Base.Step<never, K>>(
   step: T,
-  newConfig: Partial<K>
+  newConfig: Partial<K>,
 ) => {
   step.setConfig({ ...step.config, ...newConfig });
 };
 
-interface BaseInputProps<K extends Object, T extends Creator.Base.Step<any, K>> {
+export interface BaseInputProps<K extends object, T extends Creator.Base.Step<never, K>> {
   step: T;
   configKey: keyof K;
   labelText?: string;
 }
 
-interface InputProps<K extends Object, T extends Creator.Base.Step<any, K>>
+export interface InputProps<K extends object, T extends Creator.Base.Step<never, K>>
   extends BaseInputProps<K, T> {
-  inputType: JSXInternal.HTMLInputTypeAttribute;
+  inputType: HTMLInputTypeAttribute;
 }
 
-export const ModelStepInput = <K extends Object, T extends Creator.Base.Step<any, K>>(
-  props: InputProps<K, T>
+export const ModelStepInput = <K extends object, T extends Creator.Base.Step<never, K>>(
+  props: InputProps<K, T>,
 ) => {
   const { step, configKey, inputType } = props;
 
@@ -37,10 +36,10 @@ export const ModelStepInput = <K extends Object, T extends Creator.Base.Step<any
       // TODO: need to fix number inputs not taking negative
       const final = parseFloat(value);
       setValue(final as K[keyof K]);
-      updateConfig(step, { [configKey]: final } as Object as K);
+      updateConfig(step, { [configKey]: final } as object as K);
     } else {
       setValue(value as K[keyof K]);
-      updateConfig(step, { [configKey]: value } as Object as K);
+      updateConfig(step, { [configKey]: value } as object as K);
     }
   };
 
@@ -54,8 +53,8 @@ export const ModelStepInput = <K extends Object, T extends Creator.Base.Step<any
   );
 };
 
-export const ModelStepVectorInput = <K extends Object, T extends Creator.Base.Step<any, K>>(
-  props: BaseInputProps<K, T>
+export const ModelStepVectorInput = <K extends object, T extends Creator.Base.Step<never, K>>(
+  props: BaseInputProps<K, T>,
 ) => {
   const { step, configKey } = props;
 
@@ -63,7 +62,7 @@ export const ModelStepVectorInput = <K extends Object, T extends Creator.Base.St
 
   const onInput = (value: Vector3) => {
     setValue(value);
-    updateConfig(step, { [configKey]: value } as Object as K);
+    updateConfig(step, { [configKey]: value } as object as K);
   };
 
   return (
@@ -75,13 +74,13 @@ export const ModelStepVectorInput = <K extends Object, T extends Creator.Base.St
   );
 };
 
-interface DynamicInputProps<K extends Object, T extends Creator.Base.Step<any, K>> {
+export interface DynamicInputProps<K extends object, T extends Creator.Base.Step<any, K>> {
   step: T;
   configKey: keyof K;
 }
 
-export const ModelStepDynamicInput = <K extends Object, T extends Creator.Base.Step<any, K>>(
-  props: DynamicInputProps<K, T>
+export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.Step<any, K>>(
+  props: DynamicInputProps<K, T>,
 ) => {
   const { step, configKey } = props;
   const { StepConfigTable } = ConfigTables;
@@ -93,18 +92,22 @@ export const ModelStepDynamicInput = <K extends Object, T extends Creator.Base.S
   if (properties.type === "vector") {
     return (
       <ModelStepVectorInput
-        key={configKey}
+        key={configKey as string}
         step={step}
         configKey={configKey as keyof K}
         labelText={properties.text}
       />
     );
   } else if (properties.type === "select") {
-    return <div>Need to create model select component, config: {properties.selectOptions}</div>;
+    return (
+      <div>
+        Need to create model select component, config: {JSON.stringify(properties.selectOptions)}
+      </div>
+    );
   } else {
     return (
       <ModelStepInput
-        key={configKey}
+        key={configKey as string}
         inputType={properties.type}
         step={step}
         configKey={configKey as keyof K}

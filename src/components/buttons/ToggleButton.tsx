@@ -1,5 +1,3 @@
-import { FunctionalComponent } from "preact";
-
 import { SVGIcons } from "@/components";
 import { ActionOnlyButton } from "./ActionOnlyButton";
 
@@ -9,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export const ToggleButton: FunctionalComponent<Props> = (props) => {
+export const ToggleButton: React.FC<Props> = (props) => {
   const onClick = () => {
     props.onToggle();
   };

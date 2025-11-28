@@ -1,12 +1,12 @@
+import { HTMLInputTypeAttribute } from "react";
 import { Creator } from "@/models";
-import { JSXInternal } from "node_modules/preact/src/jsx";
 
 type configTable = {
   [key: string]: {
     header: string;
     config: {
       [key: string]: {
-        type: JSXInternal.HTMLInputTypeAttribute | "vector" | "select";
+        type: HTMLInputTypeAttribute | "vector" | "select";
         text?: string;
         selectOptions?: { text: string; value: string | number }[];
       };

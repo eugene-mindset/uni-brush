@@ -1,7 +1,11 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-// import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { is, electronApp, optimizer } from "@electron-toolkit/utils";
+import { installExtension, REACT_DEVELOPER_TOOLS } from "electron-extension-installer";
+// import { createRequire } from "node:module";
+
 import { handleProjectLoad, handleProjectSave } from "./comm";
 
 // const require = createRequire(import.meta.url);
@@ -16,16 +20,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // │ │ ├── main.js
 // │ │ └── preload.mjs
 // │
-process.env.APP_ROOT = path.join(__dirname, "..");
-
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
-export const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-export const MAIN_DIST = path.join(process.env.APP_ROOT, "out");
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
-
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
-  ? path.join(process.env.APP_ROOT, "public")
-  : RENDERER_DIST;
 
 let win: BrowserWindow | null;
 
@@ -36,9 +30,9 @@ function createWindow() {
   win = new BrowserWindow({
     fullscreenable: true,
     fullscreen: true,
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
-      preload: path.join(__dirname, "./preload.mjs"),
+      preload: path.join(__dirname, "../preload/index.js"),
+      sandbox: false,
     },
   });
 
@@ -47,23 +41,38 @@ function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
   });
 
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-  } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
-  }
-
-  win.once("ready-to-show", () => {
+  win.on("ready-to-show", () => {
     win?.show();
-    process.env.MAIN_WINDOW_ID = win?.id || -1;
   });
+
+  win.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url);
+    return { action: "deny" };
+  });
+
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+    win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+  } else {
+    win.loadFile(path.join(__dirname, "../renderer/index.html"));
+  }
 }
 
 /**
  * Setup electron app
  */
 function startApp() {
+  // Set app user model id for windows
+  electronApp.setAppUserModelId("com.electron");
+
+  // Default open or close DevTools by F12 in development
+  // and ignore CommandOrControl + R in production.
+  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+  app.on("browser-window-created", (_, window) => {
+    optimizer.watchWindowShortcuts(window);
+  });
+
   // create handles for ipc
   ipcMain.handle("ub:quit", () => app.quit());
   ipcMain.handle("ub:saveProjectFile", handleProjectSave);
@@ -71,6 +80,12 @@ function startApp() {
 
   // create main window
   createWindow();
+
+  app.on("activate", function () {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -98,3 +113,11 @@ app.on("before-quit", () => {
 
 // boot up app once ready
 app.whenReady().then(startApp);
+
+app.on("ready", async () => {
+  await installExtension(REACT_DEVELOPER_TOOLS, {
+    loadExtensionOptions: {
+      allowFileAccess: true,
+    },
+  });
+});

@@ -1,5 +1,4 @@
-import { FunctionalComponent } from "preact";
-import { useCallback, useState } from "preact/hooks";
+import { useCallback, useState } from "react";
 import { Vector3 } from "three";
 
 import { Entity } from "@/models";
@@ -7,8 +6,9 @@ import { useMainViewContext } from "@/store";
 import { ThreeHelpers } from "@/util";
 import { Panel } from "@/components";
 import { useManagerEvents } from "@/hooks";
+import { useSetAtom } from "jotai";
 
-const StarSystemDirectoryEntry: FunctionalComponent<{
+const StarSystemDirectoryEntry: React.FC<{
   onClick?: () => void;
   starSystemName?: string;
   pos?: Vector3;
@@ -35,10 +35,14 @@ const StarSystemDirectoryEntry: FunctionalComponent<{
   );
 };
 
-export const StarSystemDirectory: FunctionalComponent<{}> = () => {
+export const StarSystemDirectory: React.FC<{}> = () => {
   const mainView = useMainViewContext();
 
-  const [starSystems, setStarSystems] = useState<Entity.StarSystem.EntityType[]>([]);
+  const setSelectedRefAtom = useSetAtom(mainView.pointer.select.ref);
+
+  const [starSystems, setStarSystems] = useState<Entity.StarSystem.EntityType[]>(
+    Entity.StarSystem.Manager.getAll(),
+  );
 
   // TODO: make a single spot to subscribe to all entity changes within a data manager
   const onUpdateDirectory = useCallback(() => {
@@ -48,7 +52,6 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
   useManagerEvents(Entity.StarSystem.Manager, [], {
     events: ["load", "refresh"],
     callback: onUpdateDirectory,
-    init: true,
   });
 
   return (
@@ -70,11 +73,11 @@ export const StarSystemDirectory: FunctionalComponent<{}> = () => {
                 pos={x.initialPosition}
                 key={x.publicId}
                 onClick={() => {
-                  mainView.pointer.select.ref.value = {
+                  setSelectedRefAtom({
                     refVisual: x.visual,
                     refEntity: x,
                     refType: x.type,
-                  };
+                  });
                 }}
               />
             ))}

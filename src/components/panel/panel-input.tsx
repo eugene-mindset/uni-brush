@@ -1,26 +1,20 @@
+import React, { HTMLInputTypeAttribute, Ref, useRef } from "react";
 import classNames from "classnames";
-import { FunctionalComponent, JSX, Ref, toChildArray } from "preact";
 
-import { useRef } from "preact/hooks";
-import { HTMLInputTypeAttribute } from "react-dom/src";
-
-import styles from "./style.module.css";
 import { CommonProps } from "./types";
+import styles from "./style.module.css";
 
-interface Props extends CommonProps {
+export interface Props extends CommonProps {
   labelText?: string;
   type?: HTMLInputTypeAttribute;
   key?: string;
   value?: string | number;
-  onInput?: (
-    event: JSX.TargetedInputEvent<HTMLInputElement>,
-    ref: Ref<HTMLInputElement | null>
-  ) => void;
+  onInput?: (event: React.FormEvent<HTMLInputElement>, ref: Ref<HTMLInputElement | null>) => void;
 }
 
-export const PanelInput: FunctionalComponent<Props> = (props: Props) => {
+export const PanelInput: React.FC<Props> = (props: Props) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const onInput = (event: JSX.TargetedInputEvent<HTMLInputElement>) => {
+  const onInput = (event: React.FormEvent<HTMLInputElement>) => {
     if (!props.onInput) return;
     props.onInput(event, inputRef);
   };
@@ -35,7 +29,7 @@ export const PanelInput: FunctionalComponent<Props> = (props: Props) => {
         value={props.value}
         onInput={onInput}
       />
-      {toChildArray(props?.children)}
+      {React.Children.toArray(props?.children)}
     </div>
   );
 };

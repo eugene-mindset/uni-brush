@@ -6,7 +6,9 @@ import { MathHelpers } from "@/util";
 
 import { BaseVisual } from "./base-visual";
 
-const starSpriteTexture = new THREE.TextureLoader().load("src/assets//sprite120.png");
+import starSpriteImage from "@/assets/sprite120.png";
+
+const starSpriteTexture = new THREE.TextureLoader().load(starSpriteImage);
 const starSpriteMaterial = new THREE.SpriteMaterial({
   map: starSpriteTexture,
   color: "#cccbef",
@@ -43,8 +45,9 @@ export class StarSystemVisual extends BaseVisual {
     this.setUserData();
   }
 
-  private createObject3D(pos: THREE.Vector3 | undefined) {
+  private createObject3D(pos: THREE.Vector3 | undefined): void {
     const lod = new THREE.LOD();
+
     this.material = new THREE.MeshStandardMaterial({
       color: "#cccbef",
       emissive: "#cccbef",
@@ -62,10 +65,6 @@ export class StarSystemVisual extends BaseVisual {
     spriteMesh.scale.multiplyScalar(this.radius * 2);
     lod.addLevel(spriteMesh, 10);
 
-    // const lowSpriteMesh = new THREE.Sprite(starLowSpriteMaterial);
-    // lowSpriteMesh.scale.multiplyScalar(this.radius * 2);
-    // lod.addLevel(lowSpriteMesh, 250);
-
     this._obj3D = lod;
     this._obj3D.layers.enable(Global.Layers.BLOOM_LAYER);
 
@@ -79,10 +78,10 @@ export class StarSystemVisual extends BaseVisual {
     return Entity.StarSystem.Manager.get(this.id);
   }
 
-  public updateScale(position: THREE.Vector3) {
+  public updateScale(position: THREE.Vector3): void {
     if (!this._obj3D) return;
 
-    let dist = this.position.distanceTo(position) / 250;
+    const dist = this.position.distanceTo(position) / 250;
 
     // update star size
     this.renderScale = MathHelpers.clamp(dist, this.MIN_SCALE, this.MAX_SCALE);
@@ -96,7 +95,7 @@ export class StarSystemVisual extends BaseVisual {
     this._obj3D.scale.copy(new THREE.Vector3(this.renderScale, this.renderScale, this.renderScale));
   }
 
-  public dispose() {
+  public dispose(): void {
     this.geometry?.dispose();
     this.material?.dispose();
   }

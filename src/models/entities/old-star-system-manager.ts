@@ -11,7 +11,12 @@
 import * as THREE from "three";
 import { StarSystemVisual } from "@/renderer";
 
-import { DataInstance, DataInstanceInternal, DataManager, DataManagerClass } from "./data-manager";
+import {
+  DataInstance,
+  DataInstanceInternal,
+  DataManager,
+  DataManagerClass,
+} from "./old-data-manager";
 import { EntityTypes } from "./types";
 
 interface StarSystemClass extends DataInstance {

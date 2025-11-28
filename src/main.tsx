@@ -2,11 +2,8 @@
 
 import { render, FunctionalComponent } from "preact";
 
-import "@/styles/base.css";
-import "@/styles/three.css";
-import "@/styles/ui.css";
+import "@/styles/global.css";
 import "@/styles/core.css";
-import "@/styles/other.css";
 
 import GalaxyViewer from "./interface/galaxy-viewer";
 import FullInterface from "./interface";

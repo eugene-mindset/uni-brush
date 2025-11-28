@@ -4,7 +4,7 @@ import { FunctionalComponent, JSX, Ref, toChildArray } from "preact";
 import { useRef } from "preact/hooks";
 import { HTMLInputTypeAttribute } from "react-dom/src";
 
-import styles from "./style.module.css";
+import styles from "./panel.module.css";
 import { CommonProps } from "./types";
 
 interface Props extends CommonProps {

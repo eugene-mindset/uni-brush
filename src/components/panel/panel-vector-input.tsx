@@ -1,7 +1,7 @@
 import { FunctionalComponent } from "preact";
 import { Vector3 } from "three";
 
-import styles from "./style.module.css";
+import styles from "./panel.module.css";
 
 import { PanelInput } from "./panel-input";
 import classNames from "classnames";

@@ -23,34 +23,37 @@ export class StarSystemEntity extends Entity {
   public static readonly type = EntityTypes.STAR_SYSTEM;
   protected manager: StarSystemManager;
 
-  constructor(manager: unknown, newId: number, ..._: never[]) {
-    assert(manager instanceof StarSystemManager, new Error("Cannot create"));
+  constructor(manager: unknown, newId: number) {
+    assert(
+      manager instanceof StarSystemManager,
+      new Error("Cannot create instance without manager being StarSystemManager"),
+    );
     super(manager, newId);
     this.manager = manager;
   }
 
   get visual(): StarSystemVisual | undefined {
-    return this.manager.getAttributeFor(this.internalId, "obj3D");
+    return this.manager.getAttributeFor(this._index, "obj3D");
   }
 
   set visual(objRef: StarSystemVisual) {
-    this.manager.setAttributeFor(this.internalId, "obj3D", objRef);
+    this.manager.setAttributeFor(this._index, "obj3D", objRef);
   }
 
   get name(): string | undefined {
-    return this.manager.getAttributeFor(this.internalId, "name");
+    return this.manager.getAttributeFor(this._index, "name");
   }
 
   set name(newName: string) {
-    this.manager.setAttributeFor(this.internalId, "name", newName);
+    this.manager.setAttributeFor(this._index, "name", newName);
   }
 
   get desc(): string | undefined {
-    return this.manager.getAttributeFor(this.internalId, "desc");
+    return this.manager.getAttributeFor(this._index, "desc");
   }
 
   get initialPosition(): THREE.Vector3 | undefined {
-    return this.manager.getAttributeFor(this.internalId, "initialPosition");
+    return this.manager.getAttributeFor(this._index, "initialPosition");
   }
 }
 

@@ -1,4 +1,3 @@
-import memoize from "fast-memoize";
 import { EntityTypes } from "./types";
 import assert from "assert";
 
@@ -6,39 +5,55 @@ interface EntityDataStore {
   publicId: string[];
 }
 
-// TODO:
-
+/**
+ *
+ */
 export class Entity {
+  /** What type of entity is this instance */
   public static readonly type: EntityTypes = EntityTypes.BASE;
 
+  /** Manager the instance associates with */
   protected _manager: EntityManager<unknown, Entity>;
-  protected readonly _internalId: number;
+  /** Internal id associating the instance to a specific entity within the Manager  */
+  protected readonly _index: number;
 
-  constructor(manager: unknown, newId: number, ..._: never[]) {
-    assert(manager instanceof EntityManager);
+  /**
+   * Construct a new Entity
+   * @param manager Manager the Entity originates from
+   * @param newId Id associating the Entity to a specific entity within the Manager
+   * @param _ Other arguments...
+   * @throws Will ensure manager is indeed an EntityManager or it will error
+   */
+  constructor(manager: unknown, newId: number) {
+    assert(
+      manager instanceof EntityManager,
+      new Error("Cannot create instance without manager being an EntityManager"),
+    );
     this._manager = manager;
-    this._internalId = newId;
+    this._index = newId;
   }
 
-  public get internalId(): number {
-    return this._internalId;
-  }
-
-  private __getMemoPublicId = memoize(() => {
-    return this._manager._getPublicId(this._internalId);
-  });
-
+  /** Id of instance */
   public get id(): string {
-    return this.__getMemoPublicId();
+    return this._manager.__getPublicId(this._index);
+  }
+
+  public get isWeakReference(): boolean {
+    return !this._manager.__verifyEntity(this._index, this);
   }
 }
 
 type EntityManagerEventCallback = (...args: never[]) => void;
 
+/**
+ *
+ */
 export class EntityManager<Attributes, Inst extends Entity> {
   public type: EntityTypes = EntityTypes.BASE;
 
+  /** Method to create new Entities */
   private createInstanceCall: new (manager: unknown, newId: number, ...args: never[]) => Inst;
+  /** Created entities */
   private entities: Array<Inst>;
 
   //TODO: handle resizing of arrays some how
@@ -151,10 +166,6 @@ export class EntityManager<Attributes, Inst extends Entity> {
     return this.entities[this.publicToInternal[id]];
   }
 
-  public _getPublicId(id: number): string {
-    return this.dataStore["publicId"][id];
-  }
-
   public getAll(): Inst[] {
     return [...this.entities];
   }
@@ -171,6 +182,14 @@ export class EntityManager<Attributes, Inst extends Entity> {
     key: K,
   ): (typeof this.dataStore)[K][number] {
     return this.dataStore[key][id];
+  }
+
+  public __getPublicId(index: number): string {
+    return this.dataStore["publicId"][index];
+  }
+
+  public __verifyEntity(index: number, entity: Inst): boolean {
+    return this.entities[index] === entity;
   }
 
   /** SET **/

@@ -1,5 +1,4 @@
-import { FunctionalComponent } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "react";
 
 import { SVGIcons } from "@/components";
 
@@ -10,7 +9,7 @@ interface Props {
 }
 
 // TODO: UI needs to get cleaned up
-export const MainToolbar: FunctionalComponent<Props> = (props) => {
+export const MainToolbar: React.FC<Props> = (props) => {
   const ref = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const buttonsRef = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -41,12 +40,16 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
     }
   };
 
-  const onClickToggle = (e: MouseEvent) => {
+  const onClickToggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setShowMainOptions((oldShow) => !oldShow);
     e.preventDefault();
   };
 
-  const onClickOption = (route: string, subRoute: string, e: MouseEvent) => {
+  const onClickOption = (
+    route: string,
+    subRoute: string,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     updateSelectedRoute(route, subRoute);
 
     e.preventDefault();
@@ -60,9 +63,9 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
     props?.onPathSelected && props.onPathSelected(out);
   }, [selectedMain, selectedSub]);
 
-  // TOOD: make into a hook
+  // TODO: make into a hook
   useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
+    const handleClick = (event: PointerEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setShowMainOptions(false);
       }
@@ -90,7 +93,9 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
             (x) =>
               (showOptions || x.name === selectedMain) && (
                 <button
-                  ref={(el) => (buttonsRef.current[x.name] = el)}
+                  ref={(el) => {
+                    buttonsRef.current[x.name] = el;
+                  }}
                   key={x.name}
                   className={`core ${selectedMain === x.name ? "selected" : ""}`}
                   onClick={(e) => onClickOption(x.name, "", e)}
@@ -103,12 +108,14 @@ export const MainToolbar: FunctionalComponent<Props> = (props) => {
         {props.routes.map(
           (main) =>
             main.name === selectedMain && (
-              <div className="sub-toolbar">
+              <div className="sub-toolbar" key={main.name}>
                 {main.options.map(
                   (sub) =>
                     (showOptions || sub === selectedSub) && (
                       <button
-                        ref={(el) => (buttonsRef.current[sub] = el)}
+                        ref={(el) => {
+                          buttonsRef.current[sub] = el;
+                        }}
                         key={sub}
                         className={`core ${selectedSub === sub ? "selected" : ""}`}
                         onClick={(e) => onClickOption(main.name, sub, e)}

@@ -1,6 +1,4 @@
-import { RefObject } from "preact";
-import { useCallback, useEffect, useRef } from "preact/hooks";
-import { useSignalEffect } from "@preact/signals";
+import { RefObject, useCallback, useEffect, useRef } from "react";
 import Stats from "stats.js";
 import * as THREE from "three";
 import { MapControls } from "three/examples/jsm/Addons.js";
@@ -11,11 +9,12 @@ import { Procedural } from "@/models";
 import { createGalaxyScene, BaseVisual, RenderSetup } from "@/renderer";
 import { useMainViewFullContext } from "@/store";
 import { ThreeHelpers } from "@/util";
+import { useAtomValue } from "jotai";
 
 export interface RenderGalaxyData {
-  scene?: THREE.Scene;
-  camera?: THREE.PerspectiveCamera;
-  renderer?: THREE.WebGLRenderer;
+  scene: THREE.Scene | null;
+  camera: THREE.PerspectiveCamera | null;
+  renderer: THREE.WebGLRenderer | null;
   initialize: () => void;
   cleanUp: () => void;
 }
@@ -31,27 +30,27 @@ export interface RendererControls {
 
 // TODO: split this up between hook to control the renderer and hook to control scene
 export const useRenderGalaxy = (
-  canvasRef: RefObject<HTMLCanvasElement>
+  canvasRef: RefObject<HTMLCanvasElement | null>,
 ): [RenderGalaxyData, Procedural.BaseGalaxyConfig, RendererControls] => {
   // base three objects
-  const sceneRef = useRef<THREE.Scene>();
-  const cameraRef = useRef<THREE.PerspectiveCamera>();
-  const controlsRef = useRef<MapControls>();
-  const clockRef = useRef<THREE.Clock>();
+  const sceneRef = useRef<THREE.Scene>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera>(null);
+  const controlsRef = useRef<MapControls>(null);
+  const clockRef = useRef<THREE.Clock>(null);
 
-  const targetCameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const targetCameraRef = useRef<THREE.PerspectiveCamera>(null);
 
   // render stuff
-  const rendererRef = useRef<THREE.WebGLRenderer>();
-  const pipelineRef = useRef<RenderSetup.RenderPassPipeline>();
+  const rendererRef = useRef<THREE.WebGLRenderer>(null);
+  const pipelineRef = useRef<RenderSetup.RenderPassPipeline>(null);
   const renderCallback = useCallback(() => {
     if (!pipelineRef.current) return;
 
     RenderSetup.renderPipeline(pipelineRef.current);
-  }, [pipelineRef.current]);
+  }, []);
 
   // handle for animation loop
-  const animateHandleRef = useRef<number>();
+  const animateHandleRef = useRef<number>(null);
 
   // pointer info
   const pointerRef = useRef<THREE.Vector2>(new THREE.Vector2());
@@ -64,6 +63,7 @@ export const useRenderGalaxy = (
 
   // main
   const mainView = useMainViewFullContext();
+  const selectRef = useAtomValue(mainView.pointer.select.ref);
 
   // intersect call
   const getIntersectedEntity = () => {
@@ -77,7 +77,7 @@ export const useRenderGalaxy = (
     const intersect = intersects[0];
     const userData = ThreeHelpers.findAncestor(
       intersect.object,
-      (anc) => !!anc.userData?.visualRef
+      (anc) => !!anc.userData?.visualRef,
     )?.userData;
 
     if (!userData) return;
@@ -134,7 +134,7 @@ export const useRenderGalaxy = (
         } else {
           camera.position.lerp(
             camera.position.addScaledVector(translateV.normalize(), CAMERA_LINEAR_SPEED * delta),
-            CAMERA_LERP
+            CAMERA_LERP,
           );
         }
 
@@ -165,7 +165,6 @@ export const useRenderGalaxy = (
 
   // initialize canvas
   const initialize = () => {
-    console.log("init renderer");
     if (!canvasRef.current) return;
     const { scene, camera, controls, clock } = RenderSetup.initCore(canvasRef.current);
 
@@ -221,21 +220,21 @@ export const useRenderGalaxy = (
   };
 
   // get selected object
-  const onCanvasClick = () => {
+  const onCanvasClick = (): void => {
     mainView.pointer.setPointer("select");
   };
 
-  useSignalEffect(() => {
-    const target = mainView.pointer.select.ref.value?.refVisual?.object3D;
-    if (!target) {
+  useEffect(() => {
+    const targetRef = selectRef?.refVisual?.object3D;
+    if (!targetRef) {
       targetCameraRef.current = null;
       controlsRef.current?.target.set(0, 0, 0);
       return;
     }
 
-    updateCameraToFocus(target.position);
-    controlsRef.current?.target.copy(target.position);
-  });
+    updateCameraToFocus(targetRef.position);
+    controlsRef.current?.target.copy(targetRef.position);
+  }, []);
 
   // callback to resize
   const onWindowResize = () => {
@@ -247,25 +246,26 @@ export const useRenderGalaxy = (
   };
 
   // find pointer within canvas
-  const onCanvasPointerMove = (event: PointerEvent) => {
+  const onCanvasPointerMove = (event: PointerEvent): void => {
     pointerRef.current.set(
       (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1
+      -(event.clientY / window.innerHeight) * 2 + 1,
     );
   };
 
   // effect to update dimensions in render if canvas is resized
   useEffect(() => {
     window.addEventListener("resize", onWindowResize);
-    canvasRef.current?.addEventListener("pointermove", onCanvasPointerMove);
-    canvasRef.current?.addEventListener("click", onCanvasClick);
+    const canvas = canvasRef.current;
+    canvas?.addEventListener("pointermove", onCanvasPointerMove);
+    canvas?.addEventListener("click", onCanvasClick);
 
     return () => {
       window.removeEventListener("resize", onWindowResize);
-      canvasRef.current?.removeEventListener("pointermove", onCanvasPointerMove);
-      canvasRef.current?.removeEventListener("click", onCanvasClick);
+      canvas?.removeEventListener("pointermove", onCanvasPointerMove);
+      canvas?.removeEventListener("click", onCanvasClick);
     };
-  }, [canvasRef.current]);
+  }, [canvasRef, onCanvasClick]);
 
   useEffect(() => {
     document.body.appendChild(statsRef.current.dom);

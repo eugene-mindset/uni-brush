@@ -1,15 +1,15 @@
-import { FunctionalComponent, toChildArray } from "preact";
+import React from "react";
 import classNames from "classnames";
 
 import styles from "./style.module.css";
 import { CommonProps } from "./types";
 
-interface Props extends CommonProps {}
+export interface Props extends CommonProps {}
 
-export const PanelGroup: FunctionalComponent<Props> = (props: Props) => {
+export const PanelGroup: React.FC<Props> = (props: Props) => {
   return (
     <div className={classNames(styles.group, props?.className)}>
-      {toChildArray(props?.children)}
+      {React.Children.toArray(props?.children)}
     </div>
   );
 };

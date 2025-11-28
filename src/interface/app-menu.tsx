@@ -1,10 +1,9 @@
-import { Fragment, FunctionalComponent } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { Fragment, useEffect, useState } from "react";
 
 import { Entity } from "@/models";
 
 // TODO: UI needs to get cleaned up
-export const AppMenu: FunctionalComponent<{}> = () => {
+export const AppMenu: React.FC<{}> = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
   // TODO: move the hiding and showing of menus from keys to global state

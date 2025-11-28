@@ -1,17 +1,17 @@
-import { useEffect } from "preact/hooks";
+import { useEffect } from "react";
 
 import { Entity } from "@/models";
 
 interface ListenerPairs {
   events: string[];
-  callback: (...args: any[]) => void;
+  callback: (...args: never[]) => void;
   init?: boolean;
-  initArgs?: any[];
+  initArgs?: never[];
 }
 
 export const useManagerEvents = <T extends Entity.Base.ManagerType<any, any>>(
   manager: T,
-  dependencies: any[],
+  dependencies: never[],
   ...callbacks: ListenerPairs[]
 ) => {
   useEffect(() => {
@@ -20,8 +20,8 @@ export const useManagerEvents = <T extends Entity.Base.ManagerType<any, any>>(
     });
 
     callbacks.forEach((x) => {
-      if (!x.init) return;
-      x.callback(x.initArgs);
+      if (!x.init || !x.initArgs || !x.initArgs[Symbol.iterator]) return;
+      x.callback(...x.initArgs!);
     });
 
     return () => {
@@ -29,5 +29,5 @@ export const useManagerEvents = <T extends Entity.Base.ManagerType<any, any>>(
         x.events.forEach((event) => manager.removeEventListener(event, x.callback));
       });
     };
-  }, dependencies);
+  }, [manager, dependencies, callbacks]);
 };

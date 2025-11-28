@@ -11,7 +11,7 @@ export class BaseVisual {
     this._entityType = entityType;
   }
 
-  protected setUserData(data?: Object) {
+  protected setUserData(data?: object) {
     if (!this._obj3D) return;
     this._obj3D.userData = {
       ...data,
@@ -39,5 +39,7 @@ export class BaseVisual {
     throw new Error("Object3D of instance either not created successfully was deleted.");
   }
 
-  public dispose() {}
+  public dispose(): void {
+    /* empty */
+  }
 }

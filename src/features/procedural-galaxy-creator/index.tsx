@@ -1,5 +1,3 @@
-import { FunctionalComponent } from "preact";
-
 import { Panel } from "@/components";
 
 import * as CreatorView from "./components";
@@ -7,7 +5,7 @@ import { EntityTypes } from "@/models";
 
 import { useProceduralCreatorModel } from "./hooks";
 
-export const ProceduralCreator: FunctionalComponent<{}> = () => {
+export const ProceduralCreator: React.FC = () => {
   const { coreModel, generate } = useProceduralCreatorModel();
 
   return (

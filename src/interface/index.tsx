@@ -1,5 +1,4 @@
-import { FunctionalComponent, JSX } from "preact";
-import { useState } from "preact/hooks";
+import { useState } from "react";
 
 import { StarSystemDirectory } from "@/features/star-system-directory";
 import { StarSystemEditor } from "@/features/star-system-editor";
@@ -15,12 +14,12 @@ export const toolbarRoutes = [
   { name: "Cartography", options: ["Measurement"] },
 ];
 
-const panelToShow: Record<string, JSX.Element> = {
+const panelToShow: Record<string, React.ReactNode> = {
   "Geography, Directory": <StarSystemDirectory />,
   "Geography, Procedural Creator": <ProceduralCreator />,
 };
 
-export const FullInterface: FunctionalComponent<{}> = ({}) => {
+export const FullInterface: React.FC = ({}) => {
   const [selectedPath, setSelectedPath] = useState<[string, string]>(["", ""]);
 
   // const showStarSystemEditor = computed(() => {
@@ -36,7 +35,7 @@ export const FullInterface: FunctionalComponent<{}> = ({}) => {
   return (
     <div className="interface">
       <AppMenu />
-      <div class="interface fixed">
+      <div className="interface fixed">
         <MainToolbar routes={toolbarRoutes} onPathSelected={onRouteSelected} path={selectedPath} />
         {panelToDisplay !== "" && panelToShow[panelToDisplay]}
       </div>

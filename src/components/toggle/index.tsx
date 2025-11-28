@@ -1,43 +1,68 @@
-import { ComponentChildren, createContext, FunctionalComponent, toChildArray } from "preact";
-import { useContext } from "preact/hooks";
-import { signal, useSignal } from "@preact/signals";
+import React, { Activity, createContext, useContext } from "react";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+
 import { ToggleButton } from "../buttons";
+import { Atom } from "jotai";
 
-const toggleContext = createContext({ toggle: true, onToggle: () => {} });
+interface ToggleContextState {
+  toggleAtom: Atom<boolean>;
+  onToggle: () => void;
+}
 
-interface MainProps {
+const toggleContext = createContext<ToggleContextState>({
+  toggleAtom: atom(true),
+  onToggle: () => {},
+});
+
+interface MainProps extends React.PropsWithChildren {
   isInitiallyShown?: boolean;
-  children: ComponentChildren;
 }
 
 export function ToggleComponent(props: MainProps) {
-  const toggle = useSignal(!!props.isInitiallyShown);
+  const toggleAtom = atom(!!props.isInitiallyShown);
+  const setToggle = useSetAtom(toggleAtom);
 
   const onToggle = () => {
-    toggle.value = !toggle.value;
+    setToggle((x) => !x);
   };
 
   return (
-    <toggleContext.Provider value={{ toggle: toggle.value, onToggle }}>
-      {toChildArray(props.children)}
+    <toggleContext.Provider value={{ toggleAtom, onToggle }}>
+      {React.Children.toArray(props.children)}
     </toggleContext.Provider>
   );
 }
 
-export const useToggle = () => useContext(toggleContext);
+export const useToggle = () => {
+  const { toggleAtom, onToggle } = useContext(toggleContext);
+  const toggle = useAtomValue(toggleAtom);
 
-interface AreaProps {
-  children: ComponentChildren;
-}
-
-const ToggleAreaComponent: FunctionalComponent<AreaProps> = (props) => {
-  const { toggle } = useToggle();
-  return toggle ? toChildArray(props.children) : null;
+  return {
+    toggle,
+    onToggle,
+  };
 };
 
-const ToggleButtonComponent: FunctionalComponent<typeof ToggleButton.defaultProps> = (props) => {
+const ToggleAreaComponent: React.FC<React.PropsWithChildren> = (props) => {
+  const { toggle } = useToggle();
+  return (
+    <Activity mode={toggle ? "visible" : "hidden"}>
+      {React.Children.toArray(props.children)}
+    </Activity>
+  );
+};
+
+type ToggleButtonProps = React.ComponentProps<typeof ToggleButton>;
+const ToggleButtonComponent = (props: Partial<ToggleButtonProps>) => {
   const { toggle, onToggle } = useToggle();
-  return <ToggleButton toggle={toggle} onToggle={onToggle} {...props} />;
+
+  return (
+    <ToggleButton
+      {...props}
+      toggle={toggle ?? props.toggle}
+      onToggle={onToggle ?? props.onToggle}
+    />
+  );
 };
 
 ToggleComponent.useToggle = useToggle;

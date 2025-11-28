@@ -1,5 +1,4 @@
-import { toChildArray } from "preact";
-import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import classNames from "classnames";
 
 import { useDraggable } from "@/hooks";
@@ -103,10 +102,10 @@ export function Panel(props: Props) {
       <div
         ref={panelRef}
         style={{
-          width: props.width,
-          height: props.height,
-          maxWidth: props.width,
-          maxHeight: props.maxHeight,
+          width: props.width ?? "",
+          height: props.height ?? "",
+          maxWidth: props.width ?? "",
+          maxHeight: props.maxHeight ?? "",
           transform: (props.canDrag && dragTransform) || "",
           position: props?.position,
         }}
@@ -132,7 +131,7 @@ export function Panel(props: Props) {
             <h1 className={styles.title_text}>{props.title}</h1>
           </div>
         )}
-        <div className="scrollable">{toggle && toChildArray(props?.children)}</div>
+        <div className="scrollable">{toggle && React.Children.toArray(props?.children)}</div>
       </div>
     </PanelContext.Provider>
   );

@@ -7,7 +7,7 @@ import { Creator } from "@/models";
 import { ToggleComponent } from "@/components/toggle";
 import { ActionOnlyButton } from "@/components/buttons";
 
-interface Props<K extends Object, T extends Creator.Base.Step<any, K>> {
+interface Props<K extends object, T extends Creator.Base.Step<never, K>> {
   step: T;
   order: number;
   onDelete?: () => void;
@@ -16,8 +16,8 @@ interface Props<K extends Object, T extends Creator.Base.Step<any, K>> {
   onSet?: () => void;
 }
 
-export const BaseStepComponent = <K extends Object, T extends Creator.Base.Step<any, K>>(
-  props: Props<K, T>
+export const BaseStepComponent = <K extends object, T extends Creator.Base.Step<never, K>>(
+  props: Props<K, T>,
 ) => {
   const { StepConfigTable } = ConfigTables;
   const { step } = props;
@@ -66,7 +66,7 @@ export const BaseStepComponent = <K extends Object, T extends Creator.Base.Step<
           <div className="flex-col gap">
             {/* // TODO: add ordering */}
             {Object.keys(step.config).map((value) => (
-              <ModelStepDynamicInput step={step} configKey={value as keyof K} />
+              <ModelStepDynamicInput key={value} step={step} configKey={value as keyof K} />
             ))}
           </div>
         </ToggleComponent.Area>

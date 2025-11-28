@@ -94,6 +94,7 @@ export interface DataManager<Ext, Mod> {
   // MANAGE
   capacity: number;
   count: number;
+  isInitialized: boolean;
   create: () => Ext;
   fullReset: (capacity?: number) => void;
   batchInitializeProperty: <K extends keyof Mod>(key: K, array: Mod[K][]) => void;
@@ -120,11 +121,12 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
   /** META */
   private events: Record<string, DataManagerEventCallback[]>;
+  private isInit: boolean = false;
 
   public constructor(
     type: new (_newId: number, ...args: any[]) => Int,
     initCapacity?: number,
-    excludeProperties?: (keyof typeof this.dataStore)[]
+    excludeProperties?: (keyof typeof this.dataStore)[],
   ) {
     this.createInstanceCall = type;
     this.dataInstances = [];
@@ -137,6 +139,8 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
 
     this.events = {};
 
+    this.isInit = false;
+
     this.batchInitializePropertyArray("publicId");
   }
 
@@ -146,9 +150,9 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return JSON.stringify(
       Object.fromEntries(
         Object.entries(this.dataStore).filter(
-          ([k, _]) => !this.notSerializedProperties.has(k as keyof typeof this.dataStore)
-        )
-      )
+          ([k, _]) => !this.notSerializedProperties.has(k as keyof typeof this.dataStore),
+        ),
+      ),
     );
   }
 
@@ -165,7 +169,6 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
       this.dataStore[key] = newStore[key];
     }
 
-    this.emit("refresh");
     this.emit("load");
   }
 
@@ -186,7 +189,7 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     }
   }
 
-  protected emit(eventName: string, ...args: any[]): void {
+  protected emit(eventName: string, ...args: never[]): void {
     if (!(eventName in this.events)) {
       return;
     }
@@ -243,7 +246,11 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     return this.dataInstances.length;
   }
 
-  public create(): Ext {
+  public get isInitialized(): boolean {
+    return this.isInit;
+  }
+
+  public create(emitStatus: boolean = false): Ext {
     if (this.dataInstances.length >= this.currentCapacity) {
       this.resizeStore();
     }
@@ -260,11 +267,16 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
     this.dataInstances.push(newInstance);
     this.dataStore.publicId[newInstId] = newInstPublicId;
     this.publicToInternal[newInstPublicId] = newInstId;
-    this.emit("refresh");
+
+    if (emitStatus) {
+      this.emit("refresh");
+    }
+
     return newInstance;
   }
 
   public fullReset(capacity?: number) {
+    this.isInit = false;
     this.dataInstances = [];
 
     this.dataStore = {} as typeof this.dataStore;
@@ -290,13 +302,16 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   }
 
   public batchInitializeEntities(): void {
-    if (this.dataInstances.length) {
+    if (this.isInit) {
       throw new Error("Entities already exist!");
     }
 
     for (let index = 0; index < this.currentCapacity; index++) {
-      this.create();
+      this.create(false);
     }
+
+    this.isInit = true;
+    this.emit("refresh");
   }
 
   public forEachEntity<R>(pred: (x: Ext) => R) {
@@ -314,13 +329,17 @@ export class DataManagerClass<Ext, Int extends Ext & DataInstanceInternal, Mod>
   protected setPropertyForInstance<K extends keyof typeof this.dataStore>(
     id: number,
     key: K,
-    value: (typeof this.dataStore)[K][number]
+    value: (typeof this.dataStore)[K][number],
+    emitStatus: boolean = false,
   ): boolean {
     // TODO: do some checks to allow assignment
     // TODO: throw some exceptions?
 
     this.dataStore[key][id] = value;
-    this.emit("refresh");
+    if (emitStatus) {
+      this.emit("refresh");
+    }
+
     return true;
   }
 

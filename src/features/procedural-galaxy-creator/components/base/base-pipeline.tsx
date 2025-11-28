@@ -1,4 +1,4 @@
-import { forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState } from "preact/compat";
+import { forwardRef, Ref, useImperativeHandle, useRef, useState } from "react";
 
 import { ToggleComponent, Panel, ActionOnlyButton, SVGIcons } from "@/components";
 import { useTriggerUpdate } from "@/hooks";
@@ -30,7 +30,11 @@ const SetStateModal = forwardRef(
     const options = index !== undefined ? (index > -1 ? AllOperators : AllGenerators) : [];
     const [value, setValue] = useState<string>(Object.keys(options)[0]);
 
-    useImperativeHandle(ref, () => modalRef.current, []);
+    useImperativeHandle<HTMLDialogElement | null, HTMLDialogElement | null>(
+      ref,
+      () => modalRef.current,
+      []
+    );
 
     return (
       <dialog className="true-dialog" ref={modalRef}>

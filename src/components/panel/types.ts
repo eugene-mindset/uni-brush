@@ -1,6 +1,5 @@
-import { ComponentChildren } from "preact";
+import React from "react";
 
-export interface CommonProps {
-  children?: ComponentChildren;
+export interface CommonProps extends React.PropsWithChildren {
   className?: string;
 }

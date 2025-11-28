@@ -1,8 +1,6 @@
-import { FunctionComponent } from "preact";
-
 import { Panel } from "@/components";
+import { Operators } from "@/models/creator";
 
-import { Operators } from "../../model";
 import { ModelStepInput, ModelStepVectorInput } from "../base";
 
 interface Props {
@@ -10,7 +8,7 @@ interface Props {
   order: number;
 }
 
-export const BasicGravity: FunctionComponent<Props> = (props) => {
+export const BasicGravity: React.FC<Props> = (props) => {
   const { step } = props;
 
   // NOTE: negative strength pushes rather than pulls

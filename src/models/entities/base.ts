@@ -53,23 +53,42 @@ export class EntityManager<Attributes, Inst extends Entity> {
 
   /** Method to create new Entities */
   private createInstanceCall: new (manager: unknown, newId: number, ...args: never[]) => Inst;
-  /** Created entities */
+  /** Created entities that are directly managed */
   private entities: Array<Inst>;
 
   //TODO: handle resizing of arrays some how
+  /**
+   * Data that is the actual values for attributes for entities
+   *
+   * Each key in the object corresponds to a key in the Attributes generic type. The value is an
+   * array where each index corresponds to an entity and the value at that index is the value of
+   * that attribute for that entity.
+   *
+   * {
+   *    ...,
+   *    [ Attribute ] = [ Value, Value, ... , Value, Value ],
+   *    ...
+   * }
+   */
   protected dataStore: {
     [key in keyof Attributes]: Array<Attributes[key] | undefined>;
   } & EntityDataStore;
+  /** Amount of unique entities to allocate for */
   private currentCapacity: number = 1000;
-  private publicToInternal: Record<string, number>;
-
+  /** Mapping of entities' public id to their corresponding index */
+  private publicToIndex: Record<string, number>;
+  /** The default values to grant for each entity's attributes */
   private defaultAttributeValues: {
     [key in keyof Attributes]: { value?: Attributes[key]; generator?: () => Attributes[key] };
   };
+  /** Attributes to not including when serializing or deserializing entities */
   private notSerializedAttributes: Set<keyof typeof this.dataStore>;
 
   /** META */
+
+  /** Events to track and the callbacks to trigger when they occur */
   private events: Record<string, Set<EntityManagerEventCallback>>;
+  /** If true, model cannot create new entities */
   private isInit: boolean = false;
 
   public constructor(
@@ -88,7 +107,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     this.entities = [];
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = initCapacity ? initCapacity : this.currentCapacity;
-    this.publicToInternal = {};
+    this.publicToIndex = {};
 
     this.resetAttributesForAll();
   }
@@ -151,19 +170,19 @@ export class EntityManager<Attributes, Inst extends Entity> {
   /** GET */
 
   public get(id: string): Inst {
-    if (!(id in this.publicToInternal)) {
+    if (!(id in this.publicToIndex)) {
       throw new Error("Entity does not exist.");
     }
 
-    return this.entities[this.publicToInternal[id]];
+    return this.entities[this.publicToIndex[id]];
   }
 
   public getSafe(id: string): Inst | undefined {
-    if (!(id in this.publicToInternal)) {
+    if (!(id in this.publicToIndex)) {
       return undefined;
     }
 
-    return this.entities[this.publicToInternal[id]];
+    return this.entities[this.publicToIndex[id]];
   }
 
   public getAll(): Inst[] {
@@ -282,6 +301,10 @@ export class EntityManager<Attributes, Inst extends Entity> {
   }
 
   public create(): Inst {
+    if (this.isInit) {
+      throw new Error("Entities already exist!");
+    }
+
     if (this.entities.length >= this.currentCapacity) {
       this.resizeStore();
     }
@@ -290,14 +313,14 @@ export class EntityManager<Attributes, Inst extends Entity> {
 
     // guarantee new & unique id
     let tempId = crypto.randomUUID();
-    while (this.publicToInternal[tempId]) tempId = crypto.randomUUID();
+    while (this.publicToIndex[tempId]) tempId = crypto.randomUUID();
     const newInstPublicId = tempId;
 
     const newInstance = new this.createInstanceCall(this, newInstId);
 
     this.entities.push(newInstance);
     this.dataStore.publicId[newInstId] = newInstPublicId;
-    this.publicToInternal[newInstPublicId] = newInstId;
+    this.publicToIndex[newInstPublicId] = newInstId;
 
     this.emit("refresh");
 
@@ -327,7 +350,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     this.entities = [];
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = capacity ? capacity : this.currentCapacity;
-    this.publicToInternal = {};
+    this.publicToIndex = {};
 
     this.resetAttributesForAll();
     this.emit("reset");

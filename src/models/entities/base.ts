@@ -5,6 +5,12 @@ interface EntityDataStore {
   publicId: string[];
 }
 
+export interface EntityEventsToCallback {
+  load: () => void;
+  refresh: (who: string) => void;
+  reset: () => void;
+}
+
 /**
  *
  */
@@ -13,7 +19,7 @@ export class Entity {
   public static readonly type: EntityTypes = EntityTypes.BASE;
 
   /** Manager the instance associates with */
-  protected _manager: EntityManager<unknown, Entity>;
+  protected _manager: EntityManager<unknown, Entity, EntityEventsToCallback>;
   /** Internal id associating the instance to a specific entity within the Manager  */
   protected readonly _index: number;
 
@@ -43,12 +49,10 @@ export class Entity {
   }
 }
 
-type EntityManagerEventCallback = (...args: never[]) => void;
-
 /**
  *
  */
-export class EntityManager<Attributes, Inst extends Entity> {
+export class EntityManager<Attributes, Inst extends Entity, Events extends EntityEventsToCallback> {
   public type: EntityTypes = EntityTypes.BASE;
 
   /** Method to create new Entities */
@@ -84,10 +88,10 @@ export class EntityManager<Attributes, Inst extends Entity> {
   /** Attributes to not including when serializing or deserializing entities */
   private notSerializedAttributes: Set<keyof typeof this.dataStore>;
 
-  /** META */
+  // META
 
   /** Events to track and the callbacks to trigger when they occur */
-  private events: Record<string, Set<EntityManagerEventCallback>>;
+  private events: { [key in keyof Events]?: Set<Events[key]> };
   /** If true, model cannot create new entities */
   private isInit: boolean = false;
 
@@ -112,7 +116,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     this.resetAttributesForAll();
   }
 
-  /** SERIALIZE*/
+  // SERIALIZE
 
   public dump(): string {
     return JSON.stringify(
@@ -140,9 +144,12 @@ export class EntityManager<Attributes, Inst extends Entity> {
     this.emit("load");
   }
 
-  /** EVENTS */
+  // EVENTS
 
-  public addEventListener(eventName: string, callback: EntityManagerEventCallback): void {
+  public addEventListener<Key extends keyof typeof this.events>(
+    eventName: Key,
+    callback: Events[Key],
+  ): void {
     if (!this.events[eventName]) {
       this.events[eventName] = new Set();
     }
@@ -150,11 +157,14 @@ export class EntityManager<Attributes, Inst extends Entity> {
     this.events[eventName].add(callback);
   }
 
-  public removeEventListener(eventName: string, callback: EntityManagerEventCallback): void {
-    this.events[eventName].delete(callback);
+  public removeEventListener<Key extends keyof Events>(
+    eventName: Key,
+    callback: Events[Key],
+  ): void {
+    this.events[eventName]?.delete(callback);
   }
 
-  protected emit(eventName: string, ...args: never[]): void {
+  protected emit<Key extends keyof Events>(eventName: Key, ...args: unknown[]): void {
     if (!(eventName in this.events)) {
       return;
     }
@@ -162,12 +172,12 @@ export class EntityManager<Attributes, Inst extends Entity> {
     const eventCallbacks = this.events[eventName];
     if (eventCallbacks) {
       eventCallbacks.forEach((callback) => {
-        callback(...args);
+        (callback as (...args: unknown[]) => void)(...args);
       });
     }
   }
 
-  /** GET */
+  // GET
 
   public get(id: string): Inst {
     if (!(id in this.publicToIndex)) {
@@ -211,7 +221,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     return this.entities[index] === entity;
   }
 
-  /** SET **/
+  // SET
 
   public setAttributeForAll<K extends keyof typeof this.dataStore>(
     key: K,
@@ -224,7 +234,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
       ...this.dataStore,
       [key]: newAttributeArray.map((x) => (generator ? generator() : value || x)),
     };
-    this.emit("refresh");
+    this.emit("refresh", { who: "all" });
   }
 
   public setAttributePer<K extends keyof typeof this.dataStore>(
@@ -242,7 +252,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
       ),
     ];
     this.dataStore = { ...this.dataStore, [key]: newArray };
-    this.emit("refresh");
+    this.emit("refresh", { who: "all" });
   }
 
   public setAttributeFor<K extends keyof typeof this.dataStore>(
@@ -254,7 +264,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     // TODO: throw some exceptions?
 
     this.dataStore[key][id] = value;
-    this.emit("refresh");
+    this.emit("refresh", { who: id });
 
     return true;
   }
@@ -266,7 +276,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
       const { value, generator } = this.defaultAttributeValues[key as keyof Attributes];
       this.setAttributeForAll(key, value, generator);
     }
-    this.emit("refresh");
+    this.emit("refresh", { who: "all" });
   }
 
   public resetAttributesForAll() {
@@ -276,7 +286,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     );
   }
 
-  /** ITERATE */
+  // ITERATE
 
   public forEachEntity<R>(pred: (x: Inst) => R) {
     this.entities.forEach(pred);
@@ -286,7 +296,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     return this.entities.map(pred);
   }
 
-  /** MANAGE */
+  // MANAGE
 
   public get capacity(): number {
     return this.currentCapacity;
@@ -322,7 +332,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     this.dataStore.publicId[newInstId] = newInstPublicId;
     this.publicToIndex[newInstPublicId] = newInstId;
 
-    this.emit("refresh");
+    this.emit("refresh", { who: newInstPublicId });
 
     return newInstance;
   }
@@ -337,7 +347,7 @@ export class EntityManager<Attributes, Inst extends Entity> {
     }
 
     this.isInit = true;
-    this.emit("refresh");
+    this.emit("refresh", { who: "all" });
   }
 
   private resizeStore(_number?: number): void {

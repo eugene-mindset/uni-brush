@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import { StarSystemVisual } from "@/renderer";
 
-import { Entity, EntityManager } from "./base";
+import { Entity, EntityEventsToCallback, EntityManager } from "./base";
 import { EntityTypes } from "./types";
 import assert from "assert";
 
@@ -17,6 +17,10 @@ export interface StarSystemAttributes {
   // coordinates: SystemCoordinate;
   // lanes: Lane[];
   // geography: GeoFeatures[];
+}
+
+interface StarSystemEntityEventsToCallback extends EntityEventsToCallback {
+  dispose: () => void;
 }
 
 export class StarSystemEntity extends Entity {
@@ -57,7 +61,11 @@ export class StarSystemEntity extends Entity {
   }
 }
 
-export class StarSystemManager extends EntityManager<StarSystemAttributes, StarSystemEntity> {
+export class StarSystemManager extends EntityManager<
+  StarSystemAttributes,
+  StarSystemEntity,
+  StarSystemEntityEventsToCallback
+> {
   constructor() {
     super(
       StarSystemEntity,
@@ -78,6 +86,7 @@ export class StarSystemManager extends EntityManager<StarSystemAttributes, StarS
 
   public disposeVisuals() {
     this.dataStore.obj3D.forEach((x) => x?.dispose());
+    this.emit("dispose");
   }
 
   public override fullReset(capacity?: number): void {

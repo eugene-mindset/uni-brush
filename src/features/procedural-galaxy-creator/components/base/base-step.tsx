@@ -58,7 +58,7 @@ export const BaseStepComponent = <K extends object, T extends Creator.Base.Step<
           )}
           {props.onDelete && (
             <ActionOnlyButton className="core xs" onClick={props.onDelete}>
-              <SVGIcons.Delete />
+              <SVGIcons.Trash />
             </ActionOnlyButton>
           )}
         </Panel.Header>

@@ -33,7 +33,7 @@ const SetStateModal = forwardRef(
     useImperativeHandle<HTMLDialogElement | null, HTMLDialogElement | null>(
       ref,
       () => modalRef.current,
-      []
+      [],
     );
 
     return (
@@ -44,7 +44,7 @@ const SetStateModal = forwardRef(
               Step {index !== undefined ? index + 2 : 0}: Set {typeText}
             </h5>
             <ActionOnlyButton className="core xs" onClick={() => modalRef.current?.close()}>
-              <SVGIcons.Delete />
+              <SVGIcons.Cross />
             </ActionOnlyButton>
           </Panel.Header>
           <Panel.Dropdown
@@ -64,11 +64,11 @@ const SetStateModal = forwardRef(
         </Panel>
       </dialog>
     );
-  }
+  },
 );
 
 export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>>(
-  props: Props<V, T>
+  props: Props<V, T>,
 ) => {
   const { pipeline } = props;
 

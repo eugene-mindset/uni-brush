@@ -27,7 +27,7 @@ export class PipeFromPipeline<T> extends Generator<T, Config<T>> {
     };
   }
 
-  protected generateStep(_idx: number, ..._args: any[]): T {
+  protected generateStep(_idx: number, ..._args: never[]): T {
     throw new Error("Method not implemented.");
   }
 

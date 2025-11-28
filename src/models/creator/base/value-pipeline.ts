@@ -3,23 +3,23 @@ import { Operator } from "./operator";
 import { Step } from "./step";
 
 export class ValuePipeline<T> {
-  private _generator?: Generator<T, any>;
-  private _operators: Operator<T, any>[] = [];
+  private _generator?: Generator<T, never>;
+  private _operators: Operator<T, never>[] = [];
 
   private _outputs: T[][] = [];
 
   // properties
 
-  public get generator(): Generator<T, any> | undefined {
+  public get generator(): Generator<T, never> | undefined {
     return this._generator;
   }
 
-  public get operators(): Operator<T, any>[] {
+  public get operators(): Operator<T, never>[] {
     return [...this._operators];
   }
 
-  public get orderOfOperations(): Step<T, any>[] {
-    return [this._generator, ...this._operators] as Step<T, any>[];
+  public get orderOfOperations(): Step<T, never>[] {
+    return [this._generator, ...this._operators] as Step<T, never>[];
   }
 
   public get output(): T[] {
@@ -46,7 +46,9 @@ export class ValuePipeline<T> {
 
   // generator
 
-  public setGenerator(generator?: typeof Generator<any, any>): Generator<any, any> | undefined {
+  public setGenerator(
+    generator?: typeof Generator<never, never>,
+  ): Generator<never, never> | undefined {
     this._generator = generator?.create();
     this.reset();
 
@@ -59,7 +61,10 @@ export class ValuePipeline<T> {
   }
 
   // operators
-  public setOperator(index: number, operator: typeof Operator<any, any>): Operator<any, any> {
+  public setOperator(
+    index: number,
+    operator: typeof Operator<never, never>,
+  ): Operator<never, never> {
     const newOp = operator.create();
     this._operators[index] = newOp;
     this.reset();
@@ -67,7 +72,7 @@ export class ValuePipeline<T> {
     return newOp;
   }
 
-  public createOperator(operator: typeof Operator<any, any>): Operator<any, any> {
+  public createOperator(operator: typeof Operator<never, never>): Operator<never, never> {
     const newOp = operator.create();
     this._operators.push(newOp);
     this.reset();

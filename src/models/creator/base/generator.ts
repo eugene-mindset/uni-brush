@@ -11,7 +11,7 @@ export abstract class Generator<O, K extends Object> extends Step<O, K> {
 
   // methods
 
-  public static create(): Generator<any, any> {
+  public static create(): Generator<never, never> {
     throw new Error("Cannot call static of abstract class");
   }
 

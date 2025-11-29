@@ -1,3 +1,5 @@
+/* v8 ignore file -- @preserve */
+
 import * as THREE from "three";
 
 import { StarSystemVisual } from "@/renderer";
@@ -37,27 +39,27 @@ export class StarSystemEntity extends Entity {
   }
 
   get obj3D(): StarSystemVisual | undefined {
-    return this.manager.getAttributeFor(this._index, "obj3D");
+    return this.manager.getAttribute("obj3D", this._index);
   }
 
   set obj3D(objRef: StarSystemVisual) {
-    this.manager.setAttributeFor(this._index, "obj3D", objRef);
+    this.manager.setAttribute("obj3D", this._index, objRef);
   }
 
   get name(): string | undefined {
-    return this.manager.getAttributeFor(this._index, "name");
+    return this.manager.getAttribute("name", this._index);
   }
 
   set name(newName: string) {
-    this.manager.setAttributeFor(this._index, "name", newName);
+    this.manager.setAttribute("name", this._index, newName);
   }
 
   get desc(): string | undefined {
-    return this.manager.getAttributeFor(this._index, "desc");
+    return this.manager.getAttribute("desc", this._index);
   }
 
   get initialPosition(): THREE.Vector3 | undefined {
-    return this.manager.getAttributeFor(this._index, "initialPosition");
+    return this.manager.getAttribute("initialPosition", this._index);
   }
 }
 

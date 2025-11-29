@@ -41,7 +41,7 @@ export class Entity {
 
   /** Id of instance */
   public get id(): string {
-    return this._manager.__getPublicId(this._index);
+    return this._manager.getAttribute("publicId", this._index);
   }
 
   public get isWeakReference(): boolean {
@@ -80,7 +80,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
   /** Amount of unique entities to allocate for */
   private currentCapacity: number = 1000;
   /** Mapping of entities' public id to their corresponding index */
-  private publicToIndex: Record<string, number>;
+  private idToIndex: Record<string, number>;
   /** The default values to grant for each entity's attributes */
   private defaultAttributeValues: {
     [key in keyof Attributes]?: { value?: Attributes[key]; generator?: () => Attributes[key] };
@@ -111,9 +111,31 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     this.entities = [];
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = initCapacity ? initCapacity : this.currentCapacity;
-    this.publicToIndex = {};
+    this.idToIndex = {};
 
     this.resetAttributesForAll();
+  }
+
+  private generateUUID() {
+    let tempId = crypto.randomUUID();
+    while (this.idToIndex[tempId]) tempId = crypto.randomUUID();
+    return tempId;
+  }
+
+  // HELPERS
+
+  private getActualIndex(index: string | number): number {
+    if (typeof index === "number") {
+      if (index >= this.entities.length) {
+        throw new Error(`Entity at index ${index} does not exist`);
+      }
+
+      return index;
+    }
+
+    if (!(index in this.idToIndex)) throw new Error(`Entity for Id ${index} does not exist`);
+
+    return this.idToIndex[index];
   }
 
   // SERIALIZE
@@ -179,42 +201,40 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
 
   // GET
 
-  public get(id: string): Inst {
-    if (!(id in this.publicToIndex)) {
-      throw new Error("Entity does not exist.");
-    }
-
-    return this.entities[this.publicToIndex[id]];
+  public get(index: string | number): Inst {
+    return this.entities[this.getActualIndex(index)];
   }
 
-  public getSafe(id: string): Inst | undefined {
-    if (!(id in this.publicToIndex)) {
-      return undefined;
+  public getSafe(index: string | number): Inst | null {
+    if (typeof index === "number") {
+      if (index >= this.entities.length) {
+        return null;
+      }
+
+      return this.entities[index];
     }
 
-    return this.entities[this.publicToIndex[id]];
+    if (!(index in this.idToIndex)) return null;
+
+    return this.entities[this.idToIndex[index]];
   }
 
   public getAll(): Inst[] {
     return [...this.entities];
   }
 
-  public getAllForAttribute<K extends keyof typeof this.dataStore>(
+  public getAttribute<K extends keyof typeof this.dataStore>(
+    key: K,
+    index: string | number,
+  ): (typeof this.dataStore)[K][number] {
+    return this.dataStore[key][this.getActualIndex(index)];
+  }
+
+  public getAttributeForAll<K extends keyof typeof this.dataStore>(
     key: K,
   ): (typeof this.dataStore)[K][number][] {
     const array = this.dataStore[key];
     return [...array];
-  }
-
-  public getAttributeFor<K extends keyof typeof this.dataStore>(
-    id: number,
-    key: K,
-  ): (typeof this.dataStore)[K][number] {
-    return this.dataStore[key][id];
-  }
-
-  public __getPublicId(index: number): string {
-    return this.dataStore["publicId"][index];
   }
 
   public __verifyEntity(index: number, entity: Inst): boolean {
@@ -223,7 +243,23 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
 
   // SET
 
-  public setAttributeForAll<K extends keyof typeof this.dataStore>(
+  public setAttribute<K extends keyof typeof this.dataStore>(
+    key: K,
+    index: string | number,
+    value: (typeof this.dataStore)[K][number],
+  ): boolean {
+    // TODO: do some checks to allow assignment
+    // TODO: throw some exceptions?
+
+    const finalIndex = this.getActualIndex(index);
+    this.dataStore[key][finalIndex] = value;
+
+    this.emit("refresh", { who: this.dataStore["publicId"][finalIndex] });
+
+    return true;
+  }
+
+  public setAttributeForAll<K extends keyof Attributes>(
     key: K,
     value?: (typeof this.dataStore)[K][number],
     generator?: () => (typeof this.dataStore)[K][number],
@@ -237,7 +273,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     this.emit("refresh", { who: "all" });
   }
 
-  public setAttributePer<K extends keyof typeof this.dataStore>(
+  public setAttributePer<K extends keyof Attributes>(
     key: K,
     array: (typeof this.dataStore)[K][number][],
   ) {
@@ -255,31 +291,41 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     this.emit("refresh", { who: "all" });
   }
 
-  public setAttributeFor<K extends keyof typeof this.dataStore>(
-    id: number,
-    key: K,
-    value: (typeof this.dataStore)[K][number],
-  ): boolean {
-    // TODO: do some checks to allow assignment
-    // TODO: throw some exceptions?
-
-    this.dataStore[key][id] = value;
-    this.emit("refresh", { who: id });
-
-    return true;
+  public resetAttribute<K extends keyof Attributes>(key: K, index: string | number) {
+    const defaults = this.defaultAttributeValues[key as keyof Attributes];
+    this.setAttribute(key, index, defaults?.generator ? defaults.generator() : defaults?.value);
   }
 
-  public resetAttributeForAll<K extends keyof typeof this.dataStore>(key: K) {
+  public resetAttributes(index: string | number) {
+    Object.keys(this.defaultAttributeValues).forEach((key) =>
+      this.resetAttribute(key as keyof Attributes, index),
+    );
+  }
+
+  public resetAttributeForAll<K extends keyof Attributes>(key: K) {
     const defaults = this.defaultAttributeValues[key as keyof Attributes];
     this.setAttributeForAll(key, defaults?.value, defaults?.generator);
     this.emit("refresh", { who: "all" });
   }
 
   public resetAttributesForAll() {
-    this.resetAttributeForAll("publicId");
+    this.resetIds();
     Object.keys(this.defaultAttributeValues).forEach((key) =>
-      this.setAttributeForAll(key as keyof Attributes),
+      this.resetAttributeForAll(key as keyof Attributes),
     );
+  }
+
+  private resetIds() {
+    const newAttributeArray = new Array<string>(this.currentCapacity);
+
+    this.idToIndex = {};
+    this.dataStore.publicId = newAttributeArray.map((_, i) => {
+      const id = this.generateUUID();
+
+      this.dataStore.publicId[i] = id;
+      this.idToIndex[id] = i;
+      return id;
+    });
   }
 
   // ITERATE
@@ -315,20 +361,17 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
       this.resizeStore();
     }
 
-    const newInstId = this.entities.length;
+    const newInstIndex = this.entities.length;
+    const newInstId = this.generateUUID();
 
-    // guarantee new & unique id
-    let tempId = crypto.randomUUID();
-    while (this.publicToIndex[tempId]) tempId = crypto.randomUUID();
-    const newInstPublicId = tempId;
-
-    const newInstance = new this.createInstanceCall(this, newInstId);
+    const newInstance = new this.createInstanceCall(this, newInstIndex);
 
     this.entities.push(newInstance);
-    this.dataStore.publicId[newInstId] = newInstPublicId;
-    this.publicToIndex[newInstPublicId] = newInstId;
+    this.dataStore.publicId[newInstIndex] = newInstId;
+    this.idToIndex[newInstId] = newInstIndex;
 
-    this.emit("refresh", { who: newInstPublicId });
+    this.resetAttributes(newInstIndex);
+    this.emit("refresh", { who: newInstId });
 
     return newInstance;
   }
@@ -338,7 +381,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
       throw new Error("Entities already exist!");
     }
 
-    for (let index = 0; index < this.currentCapacity; index++) {
+    for (let index = this.count; index < this.currentCapacity; index++) {
       this.create();
     }
 
@@ -356,7 +399,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     this.entities = [];
     this.dataStore = {} as typeof this.dataStore;
     this.currentCapacity = capacity ? capacity : this.currentCapacity;
-    this.publicToIndex = {};
+    this.idToIndex = {};
 
     this.resetAttributesForAll();
     this.emit("reset");

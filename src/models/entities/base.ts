@@ -8,6 +8,16 @@ interface EntityDataStore {
 export interface EntityEventsToCallback {
   load: () => void;
   refresh: (who: string) => void;
+  set_entity: (who: string, what: string) => void;
+  set_all_attr: (what: string) => void;
+  set_per_attr: (what: string) => void;
+  reset_entity_attr: (who: string, what: string) => void;
+  reset_entity: (who: string) => void;
+  reset_all_attr: (what: string) => void;
+  reset_all: () => void;
+  create_entity: (who: string) => void;
+  create_all: () => void;
+  create_reset: () => void;
   reset: () => void;
 }
 
@@ -92,6 +102,9 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
 
   /** Events to track and the callbacks to trigger when they occur */
   private events: { [key in keyof Events]?: Set<Events[key]> };
+  /** If defined, this emit is already being processed and other fanouts of events cannot occur  */
+  private emitInProgress?: keyof Events;
+
   /** If true, model cannot create new entities */
   private isInit: boolean = false;
 
@@ -113,7 +126,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     this.currentCapacity = initCapacity ? initCapacity : this.currentCapacity;
     this.idToIndex = {};
 
-    this.resetAttributesForAll();
+    this.resetAllEntities();
   }
 
   private generateUUID() {
@@ -123,7 +136,6 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
   }
 
   // HELPERS
-
   private getActualIndex(index: string | number): number {
     if (typeof index === "number") {
       if (index >= this.entities.length) {
@@ -136,6 +148,20 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     if (!(index in this.idToIndex)) throw new Error(`Entity for Id ${index} does not exist`);
 
     return this.idToIndex[index];
+  }
+
+  private getId(index: string | number): string {
+    if (typeof index === "string") {
+      if (!(index in this.idToIndex)) {
+        throw new Error(`Entity with id ${index} does not exist`);
+      }
+
+      return index;
+    }
+
+    if (!(index >= this.entities.length)) throw new Error(`Entity for Id ${index} does not exist`);
+
+    return this.entities[index].id;
   }
 
   // SERIALIZE
@@ -163,7 +189,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
       this.dataStore[key] = newStore[key];
     }
 
-    this.emit("load");
+    this.emit("load", true);
   }
 
   // EVENTS
@@ -187,9 +213,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
   }
 
   protected emit<Key extends keyof Events>(eventName: Key, ...args: unknown[]): void {
-    if (!(eventName in this.events)) {
-      return;
-    }
+    if (!(eventName in this.events)) return;
 
     const eventCallbacks = this.events[eventName];
     if (eventCallbacks) {
@@ -254,7 +278,10 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     const finalIndex = this.getActualIndex(index);
     this.dataStore[key][finalIndex] = value;
 
-    this.emit("refresh", { who: this.dataStore["publicId"][finalIndex] });
+    this.emit("set_entity", {
+      who: this.dataStore["publicId"][finalIndex],
+      what: key,
+    });
 
     return true;
   }
@@ -270,7 +297,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
       ...this.dataStore,
       [key]: newAttributeArray.map((x) => (generator ? generator() : value || x)),
     };
-    this.emit("refresh", { who: "all" });
+    this.emit("set_all_attr", { what: key });
   }
 
   public setAttributePer<K extends keyof Attributes>(
@@ -288,31 +315,34 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
       ),
     ];
     this.dataStore = { ...this.dataStore, [key]: newArray };
-    this.emit("refresh", { who: "all" });
+    this.emit("set_per_attr", { what: key });
   }
 
   public resetAttribute<K extends keyof Attributes>(key: K, index: string | number) {
     const defaults = this.defaultAttributeValues[key as keyof Attributes];
     this.setAttribute(key, index, defaults?.generator ? defaults.generator() : defaults?.value);
+    this.emit("reset_entity_attr", { who: this.getId(index), what: key });
   }
 
-  public resetAttributes(index: string | number) {
+  public resetEntity(index: string | number) {
     Object.keys(this.defaultAttributeValues).forEach((key) =>
       this.resetAttribute(key as keyof Attributes, index),
     );
+    this.emit("reset_entity", { who: this.getId(index) });
   }
 
   public resetAttributeForAll<K extends keyof Attributes>(key: K) {
     const defaults = this.defaultAttributeValues[key as keyof Attributes];
     this.setAttributeForAll(key, defaults?.value, defaults?.generator);
-    this.emit("refresh", { who: "all" });
+    this.emit("reset_all_attr", { what: "all" });
   }
 
-  public resetAttributesForAll() {
+  public resetAllEntities() {
     this.resetIds();
     Object.keys(this.defaultAttributeValues).forEach((key) =>
       this.resetAttributeForAll(key as keyof Attributes),
     );
+    this.emit("reset_all");
   }
 
   private resetIds() {
@@ -370,8 +400,8 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     this.dataStore.publicId[newInstIndex] = newInstId;
     this.idToIndex[newInstId] = newInstIndex;
 
-    this.resetAttributes(newInstIndex);
-    this.emit("refresh", { who: newInstId });
+    this.resetEntity(newInstIndex);
+    this.emit("create_entity", { who: newInstId });
 
     return newInstance;
   }
@@ -386,7 +416,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     }
 
     this.isInit = true;
-    this.emit("refresh", { who: "all" });
+    this.emit("create_all");
   }
 
   private resizeStore(_number?: number): void {
@@ -401,7 +431,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     this.currentCapacity = capacity ? capacity : this.currentCapacity;
     this.idToIndex = {};
 
-    this.resetAttributesForAll();
-    this.emit("reset");
+    this.resetAllEntities();
+    this.emit("create_reset");
   }
 }

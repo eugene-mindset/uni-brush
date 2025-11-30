@@ -7,7 +7,7 @@ import { config } from "@/config";
 import { Entity } from "@/models";
 import { Procedural } from "@/models";
 import { createGalaxyScene, BaseVisual, RenderSetup } from "@/renderer";
-import { useMainViewFullContext } from "@/store";
+import { useMainViewFullContext } from "@/context";
 import { ThreeHelpers } from "@/util";
 import { useAtomValue } from "jotai";
 

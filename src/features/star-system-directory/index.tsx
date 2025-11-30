@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { Vector3 } from "three";
 
 import { Entity } from "@/models";
-import { useMainViewContext } from "@/store";
+import { useMainViewContext } from "@/context";
 import { ThreeHelpers } from "@/util";
 import { Panel } from "@/components";
 import { useManagerEvents } from "@/hooks";

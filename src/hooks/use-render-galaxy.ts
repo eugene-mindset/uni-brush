@@ -1,13 +1,15 @@
+import { useAtomValue } from "jotai";
 import { RefObject, useCallback, useEffect, useRef } from "react";
 import Stats from "stats.js";
 import * as THREE from "three";
 import { MapControls } from "three/examples/jsm/Addons.js";
 
-import { createGalaxyScene, BaseVisual, RenderSetup } from "@/renderer";
 import { useMainViewFullContext } from "@/context";
+import { EntityTypes } from "@/models";
+import { BaseVisual, createGalaxyScene, RenderSetup } from "@/renderer";
 import { ThreeHelpers } from "@/util";
-import { useAtomValue } from "jotai";
-import { useStarSystemManager } from "./use-manager";
+
+import { useManager } from "./use-manager";
 
 export interface RenderGalaxyData {
   scene: THREE.Scene | null;
@@ -30,7 +32,7 @@ export interface RendererControls {
 export const useRenderGalaxy = (
   canvasRef: RefObject<HTMLCanvasElement | null>,
 ): [RenderGalaxyData, RendererControls] => {
-  const starSystemManager = useStarSystemManager();
+  const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
 
   // base three objects
   const sceneRef = useRef<THREE.Scene>(null);

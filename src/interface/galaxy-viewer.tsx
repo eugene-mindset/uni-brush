@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import { useRenderGalaxy, useStarSystemManager } from "@/hooks";
+import { useManager, useRenderGalaxy } from "@/hooks";
+import { EntityTypes } from "@/models";
 
 export interface GalaxyViewerProps {}
 
 const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
-  const starSystemManager = useStarSystemManager();
+  const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
   const divRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

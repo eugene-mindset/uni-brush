@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
 
-import { useStarSystemManager } from "@/hooks";
+import { useManager } from "@/hooks";
+import { EntityTypes } from "@/models/entities";
 
 // TODO: UI needs to get cleaned up
 export const AppMenu: React.FC = () => {
-  const starSystemManager = useStarSystemManager();
+  const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
   // TODO: move the hiding and showing of menus from keys to global state

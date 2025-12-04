@@ -1,4 +1,4 @@
 export * from "./visual-models";
 export * from "./global";
-export * from "./render-setup";
+export * as RenderSetup from "./render-setup";
 export * from "./scenes";

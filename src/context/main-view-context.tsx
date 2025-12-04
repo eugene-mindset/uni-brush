@@ -1,10 +1,8 @@
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, PropsWithChildren, useContext } from "react";
 
 import { ContextProvider, RenderIntersectData } from "@/types";
 import { Intersection } from "three";
 import { atom, getDefaultStore, PrimitiveAtom } from "jotai";
-import { Entity, Procedural } from "@/models";
-import { config } from "@/config";
 
 /**
  * Info thats enough to to react to events within canvas.
@@ -53,7 +51,7 @@ const MainViewContext = createContext({} as MainViewContextFullState);
  * @param props
  * @returns JSX
  */
-export const MainViewContextProvider: ContextProvider<null> = ({ children }) => {
+export const MainViewContextProvider: ContextProvider<null> = ({ children }: PropsWithChildren) => {
   const hoverEntityAtom = atom<RenderIntersectData | null>(null);
   const hoverIntersectAtom = atom<Intersection | null>(null);
 

@@ -77,10 +77,14 @@ export class Manager extends ManagerBase<Attributes, Entity, EventsToCallback> {
         desc: {
           value: "N/A",
         },
+        obj3D: {},
+        initPos: {},
       },
       Manager.initialCapacity,
       ["obj3D"],
     );
+
+    this.resetAllEntities();
   }
 
   public disposeVisuals() {

@@ -5,8 +5,8 @@ import { Entity } from "@/models";
 import { useMainViewContext } from "@/context";
 import { ThreeHelpers } from "@/util";
 import { Panel } from "@/components";
-import { useAtomValue, useSetAtom } from "jotai";
-import { starSystemManagerAtom } from "@/store";
+import { useSetAtom } from "jotai";
+import { useStarSystemManager } from "@/hooks";
 
 interface EntryProps {
   onClick?: () => void;
@@ -38,7 +38,7 @@ const StarSystemDirectoryEntry: React.FC<EntryProps> = (props: EntryProps) => {
 };
 
 export const StarSystemDirectory: React.FC = () => {
-  const starSystemManager = useAtomValue(starSystemManagerAtom);
+  const starSystemManager = useStarSystemManager();
   const mainView = useMainViewContext();
 
   const setSelectedRefAtom = useSetAtom(mainView.pointer.select.ref);

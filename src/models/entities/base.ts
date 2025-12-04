@@ -94,7 +94,7 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
   private idToIndex: Record<string, number>;
   /** The default values to grant for each entity's attributes */
   private defaultAttributeValues: {
-    [key in keyof Attributes]?: { value?: Attributes[key]; generator?: () => Attributes[key] };
+    [key in keyof Attributes]: { value?: Attributes[key]; generator?: () => Attributes[key] };
   };
   /** Attributes to not including when serializing or deserializing entities */
   private notSerializedAttributes: Set<keyof Attributes>;

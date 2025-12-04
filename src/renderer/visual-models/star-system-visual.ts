@@ -7,6 +7,8 @@ import { MathHelpers } from "@/util";
 import { BaseVisual } from "./base-visual";
 
 import starSpriteImage from "@/assets/sprite120.png";
+import { starSystemManagerAtom } from "@/store";
+import { getDefaultStore } from "jotai";
 
 const starSpriteTexture = new THREE.TextureLoader().load(starSpriteImage);
 const starSpriteMaterial = new THREE.SpriteMaterial({
@@ -74,8 +76,8 @@ export class StarSystemVisual extends BaseVisual {
     }
   }
 
-  public get entity(): Entity.StarSystem.EntityType {
-    return Entity.StarSystem.Manager.get(this.id);
+  public get entity(): Entity.StarSystem.Entity {
+    return getDefaultStore().get(starSystemManagerAtom).get(this.id);
   }
 
   public updateScale(position: THREE.Vector3): void {

@@ -1,9 +1,9 @@
 import { Panel } from "@/components";
 
-import * as CreatorView from "./components";
 import { EntityTypes } from "@/models";
+import { useProceduralCreatorModel } from "@/hooks";
 
-import { useProceduralCreatorModel } from "./hooks";
+import * as CreatorView from "./components";
 
 export const ProceduralCreator: React.FC = () => {
   const { coreModel, generate } = useProceduralCreatorModel();

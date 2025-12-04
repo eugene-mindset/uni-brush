@@ -1,13 +1,11 @@
 import * as THREE from "three";
 
-import { Entity, Procedural } from "@/models";
+import { Entity } from "@/models";
 import { Global, StarSystemVisual } from "@/renderer";
 
-export const createGalaxyScene = (
-  starSystems: Entity.StarSystem.Entity[],
-  scene: THREE.Scene,
-  config: Procedural.BaseGalaxyConfig,
-) => {
+import { config } from "@/config";
+
+export const createGalaxyScene = (starSystems: Entity.StarSystem.Entity[], scene: THREE.Scene) => {
   // TODO: very expensive to recreate stars, for small changes will need to track and change individual
   // ones
 

@@ -3,8 +3,6 @@ import Stats from "stats.js";
 import * as THREE from "three";
 import { MapControls } from "three/examples/jsm/Addons.js";
 
-import { config } from "@/config";
-import { Procedural } from "@/models";
 import { createGalaxyScene, BaseVisual, RenderSetup } from "@/renderer";
 import { useMainViewFullContext } from "@/context";
 import { ThreeHelpers } from "@/util";
@@ -31,7 +29,7 @@ export interface RendererControls {
 // TODO: split this up between hook to control the renderer and hook to control scene
 export const useRenderGalaxy = (
   canvasRef: RefObject<HTMLCanvasElement | null>,
-): [RenderGalaxyData, Procedural.BaseGalaxyConfig, RendererControls] => {
+): [RenderGalaxyData, RendererControls] => {
   const starSystemManager = useStarSystemManager();
 
   // base three objects
@@ -174,7 +172,7 @@ export const useRenderGalaxy = (
     RenderSetup.enablePipeline(camera, pipeline);
 
     // load 3d visuals into scene
-    createGalaxyScene(starSystemManager.getAll(), scene, config);
+    createGalaxyScene(starSystemManager.getAll(), scene);
 
     sceneRef.current = scene;
     cameraRef.current = camera;
@@ -285,7 +283,6 @@ export const useRenderGalaxy = (
       cleanUp,
       initialize,
     },
-    config,
     {},
   ];
 };

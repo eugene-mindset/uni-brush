@@ -8,7 +8,7 @@ export const useProceduralCreatorModel = () => {
   const starSystemManager = useStarSystemManager();
   const [galaxyGeneratorModel, _] = useAtom(galaxyGeneratorModelAtom);
 
-  const generate = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const generate = (_event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     galaxyGeneratorModel.generate();
     const outputs = galaxyGeneratorModel.getOutputs();
 

@@ -1,8 +1,9 @@
-import React, { createContext, PropsWithChildren, useContext } from "react";
+import React, { createContext, PropsWithChildren, useContext, useEffect } from "react";
 
 import { ContextProvider, RenderIntersectData } from "@/types";
 import { Intersection } from "three";
 import { atom, getDefaultStore, PrimitiveAtom } from "jotai";
+import { useProceduralCreatorModel } from "@/hooks";
 
 /**
  * Info thats enough to to react to events within canvas.
@@ -57,6 +58,11 @@ export const MainViewContextProvider: ContextProvider<null> = ({ children }: Pro
 
   const selectEntityAtom = atom<RenderIntersectData | null>(null);
   const selectIntersectAtom = atom<Intersection | null>(null);
+
+  const { generate } = useProceduralCreatorModel();
+  useEffect(() => {
+    generate();
+  }, [generate]);
 
   const store = getDefaultStore();
 

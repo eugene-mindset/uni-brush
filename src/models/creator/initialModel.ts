@@ -17,9 +17,7 @@ export const initModel = () => {
   testEntityPipe.createPipeline("initPos");
   testEntityPipe.createPipeline("name");
 
-  testEntityPipe.pipelines["initialPosition"]?.setGenerator(
-    Creator.Generators.NormalDistributionVector,
-  );
+  testEntityPipe.pipelines["initPos"]?.setGenerator(Creator.Generators.NormalDistributionVector);
 
   const NewType = Creator.Generators.DefaultValue<string>;
 

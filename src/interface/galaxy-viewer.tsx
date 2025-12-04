@@ -17,10 +17,10 @@ const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   }, [render]);
 
   useEffect(() => {
-    starSystemManager.addEventListener("load", refreshRenderer);
+    starSystemManager.addEventListener("create_all", refreshRenderer);
 
     return () => {
-      starSystemManager.removeEventListener("load", refreshRenderer);
+      starSystemManager.removeEventListener("create_all", refreshRenderer);
     };
   }, [refreshRenderer, starSystemManager]);
 

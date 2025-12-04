@@ -6,7 +6,7 @@ import { StarSystemVisual } from "@/renderer";
 
 import { EntityBase, EventsToCallbackBase, ManagerBase } from "./base";
 import { EntityTypes } from "./types";
-import assert from "assert";
+import { MathHelpers } from "@/util";
 
 export interface Attributes {
   obj3D: StarSystemVisual;
@@ -31,10 +31,10 @@ export class Entity extends EntityBase {
   protected manager: Manager;
 
   constructor(manager: unknown, newId: number) {
-    assert(
-      manager instanceof Manager,
-      new Error("Cannot create instance without manager being StarSystemManager"),
-    );
+    if (!(manager instanceof Manager)) {
+      throw new Error("Cannot create instance without manager being StarSystemManager");
+    }
+
     super(manager, newId);
     this.manager = manager;
   }
@@ -78,7 +78,9 @@ export class Manager extends ManagerBase<Attributes, Entity, EventsToCallback> {
           value: "N/A",
         },
         obj3D: {},
-        initPos: {},
+        initPos: {
+          generator: () => MathHelpers.randomVectorFromNormal().multiplyScalar(1000),
+        },
       },
       Manager.initialCapacity,
       ["obj3D"],

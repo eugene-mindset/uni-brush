@@ -1,5 +1,4 @@
 import { EntityTypes } from "./types";
-import assert from "assert";
 
 interface EntityDataStore {
   publicId: string[];
@@ -42,10 +41,10 @@ export class EntityBase {
    * @throws Will ensure manager is indeed an EntityManager or it will error
    */
   constructor(manager: unknown, newId: number) {
-    assert(
-      manager instanceof ManagerBase,
-      new Error("Cannot create instance without manager being an EntityManager"),
-    );
+    if (!(manager instanceof ManagerBase)) {
+      throw new Error("Cannot create instance without manager being StarSystemManager");
+    }
+
     this._manager = manager;
     this._index = newId;
   }
@@ -307,12 +306,8 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
       this.resizeStore();
     }
 
-    const newArray = [
-      ...array,
-      ...new Array<(typeof this.dataStore)[K][number]>(
-        Math.min(this.currentCapacity - array.length, 0),
-      ),
-    ];
+    this.resetAttributeForAll(key);
+    const newArray = [...array, ...this.dataStore[key].splice(array.length)];
     this.dataStore = { ...this.dataStore, [key]: newArray };
     this.emit("set_per_attr", { what: key });
   }
@@ -337,21 +332,20 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
   }
 
   public resetAllEntities() {
-    this.resetIds();
     Object.keys(this.defaultAttributeValues).forEach((key) =>
       this.resetAttributeForAll(key as keyof Attributes),
     );
+    this.resetIds();
     this.emit("reset_all");
   }
 
   private resetIds() {
-    const newAttributeArray = new Array<string>(this.currentCapacity);
+    const newAttributeArray = new Array<string>(this.currentCapacity).fill("");
 
     this.idToIndex = {};
     this.dataStore.publicId = newAttributeArray.map((_, i) => {
       const id = this.generateUUID();
 
-      this.dataStore.publicId[i] = id;
       this.idToIndex[id] = i;
       return id;
     });
@@ -399,7 +393,6 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
     this.dataStore.publicId[newInstIndex] = newInstId;
     this.idToIndex[newInstId] = newInstIndex;
 
-    this.resetEntity(newInstIndex);
     this.emit("create_entity", { who: newInstId });
 
     return newInstance;

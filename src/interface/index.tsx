@@ -1,13 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
+import { ProceduralCreator } from "@/features/procedural-galaxy-creator";
 import { StarSystemDirectory } from "@/features/star-system-directory";
 import { StarSystemEditor } from "@/features/star-system-editor";
-import { ProceduralCreator } from "@/features/procedural-galaxy-creator";
 
 import { AppMenu } from "./app-menu";
 import { MainToolbar } from "./main-toolbar";
 
-export const toolbarRoutes = [
+const toolbarRoutes = [
   { name: "Geography", options: ["Procedural Creator", "Directory"] },
   { name: "Civilization", options: ["Nations", "Species", "Diplomacy & Warfare"] },
   { name: "Transportation", options: ["Routes"] },
@@ -19,7 +19,7 @@ const panelToShow: Record<string, React.ReactNode> = {
   "Geography, Procedural Creator": <ProceduralCreator />,
 };
 
-export const FullInterface: React.FC = ({}) => {
+export const FullInterface: React.FC = () => {
   const [selectedPath, setSelectedPath] = useState<[string, string]>(["", ""]);
 
   // const showStarSystemEditor = computed(() => {

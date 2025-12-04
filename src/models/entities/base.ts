@@ -4,6 +4,8 @@ interface EntityDataStore {
   publicId: string[];
 }
 
+console.log("test");
+
 export interface EventsToCallbackBase {
   load: () => void;
   refresh: (who: string) => void;
@@ -93,7 +95,10 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
   private idToIndex: Record<string, number>;
   /** The default values to grant for each entity's attributes */
   private defaultAttributeValues: {
-    [key in keyof Attributes]: { value?: Attributes[key]; generator?: () => Attributes[key] };
+    [key in keyof Attributes]: {
+      value?: Attributes[key];
+      generator?: () => Attributes[key];
+    };
   };
   /** Attributes to not including when serializing or deserializing entities */
   private notSerializedAttributes: Set<keyof Attributes>;
@@ -289,7 +294,7 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
     value?: (typeof this.dataStore)[K][number],
     generator?: () => (typeof this.dataStore)[K][number],
   ) {
-    const newAttributeArray = new Array<(typeof this.dataStore)[K]>(this.currentCapacity);
+    const newAttributeArray = new Array(this.currentCapacity).fill(undefined);
 
     this.dataStore = {
       ...this.dataStore,
@@ -332,10 +337,10 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
   }
 
   public resetAllEntities() {
+    this.resetIds();
     Object.keys(this.defaultAttributeValues).forEach((key) =>
       this.resetAttributeForAll(key as keyof Attributes),
     );
-    this.resetIds();
     this.emit("reset_all");
   }
 
@@ -388,7 +393,6 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
     const newInstId = this.generateUUID();
 
     const newInstance = new this.createInstanceCall(this, newInstIndex);
-
     this.entities.push(newInstance);
     this.dataStore.publicId[newInstIndex] = newInstId;
     this.idToIndex[newInstId] = newInstIndex;

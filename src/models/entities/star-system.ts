@@ -3,10 +3,10 @@
 import * as THREE from "three";
 
 import { StarSystemVisual } from "@/renderer";
+import { MathHelpers } from "@/util";
 
 import { EntityBase, EventsToCallbackBase, ManagerBase } from "./base";
 import { EntityTypes } from "./types";
-import { MathHelpers } from "@/util";
 
 export interface Attributes {
   obj3D: StarSystemVisual;

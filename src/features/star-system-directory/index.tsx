@@ -1,12 +1,12 @@
+import { useSetAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { Vector3 } from "three";
 
-import { Entity } from "@/models";
-import { useMainViewContext } from "@/context";
-import { ThreeHelpers } from "@/util";
 import { Panel } from "@/components";
-import { useSetAtom } from "jotai";
-import { useStarSystemManager } from "@/hooks";
+import { useMainViewContext } from "@/context";
+import { useManager } from "@/hooks";
+import { Entity, EntityTypes } from "@/models";
+import { ThreeHelpers } from "@/util";
 
 interface EntryProps {
   onClick?: () => void;
@@ -38,7 +38,7 @@ const StarSystemDirectoryEntry: React.FC<EntryProps> = (props: EntryProps) => {
 };
 
 export const StarSystemDirectory: React.FC = () => {
-  const starSystemManager = useStarSystemManager();
+  const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
   const mainView = useMainViewContext();
 
   const setSelectedRefAtom = useSetAtom(mainView.pointer.select.ref);

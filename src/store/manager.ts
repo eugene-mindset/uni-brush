@@ -1,5 +1,6 @@
-import { Entity, EntityTypes } from "@/models";
 import { atom } from "jotai";
+
+import { Entity, EntityTypes } from "@/models";
 
 const managers = {
   [EntityTypes.STAR_SYSTEM]: new Entity.StarSystem.Manager(),

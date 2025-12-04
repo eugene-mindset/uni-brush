@@ -1,11 +1,12 @@
+import { useAtom } from "jotai";
 import { Vector3 } from "three";
 
-import { useAtom } from "jotai";
+import { useManager } from "@/hooks";
+import { EntityTypes } from "@/models";
 import { galaxyGeneratorModelAtom } from "@/store/editor";
-import { useStarSystemManager } from "@/hooks";
 
 export const useProceduralCreatorModel = () => {
-  const starSystemManager = useStarSystemManager();
+  const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
   const [galaxyGeneratorModel, _] = useAtom(galaxyGeneratorModelAtom);
 
   const generate = (_event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

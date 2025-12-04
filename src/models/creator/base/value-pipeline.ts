@@ -3,23 +3,23 @@ import { Operator } from "./operator";
 import { Step } from "./step";
 
 export class ValuePipeline<T> {
-  private _generator?: Generator<T, never>;
-  private _operators: Operator<T, never>[] = [];
+  private _generator?: Generator<T, object>;
+  private _operators: Operator<T, object>[] = [];
 
   private _outputs: T[][] = [];
 
   // properties
 
-  public get generator(): Generator<T, never> | undefined {
+  public get generator(): Generator<T, object> | undefined {
     return this._generator;
   }
 
-  public get operators(): Operator<T, never>[] {
+  public get operators(): Operator<T, object>[] {
     return [...this._operators];
   }
 
-  public get orderOfOperations(): Step<T, never>[] {
-    return [this._generator, ...this._operators] as Step<T, never>[];
+  public get orderOfOperations(): Step<T, object>[] {
+    return [this._generator, ...this._operators] as Step<T, object>[];
   }
 
   public get output(): T[] {
@@ -46,34 +46,29 @@ export class ValuePipeline<T> {
 
   // generator
 
-  public setGenerator(
-    generator?: typeof Generator<never, never>,
-  ): Generator<never, never> | undefined {
-    this._generator = generator?.create();
+  public setGenerator(generator?: typeof Generator<T, object>): Generator<T, object> | undefined {
+    this._generator = generator?.create() as Generator<T, object>;
     this.reset();
 
     return this._generator;
   }
 
-  public configGenerator(config: Object) {
+  public configGenerator(config: object) {
     this._generator?.setConfig(config);
     this.reset();
   }
 
   // operators
-  public setOperator(
-    index: number,
-    operator: typeof Operator<never, never>,
-  ): Operator<never, never> {
-    const newOp = operator.create();
+  public setOperator(index: number, operator: typeof Operator<T, object>): Operator<T, object> {
+    const newOp = operator.create() as Operator<T, object>;
     this._operators[index] = newOp;
     this.reset();
 
     return newOp;
   }
 
-  public createOperator(operator: typeof Operator<never, never>): Operator<never, never> {
-    const newOp = operator.create();
+  public createOperator(operator: typeof Operator<T, object>): Operator<T, object> {
+    const newOp = operator.create() as Operator<T, object>;
     this._operators.push(newOp);
     this.reset();
 
@@ -91,7 +86,7 @@ export class ValuePipeline<T> {
     this.reset();
   }
 
-  public configOperator(index: number, config: Object) {
+  public configOperator(index: number, config: object) {
     this._operators[index].setConfig(config);
     this.reset();
   }

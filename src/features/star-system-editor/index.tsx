@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Entity, EntityTypes } from "@/models";
-import { useMainViewContext } from "@/store";
+import { useMainViewContext } from "@/context";
 import { ThreeHelpers } from "@/util";
 import { Panel } from "@/components";
 import { useAtomValue } from "jotai";
@@ -81,5 +81,5 @@ export const StarSystemEditor: React.FC<{}> = () => {
     );
   }
 
-  return <React.Fragment />
+  return <React.Fragment />;
 };

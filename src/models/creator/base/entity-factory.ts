@@ -1,19 +1,22 @@
 import { Entity } from "@/models";
+
 import { EntityPipeline } from "./entity-pipeline";
 import { propertyToValues } from "./types";
 
-type EntityFactoryConfig<T extends Entity.Base.EntityType> = {
+type EntityFactoryConfig<T extends Entity.EntityBase> = {
   pipeline: EntityPipeline<T>;
   count: number;
   name: string;
 }[];
 
-export class EntityFactory<T extends Entity.Base.EntityType> {
+export class EntityFactory<T extends Entity.EntityBase> {
   protected _pipelines: EntityFactoryConfig<T> = [];
 
   // constructors
 
-  public constructor() {}
+  public constructor() {
+    /* empty */
+  }
 
   // properties
 
@@ -55,7 +58,7 @@ export class EntityFactory<T extends Entity.Base.EntityType> {
   }
 
   public getOutputs(): propertyToValues<T> {
-    let out: propertyToValues<T> = {};
+    const out: propertyToValues<T> = {};
 
     this._pipelines.map((pipeline) => {
       pipeline.pipeline.properties.forEach((key) => {

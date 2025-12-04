@@ -1,5 +1,5 @@
 import { ContextProvider } from "@/types";
-import { createContext, useContext } from "react";
+import { createContext, PropsWithChildren, useContext } from "react";
 
 /** General app state*/
 export interface AppContextState {
@@ -17,7 +17,7 @@ const AppContext = createContext({ file: "" } as AppContextState);
  * @param param0
  * @returns JSX
  */
-export const AppContextProvider: ContextProvider<{}> = ({ children }) => {
+export const AppContextProvider: ContextProvider<null> = ({ children }: PropsWithChildren) => {
   return <AppContext.Provider value={{ file: "" }}>{children}</AppContext.Provider>;
 };
 

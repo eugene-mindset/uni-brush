@@ -4,6 +4,8 @@ import eslintConfigPrettier from "@electron-toolkit/eslint-config-prettier";
 import eslintPluginReact from "eslint-plugin-react";
 import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
+import eslintPluginPrettier from "eslint-plugin-prettier";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 export default defineConfig(
   { ignores: ["**/node_modules", "**/dist", "**/out"] },
@@ -22,6 +24,8 @@ export default defineConfig(
     plugins: {
       "react-hooks": eslintPluginReactHooks,
       "react-refresh": eslintPluginReactRefresh,
+      prettier: eslintPluginPrettier,
+      "simple-import-sort": simpleImportSort,
     },
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
@@ -39,6 +43,14 @@ export default defineConfig(
           ignoreRestSiblings: true,
         },
       ],
+      "prettier/prettier": [
+        "error",
+        {
+          usePrettierrc: true,
+        },
+      ],
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
     },
   },
   eslintConfigPrettier,

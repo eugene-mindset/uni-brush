@@ -1,10 +1,9 @@
-import React, { createContext, useContext, useEffect } from "react";
-
-import { ContextProvider, RenderIntersectData } from "@/types";
-import { Intersection } from "three";
 import { atom, getDefaultStore, PrimitiveAtom } from "jotai";
-import { Entity, Procedural } from "@/models";
-import { config } from "@/config";
+import React, { createContext, PropsWithChildren, useContext, useEffect } from "react";
+import { Intersection } from "three";
+
+import { useProceduralCreatorModel } from "@/hooks";
+import { ContextProvider, RenderIntersectData } from "@/types";
 
 /**
  * Info thats enough to to react to events within canvas.
@@ -53,28 +52,20 @@ const MainViewContext = createContext({} as MainViewContextFullState);
  * @param props
  * @returns JSX
  */
-export const MainViewContextProvider: ContextProvider<null> = ({ children }) => {
+export const MainViewContextProvider: ContextProvider<null> = ({ children }: PropsWithChildren) => {
   const hoverEntityAtom = atom<RenderIntersectData | null>(null);
   const hoverIntersectAtom = atom<Intersection | null>(null);
 
   const selectEntityAtom = atom<RenderIntersectData | null>(null);
   const selectIntersectAtom = atom<Intersection | null>(null);
 
-  const store = getDefaultStore();
-
-  // generate a random layout upon initial visit
-
+  // TODO: move this out somewhere, pivot for landing functionality
+  const { generate } = useProceduralCreatorModel();
   useEffect(() => {
-    const newVectors = Procedural.generateGalaxyBase(config);
-    const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
+    generate();
+  }, [generate]);
 
-    const finalVectors = config.showDebug ? newVectors : afterArm;
-
-    if (!Entity.StarSystem.Manager.isInitialized) {
-      Entity.StarSystem.Manager.batchInitializeProperty("initPos", finalVectors);
-      Entity.StarSystem.Manager.batchInitializeEntities();
-    }
-  }, []);
+  const store = getDefaultStore();
 
   const setIntersect = (
     action: "hover" | "select",

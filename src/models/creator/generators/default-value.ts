@@ -1,15 +1,15 @@
 import { Generator } from "../base";
 
 interface Config<T> {
-  defaultValue: T | null;
+  defaultValue: T | undefined;
 }
 
-export class DefaultValue<T> extends Generator<T | null, Config<T>> {
+export class DefaultValue<T> extends Generator<T | undefined, Config<T>> {
   public static override readonly stepKey: string = "Generator:DefaultValue";
 
-  public static override create(): DefaultValue<never> {
+  public static override create(): DefaultValue<unknown> {
     return new DefaultValue({
-      defaultValue: null,
+      defaultValue: undefined,
     });
   }
 
@@ -27,7 +27,7 @@ export class DefaultValue<T> extends Generator<T | null, Config<T>> {
     };
   }
 
-  protected override generateStep(): T | null {
+  protected override generateStep(): T | undefined {
     return this._config.defaultValue;
   }
 }

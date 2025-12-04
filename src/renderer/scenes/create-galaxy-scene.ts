@@ -1,19 +1,20 @@
 import * as THREE from "three";
 
-import { Entity, Procedural } from "@/models";
+import { Entity } from "@/models";
 import { Global, StarSystemVisual } from "@/renderer";
 
-export const createGalaxyScene = (scene: THREE.Scene, config: Procedural.BaseGalaxyConfig) => {
+import { config } from "@/config";
+
+export const createGalaxyScene = (starSystems: Entity.StarSystem.Entity[], scene: THREE.Scene) => {
   // TODO: very expensive to recreate stars, for small changes will need to track and change individual
   // ones
 
   // render stars
-  const starSystems = Entity.StarSystem.Manager.getAll();
   for (const starSystem of starSystems) {
-    const starSystemVisual = new StarSystemVisual(starSystem.publicId, starSystem.initialPosition);
+    const starSystemVisual = new StarSystemVisual(starSystem.id, starSystem.initPos);
 
     scene.add(starSystemVisual.object3D);
-    starSystem.visual = starSystemVisual;
+    starSystem.obj3D = starSystemVisual;
   }
 
   // // debugger code for showing some operations

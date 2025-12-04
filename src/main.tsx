@@ -1,10 +1,8 @@
-`use client`;
-
 import React from "react";
 import ReactDOM from "react-dom/client"; // Import createRoot
 
-import { AppContextProvider } from "@/store/app-context";
-import { MainViewContextProvider } from "@/store/main-view-context";
+import { AppContextProvider } from "@/context/app-context";
+import { MainViewContextProvider } from "@/context/main-view-context";
 
 import GalaxyViewer from "@/interface/galaxy-viewer";
 import FullInterface from "@/interface";

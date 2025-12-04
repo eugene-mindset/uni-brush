@@ -3,13 +3,11 @@ import Stats from "stats.js";
 import * as THREE from "three";
 import { MapControls } from "three/examples/jsm/Addons.js";
 
-import { config } from "@/config";
-import { Entity } from "@/models";
-import { Procedural } from "@/models";
 import { createGalaxyScene, BaseVisual, RenderSetup } from "@/renderer";
-import { useMainViewFullContext } from "@/store";
+import { useMainViewFullContext } from "@/context";
 import { ThreeHelpers } from "@/util";
 import { useAtomValue } from "jotai";
+import { useStarSystemManager } from "./use-manager";
 
 export interface RenderGalaxyData {
   scene: THREE.Scene | null;
@@ -31,7 +29,9 @@ export interface RendererControls {
 // TODO: split this up between hook to control the renderer and hook to control scene
 export const useRenderGalaxy = (
   canvasRef: RefObject<HTMLCanvasElement | null>,
-): [RenderGalaxyData, Procedural.BaseGalaxyConfig, RendererControls] => {
+): [RenderGalaxyData, RendererControls] => {
+  const starSystemManager = useStarSystemManager();
+
   // base three objects
   const sceneRef = useRef<THREE.Scene>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
@@ -117,7 +117,7 @@ export const useRenderGalaxy = (
 
     if (cameraRef.current) {
       const camera = cameraRef.current;
-      Entity.StarSystem.Manager.updateVisualScale(camera.position);
+      starSystemManager.updateVisualScale(camera.position);
 
       const target = targetCameraRef.current;
 
@@ -172,7 +172,7 @@ export const useRenderGalaxy = (
     RenderSetup.enablePipeline(camera, pipeline);
 
     // load 3d visuals into scene
-    createGalaxyScene(scene, config);
+    createGalaxyScene(starSystemManager.getAll(), scene);
 
     sceneRef.current = scene;
     cameraRef.current = camera;
@@ -197,7 +197,7 @@ export const useRenderGalaxy = (
       Object.entries(pipelineRef.current).forEach((x) => x[1].dispose());
     }
 
-    Entity.StarSystem.Manager.disposeVisuals();
+    starSystemManager.disposeVisuals();
   };
 
   const updateCameraToFocus = (position: THREE.Vector3, rotation?: THREE.Quaternion) => {
@@ -212,6 +212,7 @@ export const useRenderGalaxy = (
     targetCam.position.copy(position).sub(translateV.normalize().multiplyScalar(2.5));
 
     if (rotation) {
+      // TODO: figure out what was missing here...
     } else {
       targetCam.lookAt(position);
     }
@@ -282,7 +283,6 @@ export const useRenderGalaxy = (
       cleanUp,
       initialize,
     },
-    config,
     {},
   ];
 };

@@ -1,24 +1,32 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-import { useManagerEvents, useRenderGalaxy } from "@/hooks";
-import { Entity } from "@/models";
+import { useRenderGalaxy, useStarSystemManager } from "@/hooks";
 
 export interface GalaxyViewerProps {}
 
 const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
+  const starSystemManager = useStarSystemManager();
   const divRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [render] = useRenderGalaxy(canvasRef);
 
-  useManagerEvents(Entity.StarSystem.Manager, [], {
-    events: ["load", "refresh"],
-    callback: () => {
-      render.cleanUp();
-      render.initialize();
-    },
-    init: false,
-  });
+  const refreshRenderer = useCallback(() => {
+    render.cleanUp();
+    render.initialize();
+  }, [render]);
+
+  useEffect(() => {
+    starSystemManager.addEventListener("create_all", refreshRenderer);
+
+    return () => {
+      starSystemManager.removeEventListener("create_all", refreshRenderer);
+    };
+  }, [refreshRenderer, starSystemManager]);
+
+  useEffect(() => {
+    refreshRenderer();
+  }, []);
 
   return (
     <div ref={divRef} id="threeMainRender">

@@ -2,12 +2,14 @@ import { Entity } from "@/models";
 import { ValuePipeline } from "./value-pipeline";
 import { propertyToPipeline, propertyToValues } from "./types";
 
-export class EntityPipeline<T extends Entity.Base.EntityType> {
+export class EntityPipeline<T extends Entity.EntityBase> {
   protected _propertyPipeline: propertyToPipeline<T> = {};
 
   // constructors
 
-  public constructor() {}
+  public constructor() {
+    /* empty */
+  }
 
   // properties
 
@@ -53,7 +55,7 @@ export class EntityPipeline<T extends Entity.Base.EntityType> {
   }
 
   public getOutputs(): propertyToValues<T> {
-    let out: propertyToValues<T> = {};
+    const out: propertyToValues<T> = {};
     this.properties.map((x) => {
       const pipeline = this._propertyPipeline[x as keyof T];
       if (!pipeline) return;

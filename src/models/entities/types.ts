@@ -1,4 +1,4 @@
 export enum EntityTypes {
   BASE = "base",
-  STAR_SYSTEM = "star-system",
+  STAR_SYSTEM = "star_system",
 }

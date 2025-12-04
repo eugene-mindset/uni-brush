@@ -1,3 +1,4 @@
-export * from "./types";
-export * from "./star-system";
 export * from "./base";
+export * as StarSystem from "./star-system";
+
+export * from "./types";

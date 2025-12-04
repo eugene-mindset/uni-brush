@@ -4,15 +4,15 @@ import * as THREE from "three";
 
 import { StarSystemVisual } from "@/renderer";
 
-import { Entity, EntityEventsToCallback, EntityManager } from "./base";
+import { EntityBase, EventsToCallbackBase, ManagerBase } from "./base";
 import { EntityTypes } from "./types";
 import assert from "assert";
 
-export interface StarSystemAttributes {
+export interface Attributes {
   obj3D: StarSystemVisual;
   name: string;
   desc: string;
-  initialPosition: THREE.Vector3;
+  initPos: THREE.Vector3;
   // owner: Civilization;
   // stars: Stars[];
   // sector: string;
@@ -21,17 +21,18 @@ export interface StarSystemAttributes {
   // geography: GeoFeatures[];
 }
 
-interface StarSystemEntityEventsToCallback extends EntityEventsToCallback {
+export interface EventsToCallback extends EventsToCallbackBase {
   dispose: () => void;
 }
 
-export class StarSystemEntity extends Entity {
+export class Entity extends EntityBase {
   public static readonly type = EntityTypes.STAR_SYSTEM;
-  protected manager: StarSystemManager;
+  public readonly type = Entity.type;
+  protected manager: Manager;
 
   constructor(manager: unknown, newId: number) {
     assert(
-      manager instanceof StarSystemManager,
+      manager instanceof Manager,
       new Error("Cannot create instance without manager being StarSystemManager"),
     );
     super(manager, newId);
@@ -58,19 +59,17 @@ export class StarSystemEntity extends Entity {
     return this.manager.getAttribute("desc", this._index);
   }
 
-  get initialPosition(): THREE.Vector3 | undefined {
-    return this.manager.getAttribute("initialPosition", this._index);
+  get initPos(): THREE.Vector3 | undefined {
+    return this.manager.getAttribute("initPos", this._index);
   }
 }
 
-export class StarSystemManager extends EntityManager<
-  StarSystemAttributes,
-  StarSystemEntity,
-  StarSystemEntityEventsToCallback
-> {
+export class Manager extends ManagerBase<Attributes, Entity, EventsToCallback> {
+  public static initialCapacity = 2500;
+
   constructor() {
     super(
-      StarSystemEntity,
+      Entity,
       {
         name: {
           value: "Unnamed",
@@ -79,7 +78,7 @@ export class StarSystemManager extends EntityManager<
           value: "N/A",
         },
       },
-      2500,
+      Manager.initialCapacity,
       ["obj3D"],
     );
   }

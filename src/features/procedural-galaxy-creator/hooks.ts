@@ -1,57 +1,25 @@
 import { Vector3 } from "three";
 
-import { Creator, Entity } from "@/models";
-import { atom, useAtomValue } from "jotai";
-
-const initModel = () => {
-  const model = new Creator.Base.EntityFactory<Entity.StarSystem.EntityType>();
-  const mainEntityPipe = model.createPipeline(1750, "Primary Shape");
-  mainEntityPipe.createPipeline("initialPosition");
-  mainEntityPipe.createPipeline("name");
-
-  mainEntityPipe.pipelines["initialPosition"]?.setGenerator(
-    Creator.Generators.NormalDistributionVector,
-  );
-  mainEntityPipe.pipelines["initialPosition"]?.createOperator(Creator.Operators.BasicGravity);
-  mainEntityPipe.pipelines["initialPosition"]?.createOperator(Creator.Operators.ArmGravity);
-
-  mainEntityPipe.pipelines["name"]?.setGenerator(Creator.Generators.DefaultValue<string>);
-  mainEntityPipe.pipelines["name"]?.generator?.setConfig({ defaultValue: "Primary Star" });
-
-  const testEntityPipe = model.createPipeline(750, "Secondary Shape");
-  testEntityPipe.createPipeline("initialPosition");
-  testEntityPipe.createPipeline("name");
-
-  testEntityPipe.pipelines["initialPosition"]?.setGenerator(
-    Creator.Generators.NormalDistributionVector,
-  );
-
-  testEntityPipe.pipelines["name"]?.setGenerator(Creator.Generators.DefaultValue<string>);
-  testEntityPipe.pipelines["name"]?.generator?.setConfig({ defaultValue: "Secondary Star" });
-
-  return model;
-};
-
-const coreModelAtom = atom(initModel());
+import { useAtom, useAtomValue } from "jotai";
+import { starSystemManagerAtom } from "@/store";
+import { galaxyGeneratorModelAtom } from "@/store/editor";
 
 export const useProceduralCreatorModel = () => {
-  const coreModelValue = useAtomValue(coreModelAtom);
+  const starSystemManager = useAtomValue(starSystemManagerAtom);
+  const [galaxyGeneratorModel, _] = useAtom(galaxyGeneratorModelAtom);
 
   const generate = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    coreModelValue.generate();
-    const outputs = coreModelValue.getOutputs();
+    galaxyGeneratorModel.generate();
+    const outputs = galaxyGeneratorModel.getOutputs();
 
-    Entity.StarSystem.Manager.fullReset();
-    Entity.StarSystem.Manager.batchInitializeProperty(
-      "initPos",
-      outputs.initialPosition as Vector3[],
-    );
-    Entity.StarSystem.Manager.batchInitializeProperty("name", outputs.name as string[]);
-    Entity.StarSystem.Manager.batchInitializeEntities();
+    starSystemManager.fullReset();
+    starSystemManager.setAttributePer("initPos", outputs.initPos as Vector3[]);
+    starSystemManager.setAttributePer("name", outputs.name as string[]);
+    starSystemManager.initializeEntities();
   };
 
   return {
-    coreModel: coreModelValue,
+    coreModel: galaxyGeneratorModel,
     generate,
   };
 };

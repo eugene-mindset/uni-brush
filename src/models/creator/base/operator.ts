@@ -1,6 +1,6 @@
 import { Step } from "./step";
 
-export abstract class Operator<O, K extends Object> extends Step<O, K> {
+export abstract class Operator<O, K extends object> extends Step<O, K> {
   public static readonly stepKey: string = "Operator";
 
   // properties
@@ -11,7 +11,7 @@ export abstract class Operator<O, K extends Object> extends Step<O, K> {
 
   // methods
 
-  public static create(): Operator<never, never> {
+  public static create(): Operator<unknown, object> {
     throw new Error("Cannot call static of abstract class");
   }
 

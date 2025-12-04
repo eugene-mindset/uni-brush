@@ -62,20 +62,6 @@ export const MainViewContextProvider: ContextProvider<null> = ({ children }) => 
 
   const store = getDefaultStore();
 
-  // generate a random layout upon initial visit
-
-  useEffect(() => {
-    const newVectors = Procedural.generateGalaxyBase(config);
-    const afterArm = Procedural.armsGalaxyModifier(newVectors, config);
-
-    const finalVectors = config.showDebug ? newVectors : afterArm;
-
-    if (!Entity.StarSystem.Manager.isInitialized) {
-      Entity.StarSystem.Manager.batchInitializeProperty("initPos", finalVectors);
-      Entity.StarSystem.Manager.batchInitializeEntities();
-    }
-  }, []);
-
   const setIntersect = (
     action: "hover" | "select",
     entity?: RenderIntersectData,

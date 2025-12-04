@@ -1,9 +1,9 @@
 import { BaseGalaxyConfig } from "@/models/procedural-generators";
-import { Entity } from "./models";
+import { Entity } from "@/models";
 import { Vector3 } from "three";
 
 export const config: BaseGalaxyConfig = {
-  numOfEntities: Entity.StarSystem.Manager.capacity,
+  numOfEntities: Entity.StarSystem.Manager.initialCapacity,
   dim: new Vector3(1000, 10, 1000),
   mainGravityStrength: 0.1,
   mainGravityFallOff: 0.1,

@@ -5,7 +5,7 @@ interface EntityDataStore {
   publicId: string[];
 }
 
-export interface EntityEventsToCallback {
+export interface EventsToCallbackBase {
   load: () => void;
   refresh: (who: string) => void;
   set_entity: (who: string, what: string) => void;
@@ -24,12 +24,13 @@ export interface EntityEventsToCallback {
 /**
  *
  */
-export class Entity {
+export class EntityBase {
   /** What type of entity is this instance */
   public static readonly type: EntityTypes = EntityTypes.BASE;
+  public readonly type = EntityBase.type;
 
   /** Manager the instance associates with */
-  protected _manager: EntityManager<unknown, Entity, EntityEventsToCallback>;
+  protected _manager: ManagerBase<object, EntityBase, EventsToCallbackBase>;
   /** Internal id associating the instance to a specific entity within the Manager  */
   protected readonly _index: number;
 
@@ -42,7 +43,7 @@ export class Entity {
    */
   constructor(manager: unknown, newId: number) {
     assert(
-      manager instanceof EntityManager,
+      manager instanceof ManagerBase,
       new Error("Cannot create instance without manager being an EntityManager"),
     );
     this._manager = manager;
@@ -62,7 +63,7 @@ export class Entity {
 /**
  *
  */
-export class EntityManager<Attributes, Inst extends Entity, Events extends EntityEventsToCallback> {
+export class ManagerBase<Attributes, Inst extends EntityBase, Events extends EventsToCallbackBase> {
   public type: EntityTypes = EntityTypes.BASE;
 
   /** Method to create new Entities */
@@ -96,14 +97,12 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     [key in keyof Attributes]?: { value?: Attributes[key]; generator?: () => Attributes[key] };
   };
   /** Attributes to not including when serializing or deserializing entities */
-  private notSerializedAttributes: Set<keyof typeof this.dataStore>;
+  private notSerializedAttributes: Set<keyof Attributes>;
 
   // META
 
   /** Events to track and the callbacks to trigger when they occur */
   private events: { [key in keyof Events]?: Set<Events[key]> };
-  /** If defined, this emit is already being processed and other fanouts of events cannot occur  */
-  private emitInProgress?: keyof Events;
 
   /** If true, model cannot create new entities */
   private isInit: boolean = false;
@@ -112,7 +111,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     entityType: typeof this.createInstanceCall,
     defaultAttributes: typeof this.defaultAttributeValues,
     initCapacity?: number,
-    excludeAttributes?: (keyof typeof this.dataStore)[],
+    excludeAttributes?: (keyof Attributes)[],
   ) {
     this.createInstanceCall = entityType;
 
@@ -170,7 +169,7 @@ export class EntityManager<Attributes, Inst extends Entity, Events extends Entit
     return JSON.stringify(
       Object.fromEntries(
         Object.entries(this.dataStore).filter(
-          ([k, _]) => !this.notSerializedAttributes.has(k as keyof typeof this.dataStore),
+          ([k, _]) => !this.notSerializedAttributes.has(k as keyof Attributes),
         ),
       ),
     );

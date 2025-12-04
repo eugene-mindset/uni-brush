@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { Entity, EntityEventsToCallback, EntityManager } from "../base";
+import { EntityBase, EventsToCallbackBase, ManagerBase } from "../base";
 
 interface TestAttributes {
   name: string;
@@ -7,11 +7,11 @@ interface TestAttributes {
 }
 
 describe("EntityManager", () => {
-  let entityManager: EntityManager<TestAttributes, Entity, EntityEventsToCallback>;
+  let entityManager: ManagerBase<TestAttributes, EntityBase, EventsToCallbackBase>;
 
   beforeEach(() => {
-    entityManager = new EntityManager<TestAttributes, Entity, EntityEventsToCallback>(
-      Entity,
+    entityManager = new ManagerBase<TestAttributes, EntityBase, EventsToCallbackBase>(
+      EntityBase,
       {
         name: { value: "Test" },
         count: { generator: () => Math.round(Math.random() * 100) },
@@ -95,11 +95,11 @@ describe("EntityManager", () => {
 });
 
 describe("Entity", () => {
-  let entityManager: EntityManager<TestAttributes, Entity, EntityEventsToCallback>;
+  let entityManager: ManagerBase<TestAttributes, EntityBase, EventsToCallbackBase>;
 
   beforeEach(() => {
-    entityManager = new EntityManager<TestAttributes, Entity, EntityEventsToCallback>(
-      Entity,
+    entityManager = new ManagerBase<TestAttributes, EntityBase, EventsToCallbackBase>(
+      EntityBase,
       {
         name: { value: "Test" },
         count: { generator: () => Math.random() },

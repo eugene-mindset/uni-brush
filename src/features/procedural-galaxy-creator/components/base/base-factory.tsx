@@ -1,16 +1,15 @@
 import { Panel } from "@/components";
 import { Creator, Entity, EntityTypes } from "@/models";
 
+import styles from "../../style.module.css";
 import { BasePipelineComponent } from "./base-pipeline";
 
-import styles from "../../style.module.css";
-
-interface Props<V extends Entity.Base.EntityType> {
+interface Props<V extends Entity.EntityBase> {
   factory: Creator.Base.EntityFactory<V>;
   entity: EntityTypes;
 }
 
-export const BaseFactoryComponent = <V extends Entity.Base.EntityType>(props: Props<V>) => {
+export const BaseFactoryComponent = <V extends Entity.EntityBase>(props: Props<V>) => {
   const { factory, entity } = props;
   return (
     <div className="form-list">

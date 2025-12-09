@@ -8,7 +8,7 @@ interface Props {
   order: number;
 }
 
-export const NormalDistribution: React.FC<Props> = (props) => {
+export const NormalDistribution: React.FC<Props> = (props: Props) => {
   const { step } = props;
 
   return (

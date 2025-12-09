@@ -1,6 +1,7 @@
 import { Entity } from "@/models";
-import { ValuePipeline } from "./value-pipeline";
+
 import { propertyToPipeline, propertyToValues } from "./types";
+import { ValuePipeline } from "./value-pipeline";
 
 export class EntityPipeline<T extends Entity.EntityBase> {
   protected _propertyPipeline: propertyToPipeline<T> = {};

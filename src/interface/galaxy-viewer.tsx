@@ -27,7 +27,7 @@ const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
 
   useEffect(() => {
     refreshRenderer();
-  }, []);
+  }, [refreshRenderer]);
 
   return (
     <div ref={divRef} id="threeMainRender">

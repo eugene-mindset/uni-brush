@@ -1,8 +1,9 @@
-import { Entity } from "@/models";
 import { Vector3 } from "three";
 
+import { Entity } from "@/models";
+
 export const config = {
-  numOfEntities: Entity.StarSystem.Manager.initialCapacity,
+  numOfEntities: Entity.StarSystemManager.initialCapacity,
   dim: new Vector3(1000, 10, 1000),
 
   numArms: 4,

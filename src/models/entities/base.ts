@@ -4,8 +4,6 @@ interface EntityDataStore {
   publicId: string[];
 }
 
-console.log("test");
-
 export interface EventsToCallbackBase {
   load: () => void;
   refresh: (who: string) => void;

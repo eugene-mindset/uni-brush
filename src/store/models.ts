@@ -1,9 +1,9 @@
 import { atom } from "jotai";
 
-import { Entity, EntityTypes } from "@/models";
+import { Entity, EntityTypes, initModel } from "@/models";
 
 const managers = {
-  [EntityTypes.STAR_SYSTEM]: new Entity.StarSystem.Manager(),
+  [EntityTypes.STAR_SYSTEM]: new Entity.StarSystemManager(),
 };
 
 export const starSystemManagerAtom = atom((_get) => managers[EntityTypes.STAR_SYSTEM]);
@@ -12,4 +12,4 @@ export const managerAtoms = {
   [EntityTypes.STAR_SYSTEM]: atom((_get) => managers[EntityTypes.STAR_SYSTEM]),
 };
 
-console.log(managers);
+export const galaxyGeneratorModelAtom = atom(initModel());

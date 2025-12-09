@@ -1,6 +1,6 @@
 import { forwardRef, Ref, useImperativeHandle, useRef, useState } from "react";
 
-import { ToggleComponent, Panel, ActionOnlyButton, SVGIcons } from "@/components";
+import { ActionOnlyButton, Panel, SVGIcons, ToggleComponent } from "@/components";
 import { useTriggerUpdate } from "@/hooks";
 import { Creator } from "@/models";
 
@@ -66,6 +66,7 @@ const SetStateModal = forwardRef(
     );
   },
 );
+SetStateModal.displayName = "SetStateModal";
 
 export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>>(
   props: Props<V, T>,
@@ -102,9 +103,11 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
     if (!selectedIndex) return;
 
     if (selectedIndex < 0) {
-      pipeline.setGenerator(AllGenerators[stepKey]);
+      const generator = AllGenerators[stepKey];
+      pipeline.setGenerator(generator);
     } else {
-      pipeline.setOperator(selectedIndex, AllOperators[stepKey]);
+      const operator = AllOperators[stepKey];
+      pipeline.setOperator(selectedIndex, operator);
     }
 
     setModalRef.current?.close();
@@ -121,7 +124,8 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
   };
 
   const onAddStepConfirm = (stepKey: string) => {
-    pipeline.createOperator(AllOperators[stepKey]);
+    const operator = AllOperators[stepKey];
+    pipeline.createOperator(operator);
     addModalRef.current?.close();
     triggerStateChange();
   };

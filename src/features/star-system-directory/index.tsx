@@ -43,7 +43,7 @@ export const StarSystemDirectory: React.FC = () => {
 
   const setSelectedRefAtom = useSetAtom(mainView.pointer.select.ref);
 
-  const [starSystems, setStarSystems] = useState<Entity.StarSystem.Entity[]>(
+  const [starSystems, setStarSystems] = useState<Entity.StarSystemEntity[]>(
     starSystemManager.getAll(),
   );
 
@@ -62,7 +62,7 @@ export const StarSystemDirectory: React.FC = () => {
 
   return (
     <Panel title="Geography / Directory" width="700px" maxHeight="450px" canToggle>
-      <div className="flex-col scrollable">
+      <div className="flex-col">
         <table className="directory alt-row-table">
           <thead>
             <tr>

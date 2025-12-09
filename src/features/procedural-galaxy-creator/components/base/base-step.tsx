@@ -1,13 +1,12 @@
 import { Panel, SVGIcons } from "@/components";
+import { ActionOnlyButton } from "@/components/buttons";
+import { ToggleComponent } from "@/components/toggle";
+import { Creator } from "@/models";
 
 import { ModelStepDynamicInput } from "../base";
 import ConfigTables from "./step-config-tables";
 
-import { Creator } from "@/models";
-import { ToggleComponent } from "@/components/toggle";
-import { ActionOnlyButton } from "@/components/buttons";
-
-interface Props<K extends object, T extends Creator.Base.Step<never, K>> {
+interface Props<K extends object, T extends Creator.Base.Step<unknown, K>> {
   step: T;
   order: number;
   onDelete?: () => void;
@@ -16,7 +15,7 @@ interface Props<K extends object, T extends Creator.Base.Step<never, K>> {
   onSet?: () => void;
 }
 
-export const BaseStepComponent = <K extends object, T extends Creator.Base.Step<never, K>>(
+export const BaseStepComponent = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: Props<K, T>,
 ) => {
   const { StepConfigTable } = ConfigTables;

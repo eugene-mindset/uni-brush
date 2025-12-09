@@ -1,11 +1,10 @@
 import * as THREE from "three";
 
+import { config } from "@/config";
 import { Entity } from "@/models";
 import { Global, StarSystemVisual } from "@/renderer";
 
-import { config } from "@/config";
-
-export const createGalaxyScene = (starSystems: Entity.StarSystem.Entity[], scene: THREE.Scene) => {
+export const createGalaxyScene = (starSystems: Entity.StarSystemEntity[], scene: THREE.Scene) => {
   // TODO: very expensive to recreate stars, for small changes will need to track and change individual
   // ones
 

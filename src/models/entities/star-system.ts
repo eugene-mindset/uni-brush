@@ -8,7 +8,7 @@ import { MathHelpers } from "@/util";
 import { EntityBase, EventsToCallbackBase, ManagerBase } from "./base";
 import { EntityTypes } from "./types";
 
-export interface Attributes {
+export interface StarSystemAttributes {
   obj3D: StarSystemVisual;
   name: string;
   desc: string;
@@ -21,17 +21,17 @@ export interface Attributes {
   // geography: GeoFeatures[];
 }
 
-export interface EventsToCallback extends EventsToCallbackBase {
+export interface StarSystemEvents extends EventsToCallbackBase {
   dispose: () => void;
 }
 
-export class Entity extends EntityBase {
+export class StarSystemEntity extends EntityBase {
   public static readonly type = EntityTypes.STAR_SYSTEM;
-  public readonly type = Entity.type;
-  protected manager: Manager;
+  public readonly type = StarSystemEntity.type;
+  protected manager: StarSystemManager;
 
   constructor(manager: unknown, newId: number) {
-    if (!(manager instanceof Manager)) {
+    if (!(manager instanceof StarSystemManager)) {
       throw new Error("Cannot create instance without manager being StarSystemManager");
     }
 
@@ -64,12 +64,16 @@ export class Entity extends EntityBase {
   }
 }
 
-export class Manager extends ManagerBase<Attributes, Entity, EventsToCallback> {
+export class StarSystemManager extends ManagerBase<
+  StarSystemAttributes,
+  StarSystemEntity,
+  StarSystemEvents
+> {
   public static initialCapacity = 2500;
 
   constructor() {
     super(
-      Entity,
+      StarSystemEntity,
       {
         name: {
           value: "Unnamed",
@@ -82,7 +86,7 @@ export class Manager extends ManagerBase<Attributes, Entity, EventsToCallback> {
           generator: () => MathHelpers.randomVectorFromNormal().multiplyScalar(1000),
         },
       },
-      Manager.initialCapacity,
+      StarSystemManager.initialCapacity,
       ["obj3D"],
     );
 

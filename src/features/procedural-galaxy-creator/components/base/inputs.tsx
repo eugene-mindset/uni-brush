@@ -1,30 +1,32 @@
 import { HTMLInputTypeAttribute, useState } from "react";
+import { Vector3 } from "three";
 
 import { Panel } from "@/components";
-
-import { Vector3 } from "three";
-import ConfigTables from "./step-config-tables";
 import { Creator } from "@/models";
 
-export const updateConfig = <K extends object, T extends Creator.Base.Step<never, K>>(
+import ConfigTables from "./step-config-tables";
+
+const updateConfig = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   step: T,
   newConfig: Partial<K>,
 ) => {
   step.setConfig({ ...step.config, ...newConfig });
 };
 
-export interface BaseInputProps<K extends object, T extends Creator.Base.Step<never, K>> {
+export interface BaseInputProps<K extends object, T extends Creator.Base.Step<unknown, K>> {
   step: T;
   configKey: keyof K;
   labelText?: string;
 }
 
-export interface InputProps<K extends object, T extends Creator.Base.Step<never, K>>
-  extends BaseInputProps<K, T> {
+export interface InputProps<
+  K extends object,
+  T extends Creator.Base.Step<unknown, K>,
+> extends BaseInputProps<K, T> {
   inputType: HTMLInputTypeAttribute;
 }
 
-export const ModelStepInput = <K extends object, T extends Creator.Base.Step<never, K>>(
+export const ModelStepInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: InputProps<K, T>,
 ) => {
   const { step, configKey, inputType } = props;
@@ -53,7 +55,7 @@ export const ModelStepInput = <K extends object, T extends Creator.Base.Step<nev
   );
 };
 
-export const ModelStepVectorInput = <K extends object, T extends Creator.Base.Step<never, K>>(
+export const ModelStepVectorInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: BaseInputProps<K, T>,
 ) => {
   const { step, configKey } = props;
@@ -74,12 +76,12 @@ export const ModelStepVectorInput = <K extends object, T extends Creator.Base.St
   );
 };
 
-export interface DynamicInputProps<K extends object, T extends Creator.Base.Step<never, K>> {
+export interface DynamicInputProps<K extends object, T extends Creator.Base.Step<unknown, K>> {
   step: T;
   configKey: keyof K;
 }
 
-export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.Step<never, K>>(
+export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: DynamicInputProps<K, T>,
 ) => {
   const { step, configKey } = props;

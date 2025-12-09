@@ -1,14 +1,13 @@
+import { getDefaultStore } from "jotai";
 import * as THREE from "three";
 
+import starSpriteImage from "@/assets/sprite120.png";
 import { Entity, EntityTypes } from "@/models";
 import { Global } from "@/renderer";
+import { starSystemManagerAtom } from "@/store";
 import { MathHelpers } from "@/util";
 
 import { BaseVisual } from "./base-visual";
-
-import starSpriteImage from "@/assets/sprite120.png";
-import { starSystemManagerAtom } from "@/store";
-import { getDefaultStore } from "jotai";
 
 const starSpriteTexture = new THREE.TextureLoader().load(starSpriteImage);
 const starSpriteMaterial = new THREE.SpriteMaterial({
@@ -76,7 +75,7 @@ export class StarSystemVisual extends BaseVisual {
     }
   }
 
-  public get entity(): Entity.StarSystem.Entity {
+  public get entity(): Entity.StarSystemEntity {
     return getDefaultStore().get(starSystemManagerAtom).get(this.id);
   }
 

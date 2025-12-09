@@ -1,4 +1,5 @@
 import { HTMLInputTypeAttribute } from "react";
+
 import { Creator } from "@/models";
 
 type configTable = {

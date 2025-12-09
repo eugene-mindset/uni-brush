@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react";
-
-import { Entity, EntityTypes } from "@/models";
-import { useMainViewContext } from "@/context";
-import { ThreeHelpers } from "@/util";
-import { Panel } from "@/components";
 import { useAtomValue } from "jotai";
+import { useCallback, useEffect, useState } from "react";
 import React from "react";
 
-export const StarSystemEditor: React.FC<{}> = () => {
+import { Panel } from "@/components";
+import { useMainViewContext } from "@/context";
+import { Entity, EntityTypes } from "@/models";
+import { ThreeHelpers } from "@/util";
+
+export const StarSystemEditor: React.FC = () => {
   const mainView = useMainViewContext();
 
   const selectValue = useAtomValue(mainView.pointer.select.ref);
-  const [starSystem, setStarSystem] = useState<Entity.StarSystem.EntityType | null>(null);
+  const [starSystem, setStarSystem] = useState<Entity.StarSystemEntity | null>(null);
   const [name, setName] = useState<string>("");
 
-  const saveChanges = () => {
+  const saveChanges = useCallback(() => {
     if (!starSystem) return;
     if (name === starSystem.name) return;
     if (name === "" && !starSystem.name) return;
 
     starSystem.name = name;
-  };
+  }, [name, starSystem]);
 
   const onInputName = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
     setName(event.currentTarget.value || "");
@@ -29,13 +29,13 @@ export const StarSystemEditor: React.FC<{}> = () => {
   useEffect(() => {
     if (selectValue?.refType === EntityTypes.STAR_SYSTEM) {
       saveChanges();
-      const newStarSystem = selectValue?.refEntity as Entity.StarSystem.EntityType;
+      const newStarSystem = selectValue?.refEntity as Entity.StarSystemEntity;
       setStarSystem(newStarSystem);
       setName(newStarSystem.name || "");
     } else {
       setStarSystem(null);
     }
-  }, [selectValue]);
+  }, [saveChanges, selectValue]);
 
   if (starSystem) {
     const panelTitle = starSystem.name || "Untitled";
@@ -65,13 +65,12 @@ export const StarSystemEditor: React.FC<{}> = () => {
 
         <div>
           <span>
-            Galactic Position:{" "}
-            {ThreeHelpers.ThreeVector3ToString(starSystem.initialPosition, "point")}
+            Galactic Position: {ThreeHelpers.ThreeVector3ToString(starSystem.initPos, "point")}
           </span>
         </div>
 
         <div>
-          <span>Public ID: {starSystem.publicId}</span>
+          <span>Public ID: {starSystem.id}</span>
         </div>
 
         <button className="bottom" onClick={saveChanges}>

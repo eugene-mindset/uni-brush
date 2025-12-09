@@ -1,5 +1,6 @@
-import { Entity, EntityTypes } from "@/models";
 import * as THREE from "three";
+
+import { Entity, EntityTypes } from "@/models";
 
 export class BaseVisual {
   private _dataId: string;
@@ -30,7 +31,7 @@ export class BaseVisual {
     return this._dataId;
   }
 
-  public get entity(): Entity.Base.EntityType {
+  public get entity(): Entity.EntityBase {
     throw new Error("Visual has no abstract entity type.");
   }
 

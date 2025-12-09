@@ -1,8 +1,8 @@
-import { BaseVisual } from "@/renderer";
 import { Entity } from "@/models";
+import { BaseVisual } from "@/renderer";
 
 export interface RenderIntersectData {
   refVisual?: BaseVisual;
-  refEntity?: Entity.Base.EntityType;
+  refEntity?: Entity.EntityBase;
   refType?: Entity.EntityTypes;
 }

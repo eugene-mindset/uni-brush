@@ -3,7 +3,7 @@ import { Vector3 } from "three";
 
 import { useManager } from "@/hooks";
 import { EntityTypes } from "@/models";
-import { galaxyGeneratorModelAtom } from "@/store/editor";
+import { galaxyGeneratorModelAtom } from "@/store/models";
 
 export const useProceduralCreatorModel = () => {
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);

@@ -1,7 +1,8 @@
-import fs from "node:fs";
 import { Buffer } from "node:buffer";
-import { dialog } from "electron";
+import fs from "node:fs";
+
 import archiver from "archiver";
+import { dialog } from "electron";
 import yauzl from "yauzl-promise";
 
 import { streamToString } from "./utils";
@@ -120,7 +121,7 @@ export async function handleProjectLoad(
 
   if (!filePath) return [];
 
-  let fullContents: ProjectJsonContent = [];
+  const fullContents: ProjectJsonContent = [];
 
   const zip = await yauzl.open(filePath);
   try {

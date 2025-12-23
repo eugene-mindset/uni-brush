@@ -3,14 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import React from "react";
 
 import { Panel } from "@/components";
-import { useMainViewContext } from "@/context";
+import { state as viewerState } from "@/context/three-viewer";
 import { Entity, EntityTypes } from "@/models";
 import { ThreeHelpers } from "@/util";
 
 export const StarSystemEditor: React.FC = () => {
-  const mainView = useMainViewContext();
-
-  const selectValue = useAtomValue(mainView.pointer.select.ref);
+  const selectValue = useAtomValue(viewerState.selectEntityAtom);
   const [starSystem, setStarSystem] = useState<Entity.StarSystemEntity | null>(null);
   const [name, setName] = useState<string>("");
 

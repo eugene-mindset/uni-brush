@@ -1,11 +1,11 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { app, shell, BrowserWindow, ipcMain } from "electron";
-import { is, electronApp, optimizer } from "@electron-toolkit/utils";
-import { installExtension, REACT_DEVELOPER_TOOLS } from "electron-extension-installer";
-// import { createRequire } from "node:module";
+import { electronApp, is, optimizer } from "@electron-toolkit/utils";
+import { app, BrowserWindow, ipcMain, shell } from "electron";
 
+// import { installExtension, REACT_DEVELOPER_TOOLS } from "electron-extension-installer";
+// import { createRequire } from "node:module";
 import { handleProjectLoad, handleProjectSave } from "./comm";
 
 // const require = createRequire(import.meta.url);
@@ -114,10 +114,10 @@ app.on("before-quit", () => {
 // boot up app once ready
 app.whenReady().then(startApp);
 
-app.on("ready", async () => {
-  await installExtension(REACT_DEVELOPER_TOOLS, {
-    loadExtensionOptions: {
-      allowFileAccess: true,
-    },
-  });
-});
+// app.on("ready", async () => {
+//   await installExtension(REACT_DEVELOPER_TOOLS, {
+//     loadExtensionOptions: {
+//       allowFileAccess: true,
+//     },
+//   });
+// });

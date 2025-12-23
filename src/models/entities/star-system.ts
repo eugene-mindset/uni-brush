@@ -69,6 +69,9 @@ export class StarSystemManager extends ManagerBase<
   StarSystemEntity,
   StarSystemEvents
 > {
+  public static readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
+  public readonly type: EntityTypes = EntityTypes.STAR_SYSTEM;
+
   public static initialCapacity = 2500;
 
   constructor() {

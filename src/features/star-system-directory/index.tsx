@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Vector3 } from "three";
 
 import { Panel } from "@/components";
-import { useMainViewContext } from "@/context";
+import { state as viewerState } from "@/context/three-viewer";
 import { useManager } from "@/hooks";
 import { Entity, EntityTypes } from "@/models";
 import { ThreeHelpers } from "@/util";
@@ -39,9 +39,8 @@ const StarSystemDirectoryEntry: React.FC<EntryProps> = (props: EntryProps) => {
 
 export const StarSystemDirectory: React.FC = () => {
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
-  const mainView = useMainViewContext();
 
-  const setSelectedRefAtom = useSetAtom(mainView.pointer.select.ref);
+  const setSelectedRefAtom = useSetAtom(viewerState.selectEntityAtom);
 
   const [starSystems, setStarSystems] = useState<Entity.StarSystemEntity[]>(
     starSystemManager.getAll(),

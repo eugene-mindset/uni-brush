@@ -9,7 +9,7 @@ import React from "react";
 import ReactDOM from "react-dom/client"; // Import createRoot
 
 import { AppContextProvider } from "@/context/app-context";
-import { MainViewContextProvider } from "@/context/main-view-context";
+import { MainViewContextProvider } from "@/context/three-viewer";
 import FullInterface from "@/interface";
 import GalaxyViewer from "@/interface/galaxy-viewer";
 

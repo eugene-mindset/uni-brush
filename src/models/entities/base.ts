@@ -63,7 +63,8 @@ export class EntityBase {
  *
  */
 export class ManagerBase<Attributes, Inst extends EntityBase, Events extends EventsToCallbackBase> {
-  public type: EntityTypes = EntityTypes.BASE;
+  public static readonly type: EntityTypes = EntityTypes.BASE;
+  public readonly type: EntityTypes = EntityTypes.BASE;
 
   /** Method to create new Entities */
   private createInstanceCall: new (manager: unknown, newId: number, ...args: never[]) => Inst;

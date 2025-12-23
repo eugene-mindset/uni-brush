@@ -1,10 +1,11 @@
-import { useAtomValue } from "jotai";
+import { observe } from "jotai-effect";
 import { RefObject, useCallback, useEffect, useRef } from "react";
 import Stats from "stats.js";
 import * as THREE from "three";
 import { MapControls } from "three/examples/jsm/Addons.js";
 
 import { useMainViewFullContext } from "@/context";
+import { state as viewerState } from "@/context/three-viewer";
 import { EntityTypes } from "@/models";
 import { BaseVisual, createGalaxyScene, RenderSetup } from "@/renderer";
 import { ThreeHelpers } from "@/util";
@@ -65,7 +66,6 @@ export const useRenderGalaxy = (
 
   // main
   const mainView = useMainViewFullContext();
-  const selectRef = useAtomValue(mainView.pointer.select.ref);
 
   // intersect call
   const getIntersectedEntity = () => {
@@ -204,6 +204,7 @@ export const useRenderGalaxy = (
 
   const updateCameraToFocus = (position: THREE.Vector3, rotation?: THREE.Quaternion) => {
     if (!cameraRef.current || !controlsRef.current) return;
+    console.log("moving camera");
 
     const targetCam = new THREE.PerspectiveCamera();
     targetCam.position.copy(cameraRef.current.position);
@@ -223,12 +224,14 @@ export const useRenderGalaxy = (
   };
 
   // get selected object
-  const onCanvasClick = (): void => {
+  const onCanvasClick = useCallback((): void => {
     mainView.pointer.setPointer("select");
-  };
+  }, [mainView.pointer]);
 
-  useEffect(() => {
-    const targetRef = selectRef?.refVisual?.object3D;
+  const uno = observe((get) => {
+    console.log("test 2");
+    const target = get(viewerState.selectEntityAtom);
+    const targetRef = target?.refVisual?.object3D;
     if (!targetRef) {
       targetCameraRef.current = null;
       controlsRef.current?.target.set(0, 0, 0);
@@ -237,7 +240,8 @@ export const useRenderGalaxy = (
 
     updateCameraToFocus(targetRef.position);
     controlsRef.current?.target.copy(targetRef.position);
-  }, []);
+  });
+  console.log(uno);
 
   // callback to resize
   const onWindowResize = () => {

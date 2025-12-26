@@ -1,5 +1,6 @@
 import { SVGIcons } from "@/components";
-import { ActionOnlyButton } from "./ActionOnlyButton";
+
+import { ActionOnlyButton } from "./action-only-button";
 
 interface Props {
   toggle: boolean;
@@ -7,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-export const ToggleButton: React.FC<Props> = (props) => {
+export const ToggleButton: React.FC<Props> = (props: Props) => {
   const onClick = () => {
     props.onToggle();
   };

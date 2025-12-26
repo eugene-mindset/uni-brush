@@ -1,17 +1,17 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import classNames from "classnames";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useDraggable } from "@/hooks";
 
-import styles from "./style.module.css";
-import { PanelContext } from "./context";
-import { PanelHeader } from "./panel-header";
-import { PanelGroup } from "./panel-group";
-import { PanelInput } from "./panel-input";
-import { CommonProps } from "./types";
-import { PanelVectorInput } from "./panel-vector-input";
 import { ToggleButton } from "../buttons";
+import { PanelContext } from "./context";
+import { PanelGroup } from "./panel-group";
+import { PanelHeader } from "./panel-header";
+import { PanelInput } from "./panel-input";
 import { PanelSelectInput } from "./panel-select-input";
+import { PanelVectorInput } from "./panel-vector-input";
+import styles from "./style.module.css";
+import { CommonProps } from "./types";
 
 interface Props extends CommonProps {
   title?: string;
@@ -114,7 +114,7 @@ export function Panel(props: Props) {
           styles.container,
           "core-div",
           props.canDrag && styles.draggable,
-          props.canDrag && isDragging && styles.dragging
+          props.canDrag && isDragging && styles.dragging,
         )}
       >
         {props.title && (

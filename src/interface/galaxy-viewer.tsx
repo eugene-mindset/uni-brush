@@ -1,38 +1,38 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect } from "react";
 
-import { useManager, useRenderGalaxy } from "@/hooks";
+import { ThreeJSViewer } from "@/components";
+import { useManager, useTriggerUpdate } from "@/hooks";
 import { EntityTypes } from "@/models";
+import { createGalaxyScene, RenderPipeline } from "@/renderer";
 
 export interface GalaxyViewerProps {}
 
 const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
-  const divRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const refresh = useTriggerUpdate();
 
-  const [render] = useRenderGalaxy(canvasRef);
+  const onInit = (pipeline: RenderPipeline) => {
+    createGalaxyScene(starSystemManager.getAll(), pipeline.scene);
+  };
 
-  const refreshRenderer = useCallback(() => {
-    render.cleanUp();
-    render.initialize();
-  }, [render]);
+  const onCleanUp = (_pipeline: RenderPipeline) => {
+    starSystemManager.disposeVisuals();
+  };
+
+  const onTick = (pipeline: RenderPipeline, _delta: number) => {
+    starSystemManager.updateVisualScale(pipeline.currentCamera.position);
+  };
 
   useEffect(() => {
-    starSystemManager.addEventListener("create_all", refreshRenderer);
+    starSystemManager.addEventListener("create_all", refresh);
 
     return () => {
-      starSystemManager.removeEventListener("create_all", refreshRenderer);
+      starSystemManager.removeEventListener("create_all", refresh);
     };
-  }, [refreshRenderer, starSystemManager]);
-
-  useEffect(() => {
-    refreshRenderer();
-  }, [refreshRenderer]);
+  }, [refresh, starSystemManager]);
 
   return (
-    <div ref={divRef} id="threeMainRender">
-      <canvas ref={canvasRef} />
-    </div>
+    <ThreeJSViewer id="mainRenderer" onInitialize={onInit} onCleanUp={onCleanUp} onTick={onTick} />
   );
 };
 

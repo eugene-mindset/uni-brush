@@ -3,12 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import React from "react";
 
 import { Panel } from "@/components";
-import { state as viewerState } from "@/context/three-viewer";
 import { Entity, EntityTypes } from "@/models";
+import { mainRenderPipelineSelectedAtom } from "@/store";
 import { ThreeHelpers } from "@/util";
 
 export const StarSystemEditor: React.FC = () => {
-  const selectValue = useAtomValue(viewerState.selectEntityAtom);
+  const selectValue = useAtomValue(mainRenderPipelineSelectedAtom);
   const [starSystem, setStarSystem] = useState<Entity.StarSystemEntity | null>(null);
   const [name, setName] = useState<string>("");
 
@@ -25,9 +25,9 @@ export const StarSystemEditor: React.FC = () => {
   };
 
   useEffect(() => {
-    if (selectValue?.refType === EntityTypes.STAR_SYSTEM) {
+    if (selectValue?.entityType === EntityTypes.STAR_SYSTEM) {
       saveChanges();
-      const newStarSystem = selectValue?.refEntity as Entity.StarSystemEntity;
+      const newStarSystem = selectValue?.entity as Entity.StarSystemEntity;
       setStarSystem(newStarSystem);
       setName(newStarSystem.name || "");
     } else {

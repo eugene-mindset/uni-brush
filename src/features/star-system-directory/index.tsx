@@ -1,9 +1,7 @@
-import { useSetAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { Vector3 } from "three";
 
-import { Panel } from "@/components";
-import { state as viewerState } from "@/context/three-viewer";
+import { Panel, useThreeJSViewer } from "@/components";
 import { useManager } from "@/hooks";
 import { Entity, EntityTypes } from "@/models";
 import { ThreeHelpers } from "@/util";
@@ -38,9 +36,10 @@ const StarSystemDirectoryEntry: React.FC<EntryProps> = (props: EntryProps) => {
 };
 
 export const StarSystemDirectory: React.FC = () => {
+  const { renderPipeline } = useThreeJSViewer("mainRenderer", {
+    onSelect: (select) => console.log(select),
+  });
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
-
-  const setSelectedRefAtom = useSetAtom(viewerState.selectEntityAtom);
 
   const [starSystems, setStarSystems] = useState<Entity.StarSystemEntity[]>(
     starSystemManager.getAll(),
@@ -78,11 +77,8 @@ export const StarSystemDirectory: React.FC = () => {
                 pos={x.initPos}
                 key={x.id}
                 onClick={() => {
-                  setSelectedRefAtom({
-                    refVisual: x.obj3D,
-                    refEntity: x,
-                    refType: x.type,
-                  });
+                  if (!x.obj3D?.object3D) return;
+                  renderPipeline?.selectFromParam(x.obj3D.object3D);
                 }}
               />
             ))}

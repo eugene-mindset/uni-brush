@@ -1,2 +1,2 @@
-export * from "./ToggleButton";
-export * from "./ActionOnlyButton";
+export * from "./action-only-button";
+export * from "./toggle-button";

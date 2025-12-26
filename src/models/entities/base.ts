@@ -1,3 +1,5 @@
+import { EventManager } from "@/util";
+
 import { EntityTypes } from "./types";
 
 interface EntityDataStore {
@@ -105,7 +107,7 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
   // META
 
   /** Events to track and the callbacks to trigger when they occur */
-  private events: { [key in keyof Events]?: Set<Events[key]> };
+  private eventManager: EventManager<Events>;
 
   /** If true, model cannot create new entities */
   private isInit: boolean = false;
@@ -121,7 +123,7 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
     this.defaultAttributeValues = defaultAttributes;
     this.notSerializedAttributes = new Set(excludeAttributes);
 
-    this.events = {};
+    this.eventManager = new EventManager();
 
     this.entities = [];
     this.dataStore = {} as typeof this.dataStore;
@@ -196,33 +198,19 @@ export class ManagerBase<Attributes, Inst extends EntityBase, Events extends Eve
 
   // EVENTS
 
-  public addEventListener<Key extends keyof typeof this.events>(
-    eventName: Key,
-    callback: Events[Key],
-  ): void {
-    if (!this.events[eventName]) {
-      this.events[eventName] = new Set();
-    }
-
-    this.events[eventName].add(callback);
+  public addEventListener<Key extends keyof Events>(eventName: Key, callback: Events[Key]): void {
+    this.eventManager.addEventListener(eventName, callback);
   }
 
   public removeEventListener<Key extends keyof Events>(
     eventName: Key,
     callback: Events[Key],
   ): void {
-    this.events[eventName]?.delete(callback);
+    this.eventManager.removeEventListener(eventName, callback);
   }
 
   protected emit<Key extends keyof Events>(eventName: Key, ...args: unknown[]): void {
-    if (!(eventName in this.events)) return;
-
-    const eventCallbacks = this.events[eventName];
-    if (eventCallbacks) {
-      eventCallbacks.forEach((callback) => {
-        (callback as (...args: unknown[]) => void)(...args);
-      });
-    }
+    this.eventManager.emit(eventName, ...args);
   }
 
   // GET

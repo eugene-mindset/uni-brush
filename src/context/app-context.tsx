@@ -1,5 +1,7 @@
+import { createContext, PropsWithChildren, useContext, useEffect } from "react";
+
+import { useProceduralCreatorModel } from "@/hooks";
 import { ContextProvider } from "@/types";
-import { createContext, PropsWithChildren, useContext } from "react";
 
 /** General app state*/
 export interface AppContextState {
@@ -18,6 +20,11 @@ const AppContext = createContext({ file: "" } as AppContextState);
  * @returns JSX
  */
 export const AppContextProvider: ContextProvider<null> = ({ children }: PropsWithChildren) => {
+  const { generate } = useProceduralCreatorModel();
+  useEffect(() => {
+    generate();
+  }, [generate]);
+
   return <AppContext.Provider value={{ file: "" }}>{children}</AppContext.Provider>;
 };
 

@@ -1,5 +1,5 @@
-import { Vector2, Vector3 } from "three";
 import memoize from "fast-memoize";
+import { Vector2, Vector3 } from "three";
 
 import { MathHelpers } from "@/util";
 
@@ -71,7 +71,7 @@ export class ArmGravity extends Operator<Vector3, Config> {
 
     const planarDistRatio = new Vector2(
       element.x / this.config.dim.x,
-      element.z / this.config.dim.z
+      element.z / this.config.dim.z,
     ).length();
 
     const factor =
@@ -89,7 +89,7 @@ export class ArmGravity extends Operator<Vector3, Config> {
     const rotated = new Vector3(
       element.x / this.config.dim.x,
       element.y / this.config.dim.y,
-      element.z / this.config.dim.z
+      element.z / this.config.dim.z,
     ).applyAxisAngle(new Vector3(0, 1, 0), -finalTheta);
 
     // add jitter to final position
@@ -103,7 +103,7 @@ export class ArmGravity extends Operator<Vector3, Config> {
 
     const final = MathHelpers.applyJitter(
       new Vector3().multiplyVectors(rotated, this.config.dim),
-      jitter
+      jitter,
     );
 
     return final;

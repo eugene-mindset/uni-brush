@@ -3,6 +3,7 @@ import { createStore, Provider } from "jotai";
 import { getDefaultStore } from "jotai";
 import { Store } from "jotai/vanilla/store";
 import { Ref, useEffect, useImperativeHandle, useRef } from "react";
+import * as THREE from "three";
 
 import { RenderPipeline } from "@/renderer";
 import { renderPipelineAtomFamily } from "@/store";
@@ -31,6 +32,7 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
   const pipelineRef = useRef<RenderPipeline>(null);
 
   const observerRef = useRef<ResizeObserver>(null);
+  const isDragThreshold = useRef<number>(null);
 
   useImperativeHandle(ref, () => {
     return {
@@ -97,7 +99,10 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
     };
   }, [canvasRef]);
 
-  // find pointer within canvas
+  const onCanvasPointerDown = (_event: PointerEvent): void => {
+    isDragThreshold.current = 0;
+  };
+
   const onCanvasPointerMove = (event: PointerEvent): void => {
     if (!canvasRef.current) return;
 
@@ -105,10 +110,20 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
       (event.clientX / canvasRef.current.width) * 2 - 1,
       -(event.clientY / canvasRef.current.height) * 2 + 1,
     );
+
+    if (isDragThreshold.current) {
+      isDragThreshold.current += 1;
+    }
   };
 
-  const onCanvasPointerClick = (_event): void => {
-    pipelineRef.current?.selectFromPointer();
+  const onCanvasPointerClick = (_event: PointerEvent): void => {
+    if (!canvasRef.current) return;
+    if (!pipelineRef.current) return;
+
+    if (!isDragThreshold.current || isDragThreshold.current < 20) {
+      pipelineRef.current?.selectFromPointer();
+    }
+    isDragThreshold.current = 0;
   };
 
   // effect to update dimensions in render if canvas is resized
@@ -117,11 +132,13 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
     if (!canvas) return;
 
     canvas.addEventListener("pointermove", onCanvasPointerMove);
-    canvas?.addEventListener("click", onCanvasPointerClick);
+    canvas.addEventListener("pointerdown", onCanvasPointerDown);
+    canvas.addEventListener("click", onCanvasPointerClick);
 
     return () => {
       canvas.removeEventListener("pointermove", onCanvasPointerMove);
-      canvas?.removeEventListener("click", onCanvasPointerClick);
+      canvas.removeEventListener("pointerdown", onCanvasPointerDown);
+      canvas.removeEventListener("click", onCanvasPointerClick);
     };
   }, []);
 

@@ -24,7 +24,6 @@ export const useThreeJSViewer = (
     }
   }, [args, renderPipeline]);
 
-  console.log(renderPipeline);
   useEffect(() => {
     if (!args?.onSelect) return;
     renderPipeline?.addEventListener("on_click", onClick);

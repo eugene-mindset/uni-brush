@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createStore, Provider } from "jotai";
 import { getDefaultStore } from "jotai";
 import { Store } from "jotai/vanilla/store";
-import { Ref, useCallback, useEffect, useRef } from "react";
+import { Ref, useEffect, useImperativeHandle, useRef } from "react";
 
 import { RenderPipeline } from "@/renderer";
 import { renderPipelineAtomFamily } from "@/store";
@@ -16,40 +16,27 @@ export interface Props extends React.PropsWithChildren {
   className?: string;
   store?: Store;
   isMain?: boolean;
+  onSelect?: (pipeline: RenderPipeline) => void;
   onInitialize?: (pipeline: RenderPipeline) => void;
   onCleanUp?: (pipeline: RenderPipeline) => void;
   onTick?: (pipeline: RenderPipeline, delta: number) => void;
+  onCameraTargetReached?: (pipeline: RenderPipeline) => void;
 }
 
-const InnerThreeJSViewer = ({ children, ...props }: Props) => {
+const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
   const divRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const pipelineAtom = renderPipelineAtomFamily(props?.id || "");
+  const pipelineAtom = renderPipelineAtomFamily(id || "");
   const pipelineRef = useRef<RenderPipeline>(null);
 
   const observerRef = useRef<ResizeObserver>(null);
 
-  const finalOnInit = useCallback(
-    (pipeline: RenderPipeline) => {
-      props.onInitialize && props.onInitialize(pipeline);
-    },
-    [props],
-  );
-
-  const finalOnCleanUp = useCallback(
-    (pipeline: RenderPipeline) => {
-      props.onCleanUp && props.onCleanUp(pipeline);
-    },
-    [props],
-  );
-
-  const finalOnTick = useCallback(
-    (pipeline: RenderPipeline, delta: number) => {
-      props.onTick && props.onTick(pipeline, delta);
-    },
-    [props],
-  );
+  useImperativeHandle(ref, () => {
+    return {
+      pipeline: pipelineRef.current,
+    };
+  }, []);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -58,23 +45,40 @@ const InnerThreeJSViewer = ({ children, ...props }: Props) => {
     const pipeline = new RenderPipeline(canvasRef.current);
     pipelineRef.current = pipeline;
     pipeline.updateDimensions(divRef.current.clientWidth, divRef.current.clientHeight);
-    pipeline.setCustomInitialize(() => finalOnInit(pipeline));
-    pipeline.setCustomCleanUp(() => finalOnCleanUp(pipeline));
-    pipeline.setCustomTick((delta) => finalOnTick(pipeline, delta));
+    pipeline.setCustomInitialize(() => props.onInitialize && props.onInitialize(pipeline));
+    pipeline.setCustomCleanUp(() => props.onCleanUp && props.onCleanUp(pipeline));
+    pipeline.setCustomTick((delta) => props.onTick && props.onTick(pipeline, delta));
     pipeline.initialize();
 
-    if (props.id) {
+    if (id) {
       getDefaultStore().set(pipelineAtom, pipeline);
     }
 
     return () => {
-      if (props.id) {
+      if (id) {
         getDefaultStore().set(pipelineAtom, null);
       }
       pipelineRef.current?.cleanUp();
       pipelineRef.current = null;
     };
-  }, [divRef, canvasRef, props, finalOnInit, finalOnCleanUp, finalOnTick, pipelineAtom]);
+  }, [id, divRef, canvasRef, pipelineAtom, props]);
+
+  useEffect(() => {
+    const pipeline = pipelineRef.current;
+    if (!pipeline) return;
+
+    const finalOnSelect = () => props.onSelect && props.onSelect(pipeline);
+    const finalOnCameraTargetReached = () =>
+      props.onCameraTargetReached && props.onCameraTargetReached(pipeline);
+
+    pipeline.addEventListener("on_click", finalOnSelect);
+    pipeline.addEventListener("on_camera_target_reached", finalOnCameraTargetReached);
+
+    return () => {
+      pipeline.removeEventListener("on_click", finalOnSelect);
+      pipeline.removeEventListener("on_camera_target_reached", finalOnCameraTargetReached);
+    };
+  }, [pipelineRef, props]);
 
   useEffect(() => {
     const mainDiv = divRef.current;
@@ -132,8 +136,8 @@ const InnerThreeJSViewer = ({ children, ...props }: Props) => {
   });
 
   return (
-    <div ref={divRef} id={props.id} className={props.className}>
-      <canvas ref={canvasRef} className={classNames(styles.viewerInner)} />
+    <div ref={divRef} id={id} className={props.className}>
+      <canvas ref={canvasRef} id={`canvas-${id}`} className={classNames(styles.viewerInner)} />
       {children}
     </div>
   );

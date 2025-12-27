@@ -36,9 +36,7 @@ const StarSystemDirectoryEntry: React.FC<EntryProps> = (props: EntryProps) => {
 };
 
 export const StarSystemDirectory: React.FC = () => {
-  const { renderPipeline } = useThreeJSViewer("mainRenderer", {
-    onSelect: (select) => console.log(select),
-  });
+  const { renderPipeline } = useThreeJSViewer("mainRenderer");
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
 
   const [starSystems, setStarSystems] = useState<Entity.StarSystemEntity[]>(

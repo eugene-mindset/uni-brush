@@ -14,7 +14,6 @@ export const mainRenderPipelineAtom = atom((get) => get(renderPipelineAtomFamily
 export const mainRenderPipelineSelectedAtom = atom<RenderPipelineIntersection | null>(null);
 
 observe((get, set) => {
-  console.log("change!");
   const renderPipeline = get(mainRenderPipelineAtom);
 
   const onClick = () => {
@@ -31,6 +30,7 @@ observe((get, set) => {
 const defaultStore = getDefaultStore();
 defaultStore.sub(mainRenderPipelineAtom, () => {
   const renderPipeline = defaultStore.get(mainRenderPipelineAtom);
+  console.log(renderPipeline);
 
   const onClick = () => {
     defaultStore.set(mainRenderPipelineSelectedAtom, renderPipeline?.selectedObject || null);

@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 
 import { MathHelpers } from "@/util";
+
 import { Operator } from "../base";
 
 interface Config {
@@ -43,7 +44,7 @@ export class BasicGravity extends Operator<Vector3, Config> {
     const relVector = new Vector3().subVectors(element, this._config.location);
     const distanceRatio = MathHelpers.calculateEllipsoidDistRatio(relVector, this.config.size);
     const posPulled = relVector.multiplyScalar(
-      Math.pow(MathHelpers.clamp(this.config.falloff, distanceRatio, 1), this.config.strength)
+      Math.pow(MathHelpers.clamp(this.config.falloff, distanceRatio, 1), this.config.strength),
     );
 
     return posPulled.add(this._config.location);

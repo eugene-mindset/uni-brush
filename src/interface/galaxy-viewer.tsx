@@ -27,7 +27,6 @@ const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
 
       targetCamera.lookAt(obj3D.position);
 
-      console.log(targetCamera.position, targetCamera.quaternion);
       pipeline.setCameraToFocus(targetCamera.position, targetCamera.quaternion);
     }
   };

@@ -10,7 +10,7 @@ import { RenderPipelineIntersection } from "./render-pipeline-intersection";
 import { RenderPasses } from "./render-setup";
 
 const CAMERA_LINEAR_SPEED = 100;
-const CAMERA_ANGULAR_SPEED = 2.5;
+const CAMERA_ANGULAR_SPEED = 5;
 // const CAMERA_PHYSICS_PRECISION = 0.001;
 const CAMERA_LERP = 0.25;
 
@@ -85,7 +85,7 @@ export class RenderPipeline {
     this.controls.minDistance = 1;
     this.controls.maxDistance = 2500;
     this.controls.autoRotate = true;
-    this.controls.autoRotateSpeed = 0.1;
+    this.controls.autoRotateSpeed = 0.2;
 
     this.controls.addEventListener("start", () => {
       if (this._autoRotateTimeoutId != null) {
@@ -97,7 +97,7 @@ export class RenderPipeline {
 
       this._autoRotateTimeoutId = setTimeout(() => {
         this.controls.autoRotate = true;
-      }, 5000);
+      }, 2500);
     });
 
     // clock

@@ -1,7 +1,8 @@
-import styles from "./style.module.css";
 import classNames from "classnames";
 
-interface Props {
+import styles from "./style.module.css";
+
+export interface Props {
   labelText?: string;
   value?: string | number;
   options: { value: string | number; text?: string }[];

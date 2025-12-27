@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import * as THREE from "three";
 
 import { ThreeJSViewer } from "@/components";
 import { useManager, useTriggerUpdate } from "@/hooks";
@@ -10,6 +11,33 @@ export interface GalaxyViewerProps {}
 const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
   const refresh = useTriggerUpdate();
+
+  const onSelect = (pipeline: RenderPipeline) => {
+    const obj3D = pipeline.selectedObject?.visual?.object3D;
+    if (!obj3D) {
+      pipeline.clearTargetCamera();
+    } else {
+      const targetCamera = new THREE.PerspectiveCamera();
+      const translateV = new THREE.Vector3().subVectors(
+        obj3D.position,
+        pipeline.currentCamera.position,
+      );
+      targetCamera.position.copy(obj3D.position);
+      targetCamera.position.sub(translateV.normalize().multiplyScalar(2.5));
+
+      targetCamera.lookAt(obj3D.position);
+
+      console.log(targetCamera.position, targetCamera.quaternion);
+      pipeline.setCameraToFocus(targetCamera.position, targetCamera.quaternion);
+    }
+  };
+
+  const onCameraTargetReached = (pipeline: RenderPipeline) => {
+    const obj3D = pipeline.selectedObject?.visual?.object3D;
+    if (!obj3D) return;
+
+    pipeline.controls.target.copy(obj3D.position);
+  };
 
   const onInit = (pipeline: RenderPipeline) => {
     createGalaxyScene(starSystemManager.getAll(), pipeline.scene);
@@ -32,7 +60,14 @@ const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   }, [refresh, starSystemManager]);
 
   return (
-    <ThreeJSViewer id="mainRenderer" onInitialize={onInit} onCleanUp={onCleanUp} onTick={onTick} />
+    <ThreeJSViewer
+      id="mainRenderer"
+      onSelect={onSelect}
+      onInitialize={onInit}
+      onCleanUp={onCleanUp}
+      onTick={onTick}
+      onCameraTargetReached={onCameraTargetReached}
+    />
   );
 };
 

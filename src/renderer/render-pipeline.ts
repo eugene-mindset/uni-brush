@@ -9,13 +9,14 @@ import { Global, RenderSetup } from ".";
 import { RenderPipelineIntersection } from "./render-pipeline-intersection";
 import { RenderPasses } from "./render-setup";
 
-const CAMERA_LINEAR_SPEED = 400;
-const CAMERA_ANGULAR_SPEED = 5;
+const CAMERA_LINEAR_SPEED = 100;
+const CAMERA_ANGULAR_SPEED = 2.5;
 // const CAMERA_PHYSICS_PRECISION = 0.001;
-const CAMERA_LERP = 0.55;
+const CAMERA_LERP = 0.25;
 
 interface RenderPipelineEventsList {
   on_click: () => void;
+  on_camera_target_reached: () => void;
 }
 
 export class RenderPipeline {
@@ -23,8 +24,11 @@ export class RenderPipeline {
 
   public currentCamera: THREE.PerspectiveCamera;
   public targetCamera: THREE.PerspectiveCamera | null = null;
+  private _helper: THREE.CameraHelper | null = null;
 
   public controls: MapControls;
+  private _autoRotateTimeoutId: NodeJS.Timeout | null = null;
+
   public clock: THREE.Clock;
 
   public renderer: THREE.WebGLRenderer;
@@ -73,12 +77,28 @@ export class RenderPipeline {
 
     // controls.maxPolarAngle = Math.PI / 2;
     // controls.minPolarAngle = -Math.PI / 2;
-
+    this.controls.zoomToCursor = true;
     this.controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    this.controls.dampingFactor = 0.05;
     this.controls.dampingFactor = 0.05;
     this.controls.screenSpacePanning = false;
     this.controls.minDistance = 1;
     this.controls.maxDistance = 2500;
+    this.controls.autoRotate = true;
+    this.controls.autoRotateSpeed = 0.1;
+
+    this.controls.addEventListener("start", () => {
+      if (this._autoRotateTimeoutId != null) {
+        clearTimeout(this._autoRotateTimeoutId);
+        this._autoRotateTimeoutId = null;
+      }
+
+      this.controls.autoRotate = false;
+
+      this._autoRotateTimeoutId = setTimeout(() => {
+        this.controls.autoRotate = true;
+      }, 5000);
+    });
 
     // clock
     this.clock = new THREE.Clock();
@@ -250,7 +270,9 @@ export class RenderPipeline {
 
   private preTick(_delta: number) {
     this.stats.update();
-    this.controls.update();
+    if (!this.targetCamera) {
+      this.controls.update();
+    }
 
     this._hovered = this.getIntersectedEntity();
   }
@@ -284,7 +306,14 @@ export class RenderPipeline {
     // this.pipeline = this.createPipeline(width, height);
     // RenderSetup.enablePipeline(this.currentCamera, this.pipeline);
 
+    this.updateCameraFromTarget(delta);
+  }
+
+  private updateCameraFromTarget(delta: number) {
     if (this.targetCamera) {
+      this.controls.enabled = false;
+      this._helper?.update();
+
       let linPrecise = false;
       let angPrecise = false;
 
@@ -323,25 +352,31 @@ export class RenderPipeline {
       }
 
       if (linPrecise && angPrecise) {
-        this.targetCamera = null;
+        this.clearTargetCamera();
+        this.emit("on_camera_target_reached");
       }
     }
   }
 
-  public updateCameraToFocus(position: THREE.Vector3, rotation?: THREE.Quaternion) {
+  public clearTargetCamera() {
+    this.targetCamera = null;
+    this._helper && this.scene.remove(this._helper);
+    this._helper?.dispose();
+    this._helper = null;
+    this.controls.enabled = true;
+  }
+
+  public setCameraToFocus(position?: THREE.Vector3, rotation?: THREE.Quaternion) {
+    this.clearTargetCamera();
+    // this.controls.target = position;
+
     this.targetCamera = new THREE.PerspectiveCamera();
-    this.targetCamera.position.copy(this.currentCamera.position);
-    this.targetCamera.rotation.copy(this.currentCamera.rotation);
+    position && this.targetCamera.position.copy(position);
+    rotation && this.targetCamera.rotation.setFromQuaternion(rotation);
 
-    const translateV = new THREE.Vector3().subVectors(position, this.currentCamera.position);
-
-    this.targetCamera.position.copy(position).sub(translateV.normalize().multiplyScalar(2.5));
-
-    if (rotation) {
-      // TODO: figure out what was missing here...
-    } else {
-      this.targetCamera.lookAt(position);
-    }
+    this._helper = new THREE.CameraHelper(this.targetCamera);
+    this._helper.position.copy(this.targetCamera.position);
+    this._helper.rotation.copy(this.targetCamera.rotation);
   }
 
   public get hoveredObject() {
@@ -353,12 +388,9 @@ export class RenderPipeline {
   }
 
   public selectFromPointer() {
-    if (!this._hovered) {
-      this._selected = null;
-      return;
-    }
-
-    this._selected = new RenderPipelineIntersection(this._hovered.intersect);
+    this._selected = !this._hovered
+      ? null
+      : new RenderPipelineIntersection(this._hovered.intersect);
     this.emit("on_click");
   }
 

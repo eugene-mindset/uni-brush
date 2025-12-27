@@ -3,7 +3,6 @@ import { createStore, Provider } from "jotai";
 import { getDefaultStore } from "jotai";
 import { Store } from "jotai/vanilla/store";
 import { Ref, useEffect, useImperativeHandle, useRef } from "react";
-import * as THREE from "three";
 
 import { RenderPipeline } from "@/renderer";
 import { renderPipelineAtomFamily } from "@/store";

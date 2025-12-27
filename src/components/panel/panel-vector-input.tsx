@@ -1,11 +1,10 @@
+import classNames from "classnames";
 import { Vector3 } from "three";
 
+import { PanelInput } from "./panel-input";
 import styles from "./style.module.css";
 
-import { PanelInput } from "./panel-input";
-import classNames from "classnames";
-
-interface Props {
+export interface Props {
   labelText?: string;
   value: Vector3;
   setValue: (vec: Vector3) => void;

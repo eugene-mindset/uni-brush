@@ -36,6 +36,20 @@ export function Panel(props: Props) {
   const [parentDim, setParentDim] = useState({ w: 0, h: 0 });
   const initPosSet = useRef(false);
 
+  const {
+    setPosition,
+    onPointerDown: onDragStart,
+    isDragging,
+    transform: dragTransform,
+  } = useDraggable({
+    enabled: !!props.canDrag,
+    isBounded: true,
+    containerWidth: panelDim.w,
+    containerHeight: panelDim.h,
+    boundWidth: parentDim.w,
+    boundHeight: parentDim.h,
+  });
+
   useLayoutEffect(() => {
     if (!panelRef.current || !props.canDrag) return;
 
@@ -81,21 +95,7 @@ export function Panel(props: Props) {
 
     setPosition({ x: floatX, y: floatY });
     initPosSet.current = true;
-  }, [panelDim, parentDim]);
-
-  const {
-    setPosition,
-    onPointerDown: onDragStart,
-    isDragging,
-    transform: dragTransform,
-  } = useDraggable({
-    enabled: !!props.canDrag,
-    isBounded: true,
-    containerWidth: panelDim.w,
-    containerHeight: panelDim.h,
-    boundWidth: parentDim.w,
-    boundHeight: parentDim.h,
-  });
+  }, [panelDim, parentDim, props.canDrag, props.floatX, props.floatY, setPosition]);
 
   return (
     <PanelContext.Provider value={{}}>

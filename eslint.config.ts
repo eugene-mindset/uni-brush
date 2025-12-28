@@ -1,15 +1,15 @@
 import eslintConfigPrettier from "@electron-toolkit/eslint-config-prettier";
 import tseslint from "@electron-toolkit/eslint-config-ts";
-import { defineConfig } from "eslint/config";
 import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintPluginReact from "eslint-plugin-react";
+import eslintPluginReactCompiler from "eslint-plugin-react-compiler";
 import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 
-export default defineConfig(
+export default [
   { ignores: ["**/node_modules", "**/dist", "**/out"] },
-  tseslint.configs.recommended,
+  ...tseslint.configs.recommended,
   eslintPluginReact.configs.flat.recommended,
   eslintPluginReact.configs.flat["jsx-runtime"],
   {
@@ -26,7 +26,7 @@ export default defineConfig(
       "react-refresh": eslintPluginReactRefresh,
       prettier: eslintPluginPrettier,
       "simple-import-sort": simpleImportSort,
-      "react-compiler": require("eslint-plugin-react-compiler"),
+      "react-compiler": eslintPluginReactCompiler,
     },
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
@@ -56,4 +56,4 @@ export default defineConfig(
     },
   },
   eslintConfigPrettier,
-);
+];

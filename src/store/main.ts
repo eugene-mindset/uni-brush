@@ -30,7 +30,6 @@ observe((get, set) => {
 const defaultStore = getDefaultStore();
 defaultStore.sub(mainRenderPipelineAtom, () => {
   const renderPipeline = defaultStore.get(mainRenderPipelineAtom);
-  console.log(renderPipeline);
 
   const onClick = () => {
     defaultStore.set(mainRenderPipelineSelectedAtom, renderPipeline?.selectedObject || null);

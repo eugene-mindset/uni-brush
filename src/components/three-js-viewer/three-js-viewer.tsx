@@ -98,11 +98,25 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
     };
   }, [canvasRef]);
 
-  const onCanvasPointerDown = (_event: PointerEvent): void => {
+  useEffect(() => {
+    const viewer = pipelineRef.current;
+    if (!viewer?.stats) return;
+
+    divRef.current?.appendChild(viewer.stats.dom);
+    viewer.stats.dom.style.display = "flex";
+    viewer.stats.dom.style.right = "0";
+    viewer.stats.dom.style.left = "auto";
+
+    return () => {
+      viewer.stats.dom.remove();
+    };
+  });
+
+  const onCanvasPointerDown = (_event: React.PointerEvent<HTMLCanvasElement>): void => {
     isDragThreshold.current = 0;
   };
 
-  const onCanvasPointerMove = (event: PointerEvent): void => {
+  const onCanvasPointerMove = (event: React.PointerEvent<HTMLCanvasElement>): void => {
     if (!canvasRef.current) return;
 
     pipelineRef.current?.pointer?.set(
@@ -115,7 +129,7 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
     }
   };
 
-  const onCanvasPointerClick = (_event: PointerEvent): void => {
+  const onCanvasPointerClick = (_event: React.MouseEvent<HTMLCanvasElement>): void => {
     if (!canvasRef.current) return;
     if (!pipelineRef.current) return;
 
@@ -125,35 +139,16 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
     isDragThreshold.current = 0;
   };
 
-  // effect to update dimensions in render if canvas is resized
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    canvas.addEventListener("pointermove", onCanvasPointerMove);
-    canvas.addEventListener("pointerdown", onCanvasPointerDown);
-    canvas.addEventListener("click", onCanvasPointerClick);
-
-    return () => {
-      canvas.removeEventListener("pointermove", onCanvasPointerMove);
-      canvas.removeEventListener("pointerdown", onCanvasPointerDown);
-      canvas.removeEventListener("click", onCanvasPointerClick);
-    };
-  }, []);
-
-  useEffect(() => {
-    const viewer = pipelineRef.current;
-    if (!viewer?.stats) return;
-
-    divRef.current?.appendChild(viewer.stats.dom);
-    viewer.stats.dom.style.display = "flex";
-    viewer.stats.dom.style.right = "0";
-    viewer.stats.dom.style.left = "auto";
-  });
-
   return (
     <div ref={divRef} id={id} className={props.className}>
-      <canvas ref={canvasRef} id={`canvas-${id}`} className={classNames(styles.viewerInner)} />
+      <canvas
+        ref={canvasRef}
+        id={`canvas-${id}`}
+        className={classNames(styles.viewerInner)}
+        onPointerMove={onCanvasPointerMove}
+        onPointerDown={onCanvasPointerDown}
+        onClick={onCanvasPointerClick}
+      />
       {children}
     </div>
   );

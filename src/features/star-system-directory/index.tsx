@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Vector3 } from "three";
 
 import { Panel, useThreeJSViewer } from "@/components";
@@ -43,18 +43,17 @@ export const StarSystemDirectory: React.FC = () => {
     starSystemManager.getAll(),
   );
 
-  // TODO: make a single spot to subscribe to all entity changes within a data manager
-  const onUpdateDirectory = useCallback(() => {
-    setStarSystems(starSystemManager.getAll());
-  }, [starSystemManager]);
-
   useEffect(() => {
+    const onUpdateDirectory = () => {
+      setStarSystems(starSystemManager.getAll());
+    };
+
     starSystemManager.addEventListener("load", onUpdateDirectory);
 
     return () => {
       starSystemManager.removeEventListener("load", onUpdateDirectory);
     };
-  }, [onUpdateDirectory, starSystemManager]);
+  }, [starSystemManager]);
 
   return (
     <Panel title="Geography / Directory" width="700px" maxHeight="450px" canToggle>

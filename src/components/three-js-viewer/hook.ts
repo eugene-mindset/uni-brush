@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 import { RenderPipeline, RenderPipelineIntersection } from "@/renderer";
 import { renderPipelineAtomFamily } from "@/store";
@@ -18,20 +18,17 @@ export const useThreeJSViewer = (
 ): UseThreeJSViewerOut => {
   const renderPipeline = useAtomValue(renderPipelineAtomFamily(id));
 
-  const onClick = useCallback(() => {
-    if (args?.onSelect) {
-      args.onSelect(renderPipeline?.selectedObject || null);
-    }
-  }, [args, renderPipeline]);
-
   useEffect(() => {
-    if (!args?.onSelect) return;
+    const onClick = () => {
+      args?.onSelect && args?.onSelect(renderPipeline?.selectedObject || null);
+    };
+
     renderPipeline?.addEventListener("on_click", onClick);
 
     return () => {
       renderPipeline?.removeEventListener("on_click", onClick);
     };
-  }, [args?.onSelect, onClick, renderPipeline]);
+  }, [args, args?.onSelect, renderPipeline]);
 
   return {
     renderPipeline,

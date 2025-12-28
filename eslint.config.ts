@@ -31,6 +31,8 @@ export default [
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
+      // React Compiler handles memoization automatically, so reduce strictness of manual memoization rules
+      "react-hooks/exhaustive-deps": "warn",
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",

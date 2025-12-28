@@ -23,7 +23,7 @@ const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
         pipeline.currentCamera.position,
       );
       targetCamera.position.copy(obj3D.position);
-      targetCamera.position.sub(translateV.normalize().multiplyScalar(2.5));
+      targetCamera.position.sub(translateV.normalize().multiplyScalar(1));
 
       targetCamera.lookAt(obj3D.position);
 

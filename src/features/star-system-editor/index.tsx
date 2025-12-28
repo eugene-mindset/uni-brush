@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import React from "react";
 
 import { Panel } from "@/components";
@@ -8,32 +8,36 @@ import { mainRenderPipelineSelectedAtom } from "@/store";
 import { ThreeHelpers } from "@/util";
 
 export const StarSystemEditor: React.FC = () => {
-  const selectValue = useAtomValue(mainRenderPipelineSelectedAtom);
+  const selectedStarSystem = useAtomValue(mainRenderPipelineSelectedAtom);
   const [starSystem, setStarSystem] = useState<Entity.StarSystemEntity | null>(null);
   const [name, setName] = useState<string>("");
 
-  const saveChanges = useCallback(() => {
+  const saveChanges = () => {
     if (!starSystem) return;
     if (name === starSystem.name) return;
     if (name === "" && !starSystem.name) return;
 
-    starSystem.name = name;
-  }, [name, starSystem]);
-
-  const onInputName = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-    setName(event.currentTarget.value || "");
+    setStarSystem((prev) => {
+      if (!prev) return prev;
+      prev.name = name;
+      return prev;
+    });
   };
 
-  useEffect(() => {
-    if (selectValue?.entityType === EntityTypes.STAR_SYSTEM) {
-      saveChanges();
-      const newStarSystem = selectValue?.entity as Entity.StarSystemEntity;
+  if (selectedStarSystem?.entity != starSystem) {
+    saveChanges();
+    if (selectedStarSystem?.entityType === EntityTypes.STAR_SYSTEM) {
+      const newStarSystem = selectedStarSystem?.entity as Entity.StarSystemEntity;
       setStarSystem(newStarSystem);
       setName(newStarSystem.name || "");
     } else {
       setStarSystem(null);
     }
-  }, [saveChanges, selectValue]);
+  }
+
+  const onInputName = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+    setName(event.currentTarget.value || "");
+  };
 
   if (starSystem) {
     const panelTitle = starSystem.name || "Untitled";

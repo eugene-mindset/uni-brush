@@ -9,7 +9,7 @@ interface Props {
 }
 
 // TODO: UI needs to get cleaned up
-export const MainToolbar: React.FC<Props> = (props) => {
+export const MainToolbar: React.FC<Props> = (props: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const buttonsRef = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -22,22 +22,33 @@ export const MainToolbar: React.FC<Props> = (props) => {
     const oldRoute = selectedMain;
     const oldSubRoute = selectedSub;
 
+    let finalRoute = oldRoute;
+    let finalSubRoute = oldSubRoute;
+
     if (oldRoute === route && oldSubRoute === subRoute) {
       if (oldRoute !== "" && oldSubRoute === "") {
         setSelectedMain("");
+        finalRoute = "";
       } else {
         setSelectedSub("");
+        finalSubRoute = "";
       }
     } else if (oldRoute === route) {
       if (subRoute === "") {
         setSelectedMain("");
+        finalRoute = "";
       } else {
         setSelectedSub(subRoute);
+        finalSubRoute = subRoute;
       }
     } else {
       setSelectedMain(route);
       setSelectedSub(subRoute);
+      finalRoute = route;
+      finalSubRoute = subRoute;
     }
+
+    props?.onPathSelected && props.onPathSelected([finalRoute, finalSubRoute]);
   };
 
   const onClickToggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -48,7 +59,7 @@ export const MainToolbar: React.FC<Props> = (props) => {
   const onClickOption = (
     route: string,
     subRoute: string,
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     updateSelectedRoute(route, subRoute);
 
@@ -57,13 +68,6 @@ export const MainToolbar: React.FC<Props> = (props) => {
     buttonsRef.current[subRoute]?.blur();
   };
 
-  useEffect(() => {
-    // update selected route when it changes
-    const out: [string, string] = [selectedMain || "", selectedSub || ""];
-    props?.onPathSelected && props.onPathSelected(out);
-  }, [selectedMain, selectedSub]);
-
-  // TODO: make into a hook
   useEffect(() => {
     const handleClick = (event: PointerEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -102,7 +106,7 @@ export const MainToolbar: React.FC<Props> = (props) => {
                 >
                   {x.name}
                 </button>
-              )
+              ),
           )}
         </div>
         {props.routes.map(
@@ -122,10 +126,10 @@ export const MainToolbar: React.FC<Props> = (props) => {
                       >
                         {sub}
                       </button>
-                    )
+                    ),
                 )}
               </div>
-            )
+            ),
         )}
       </div>
     </div>

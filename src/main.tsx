@@ -12,7 +12,7 @@ import { AppContextProvider } from "@/context/app-context";
 import FullInterface from "@/interface";
 import GalaxyViewer from "@/interface/galaxy-viewer";
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   return (
     <AppContextProvider value={null}>
       <GalaxyViewer />

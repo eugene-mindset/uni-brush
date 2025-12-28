@@ -40,8 +40,8 @@ export class BasicGravity extends Operator<Vector3, Config> {
     };
   }
 
-  protected override generateStep(_idx: number, element: Vector3): Vector3 {
-    const relVector = new Vector3().subVectors(element, this._config.location);
+  protected override generateStep(_idx: number, input: Vector3): Vector3 {
+    const relVector = new Vector3().subVectors(input, this._config.location);
     const distanceRatio = MathHelpers.calculateEllipsoidDistRatio(relVector, this.config.size);
     const posPulled = relVector.multiplyScalar(
       Math.pow(MathHelpers.clamp(this.config.falloff, distanceRatio, 1), this.config.strength),

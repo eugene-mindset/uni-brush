@@ -7,11 +7,6 @@ import { Creator } from "@/models";
 import { BaseStepComponent } from "./base-step";
 import ConfigTables from "./step-config-tables";
 
-interface Props<V, T extends Creator.Base.ValuePipeline<V>> {
-  pipeline: T;
-  property?: string;
-}
-
 const { AllGenerators, AllOperators } = ConfigTables;
 
 interface SetStateModalProps {
@@ -68,16 +63,24 @@ const SetStateModal = forwardRef(
 );
 SetStateModal.displayName = "SetStateModal";
 
-export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>>(
-  props: Props<V, T>,
-) => {
-  const { pipeline } = props;
+type MappedPipelineListRef = {
+  triggerStateChange: () => void;
+};
 
+interface MappedPipelineProps<V, T extends Creator.Base.ValuePipeline<V>> {
+  pipeline: T;
+  setSelectedIndex: (number) => void;
+  showModal: () => void;
+  ref?: Ref<MappedPipelineListRef>;
+}
+
+const MappedPipelineList = <V, T extends Creator.Base.ValuePipeline<V>>({
+  ref,
+  pipeline,
+  setSelectedIndex,
+  showModal,
+}: MappedPipelineProps<V, T>) => {
   const triggerStateChange = useTriggerUpdate();
-  const setModalRef = useRef<HTMLDialogElement>(null);
-  const addModalRef = useRef<HTMLDialogElement>(null);
-
-  const [selectedIndex, setSelectedIndex] = useState<number>();
 
   const onDeleteGenerator = () => {
     pipeline.setGenerator();
@@ -96,8 +99,62 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
 
   const onSetStep = (index: number) => {
     setSelectedIndex(index);
-    setModalRef.current?.show();
+    showModal();
   };
+
+  const onMoveStep = (index: number, dir: "up" | "down") => {
+    pipeline.moveOperator(index, dir);
+    triggerStateChange();
+  };
+
+  useImperativeHandle(ref, () => {
+    return {
+      triggerStateChange,
+    };
+  }, [triggerStateChange]);
+
+  return (
+    <>
+      {pipeline?.generator && (
+        <BaseStepComponent
+          step={pipeline.generator}
+          order={1}
+          onDelete={onDeleteGenerator}
+          onSet={() => onSetStep(-1)}
+        />
+      )}
+      {pipeline?.operators &&
+        pipeline.operators.map((x, i) => (
+          <BaseStepComponent
+            key={`x.stepKey_${i}`}
+            step={x}
+            order={i + 2}
+            onDelete={() => onDeleteOperator(i)}
+            onDuplicate={() => onDuplicateOperator(i)}
+            onSet={() => onSetStep(i)}
+            onMove={(dir: "up" | "down") => onMoveStep(i, dir)}
+          />
+        ))}
+    </>
+  );
+};
+
+export interface Props<V, T extends Creator.Base.ValuePipeline<V>> {
+  pipeline: T;
+  property?: string;
+}
+
+export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>>(
+  props: Props<V, T>,
+) => {
+  const { pipeline } = props;
+
+  const setModalRef = useRef<HTMLDialogElement>(null);
+  const addModalRef = useRef<HTMLDialogElement>(null);
+
+  const pipelineListRef = useRef<MappedPipelineListRef>(null);
+
+  const [selectedIndex, setSelectedIndex] = useState<number>();
 
   const onSetStepConfirm = (stepKey: string) => {
     if (!selectedIndex) return;
@@ -112,7 +169,7 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
 
     setModalRef.current?.close();
     setSelectedIndex(undefined);
-    triggerStateChange();
+    pipelineListRef.current?.triggerStateChange();
   };
 
   const onSetStepCancel = () => {
@@ -127,16 +184,11 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
     const operator = AllOperators[stepKey];
     pipeline.createOperator(operator);
     addModalRef.current?.close();
-    triggerStateChange();
+    pipelineListRef.current?.triggerStateChange();
   };
 
   const onAddStepCancel = () => {
     addModalRef.current?.close();
-  };
-
-  const onMoveStep = (index: number, dir: "up" | "down") => {
-    pipeline.moveOperator(index, dir);
-    triggerStateChange();
   };
 
   return (
@@ -150,26 +202,12 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
             </ActionOnlyButton>
           </Panel.Header>
           <ToggleComponent.Area>
-            {pipeline?.generator && (
-              <BaseStepComponent
-                step={pipeline.generator}
-                order={1}
-                onDelete={onDeleteGenerator}
-                onSet={() => onSetStep(-1)}
-              />
-            )}
-            {pipeline?.operators &&
-              pipeline.operators.map((x, i) => (
-                <BaseStepComponent
-                  key={`x.stepKey_${i}`}
-                  step={x}
-                  order={i + 2}
-                  onDelete={() => onDeleteOperator(i)}
-                  onDuplicate={() => onDuplicateOperator(i)}
-                  onSet={() => onSetStep(i)}
-                  onMove={(dir: "up" | "down") => onMoveStep(i, dir)}
-                />
-              ))}
+            <MappedPipelineList
+              ref={pipelineListRef}
+              pipeline={pipeline}
+              setSelectedIndex={setSelectedIndex}
+              showModal={() => setModalRef.current?.show()}
+            />
           </ToggleComponent.Area>
         </ToggleComponent>
       </Panel.Group>

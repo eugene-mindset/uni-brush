@@ -59,10 +59,9 @@ export class ArmGravity extends Operator<Vector3, Config> {
     return this.precomputeConfig(this.config);
   }
 
-  protected override generateStep(_idx: number, element: Vector3): Vector3 {
+  protected override generateStep(_idx: number, input: Vector3): Vector3 {
     const theta =
-      Math.atan2(element.z / this.config.dim.z, element.x / this.config.dim.x) +
-      this.config.armOffset;
+      Math.atan2(input.z / this.config.dim.z, input.x / this.config.dim.x) + this.config.armOffset;
 
     const nearestArmTheta =
       Math.round(theta / this.derivedConfig.armArcLength) * this.derivedConfig.armArcLength;
@@ -70,8 +69,8 @@ export class ArmGravity extends Operator<Vector3, Config> {
     const deltaTheta = nearestArmTheta - theta;
 
     const planarDistRatio = new Vector2(
-      element.x / this.config.dim.x,
-      element.z / this.config.dim.z,
+      input.x / this.config.dim.x,
+      input.z / this.config.dim.z,
     ).length();
 
     const factor =
@@ -87,9 +86,9 @@ export class ArmGravity extends Operator<Vector3, Config> {
     const finalTheta = taperTheta + planarDistRatio * this.config.armSpeed;
 
     const rotated = new Vector3(
-      element.x / this.config.dim.x,
-      element.y / this.config.dim.y,
-      element.z / this.config.dim.z,
+      input.x / this.config.dim.x,
+      input.y / this.config.dim.y,
+      input.z / this.config.dim.z,
     ).applyAxisAngle(new Vector3(0, 1, 0), -finalTheta);
 
     // add jitter to final position

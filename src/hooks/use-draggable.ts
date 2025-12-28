@@ -11,12 +11,40 @@ interface Args {
   boundHeight?: number;
   initX?: number;
   initY?: number;
+  floatX?: "left" | "right";
+  floatY?: "top" | "bottom";
 }
 
 export const useDraggable = (args: Args) => {
   const [position, setPosition] = useState({ x: args?.initX || 0, y: args?.initY || 0 });
   const isDragging = useRef(false);
   const startOffset = useRef({ x: 0, y: 0 });
+  const hasInitialized = useRef(false);
+
+  // Calculate initial position based on float options during render
+  if (
+    !hasInitialized.current &&
+    args.enabled &&
+    args.containerWidth &&
+    args.containerHeight &&
+    args.boundWidth &&
+    args.boundHeight
+  ) {
+    // Calculate float position
+    let floatX = args.initX || 0;
+    let floatY = args.initY || 0;
+
+    if (args.floatX === "right") {
+      floatX = args.boundWidth - args.containerWidth;
+    }
+
+    if (args.floatY === "bottom") {
+      floatY = args.boundHeight - args.containerHeight;
+    }
+
+    setPosition({ x: floatX, y: floatY });
+    hasInitialized.current = true;
+  }
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (!args.enabled) return;

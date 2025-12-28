@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 
 import { useDraggable } from "@/hooks";
 
@@ -34,10 +34,8 @@ export function Panel(props: Props) {
 
   const [panelDim, setPanelDim] = useState({ w: 0, h: 0 });
   const [parentDim, setParentDim] = useState({ w: 0, h: 0 });
-  const initPosSet = useRef(false);
 
   const {
-    setPosition,
     onPointerDown: onDragStart,
     isDragging,
     transform: dragTransform,
@@ -48,6 +46,8 @@ export function Panel(props: Props) {
     containerHeight: panelDim.h,
     boundWidth: parentDim.w,
     boundHeight: parentDim.h,
+    floatX: props.floatX,
+    floatY: props.floatY,
   });
 
   useLayoutEffect(() => {
@@ -74,28 +74,6 @@ export function Panel(props: Props) {
 
     return () => resizeObserver.disconnect();
   }, [props.canDrag]);
-
-  useEffect(() => {
-    if (
-      !props.canDrag ||
-      initPosSet.current ||
-      !(panelDim.w && panelDim.h && parentDim.w && parentDim.h)
-    )
-      return;
-    let floatX = 0;
-    let floatY = 0;
-
-    if (props.floatX === "right") {
-      floatX = parentDim.w - panelDim.w;
-    }
-
-    if (props.floatY === "bottom") {
-      floatY = parentDim.h - panelDim.h;
-    }
-
-    setPosition({ x: floatX, y: floatY });
-    initPosSet.current = true;
-  }, [panelDim, parentDim, props.canDrag, props.floatX, props.floatY, setPosition]);
 
   return (
     <PanelContext.Provider value={{}}>

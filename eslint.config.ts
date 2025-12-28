@@ -1,10 +1,10 @@
-import { defineConfig } from "eslint/config";
-import tseslint from "@electron-toolkit/eslint-config-ts";
 import eslintConfigPrettier from "@electron-toolkit/eslint-config-prettier";
+import tseslint from "@electron-toolkit/eslint-config-ts";
+import { defineConfig } from "eslint/config";
+import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintPluginReact from "eslint-plugin-react";
 import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
-import eslintPluginPrettier from "eslint-plugin-prettier";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 export default defineConfig(
@@ -26,6 +26,7 @@ export default defineConfig(
       "react-refresh": eslintPluginReactRefresh,
       prettier: eslintPluginPrettier,
       "simple-import-sort": simpleImportSort,
+      "react-compiler": require("eslint-plugin-react-compiler"),
     },
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
@@ -51,6 +52,7 @@ export default defineConfig(
       ],
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
+      "react-compiler/react-compiler": "error",
     },
   },
   eslintConfigPrettier,

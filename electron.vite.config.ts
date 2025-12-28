@@ -1,7 +1,7 @@
 /// <reference types="vitest/config" />
 
-import { defineConfig, defineViteConfig, externalizeDepsPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react";
+import { defineConfig, defineViteConfig, externalizeDepsPlugin } from "electron-vite";
 import { resolve } from "path";
 
 export default defineConfig(({ command }) => {
@@ -36,7 +36,13 @@ export default defineConfig(({ command }) => {
     },
     renderer: defineViteConfig({
       root: resolve("src"),
-      plugins: [react()],
+      plugins: [
+        react({
+          babel: {
+            plugins: ["babel-plugin-react-compiler"],
+          },
+        }),
+      ],
       build: {
         rollupOptions: {
           input: "src/index.html",

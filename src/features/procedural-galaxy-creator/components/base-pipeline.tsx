@@ -5,6 +5,7 @@ import { useTriggerUpdate } from "@/hooks";
 import { Creator } from "@/models";
 
 import { BaseStepComponent } from "./base-step";
+import { SectionToolbar } from "./section-toolbar";
 import ConfigTables from "./step-config-tables";
 
 const { AllGenerators, AllOperators } = ConfigTables;
@@ -132,7 +133,8 @@ const MappedPipelineList = <V, T extends Creator.Base.ValuePipeline<V>>({
             onDelete={() => onDeleteOperator(i)}
             onDuplicate={() => onDuplicateOperator(i)}
             onSet={() => onSetStep(i)}
-            onMove={(dir: "up" | "down") => onMoveStep(i, dir)}
+            onMoveUp={i > 0 ? () => onMoveStep(i, "up") : undefined}
+            onMoveDown={i < pipeline.operators.length - 1 ? () => onMoveStep(i, "down") : undefined}
           />
         ))}
     </>
@@ -197,9 +199,7 @@ export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>
         <ToggleComponent>
           <Panel.Header canToggle="header-big" className="flex-row gap">
             <h4 className="flex-fill">{props?.property}</h4>
-            <ActionOnlyButton className="core xs" onClick={() => onAddStep()}>
-              <SVGIcons.Plus />
-            </ActionOnlyButton>
+            <SectionToolbar onAdd={onAddStep} />
           </Panel.Header>
           <ToggleComponent.Area>
             <MappedPipelineList

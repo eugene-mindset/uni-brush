@@ -1,4 +1,4 @@
-import { atom, useAtom } from "jotai";
+import { atom, useSetAtom } from "jotai";
 import React, { Activity } from "react";
 
 import { ToggleButton } from "../buttons";
@@ -11,11 +11,9 @@ interface MainProps extends React.PropsWithChildren {
 
 export function ToggleComponent(props: MainProps) {
   const toggleStateAtom = atom(props?.isInitiallyShown || false);
-  const [toggle, setToggle] = useAtom(toggleStateAtom);
+  const setToggle = useSetAtom(toggleStateAtom);
 
-  if (props.isShown && props.isShown !== toggle) {
-    setToggle(props.isShown);
-  }
+  props.isShown !== undefined && setToggle(props.isShown);
 
   const onToggle = () => {
     setToggle((x) => !x);

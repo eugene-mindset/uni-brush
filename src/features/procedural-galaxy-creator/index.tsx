@@ -1,7 +1,6 @@
 import { Panel } from "@/components";
-
-import { EntityTypes } from "@/models";
 import { useProceduralCreatorModel } from "@/hooks";
+import { EntityTypes } from "@/models";
 
 import * as CreatorView from "./components";
 
@@ -24,6 +23,8 @@ export const ProceduralCreator: React.FC = () => {
           <Panel.Input type="checkbox" labelText="Lanes" />
         </div>
       </div>
+      <br />
+      <br />
       <CreatorView.BaseFactoryComponent factory={coreModel} entity={EntityTypes.STAR_SYSTEM} />
       <div className="space-top gap flex-row justify-right">
         <button className="core float-right">Save</button>

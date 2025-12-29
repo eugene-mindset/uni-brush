@@ -13,20 +13,20 @@ const updateConfig = <K extends object, T extends Creator.Base.Step<unknown, K>>
   step.setConfig({ ...step.config, ...newConfig });
 };
 
-export interface BaseInputProps<K extends object, T extends Creator.Base.Step<unknown, K>> {
+interface BaseInputProps<K extends object, T extends Creator.Base.Step<unknown, K>> {
   step: T;
   configKey: keyof K;
   labelText?: string;
 }
 
-export interface InputProps<
+interface InputProps<
   K extends object,
   T extends Creator.Base.Step<unknown, K>,
 > extends BaseInputProps<K, T> {
   inputType: HTMLInputTypeAttribute;
 }
 
-export const ModelStepInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
+const ModelStepInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: InputProps<K, T>,
 ) => {
   const { step, configKey, inputType } = props;
@@ -55,7 +55,7 @@ export const ModelStepInput = <K extends object, T extends Creator.Base.Step<unk
   );
 };
 
-export const ModelStepVectorInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
+const ModelStepVectorInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: BaseInputProps<K, T>,
 ) => {
   const { step, configKey } = props;

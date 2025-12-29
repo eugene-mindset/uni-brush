@@ -84,6 +84,18 @@ export const ArrowBarDown = () => (
   </svg>
 );
 
+export const ArrowBarLeft = () => (
+  <svg width="16" height="16" fill="currentColor" className="bi">
+    <use xlinkHref={`${iconPath}#arrow-bar-left`} />
+  </svg>
+);
+
+export const ArrowBarRight = () => (
+  <svg width="16" height="16" fill="currentColor" className="bi">
+    <use xlinkHref={`${iconPath}#arrow-bar-right`} />
+  </svg>
+);
+
 export const Trash = () => (
   <svg width="16" height="16" fill="currentColor" className="bi">
     <use xlinkHref={`${iconPath}#trash`} />

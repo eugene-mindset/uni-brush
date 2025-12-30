@@ -1,8 +1,8 @@
-import { StarSystemEntity } from "../entities";
+import { StarSystemAttributes, StarSystemEntity } from "../entities";
 import { Base, Generators, Operators } from ".";
 
 export const initModel = () => {
-  const model = new Base.EntityFactory<StarSystemEntity>();
+  const model = new Base.EntityFactory<StarSystemAttributes, StarSystemEntity>();
   const mainEntityPipe = model.createPipeline(1750, "Primary Shape");
   mainEntityPipe.createPipeline("initPos");
   mainEntityPipe.createPipeline("name");

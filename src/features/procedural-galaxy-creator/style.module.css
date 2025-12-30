@@ -1,5 +1,7 @@
 .entity_pipeline {
   margin-bottom: var(--general-spacing);
+  border: 1px solid white;
+  padding: var(--general-spacing);
 }
 
 .entity_pipeline:last-child {

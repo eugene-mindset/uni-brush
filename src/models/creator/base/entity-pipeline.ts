@@ -1,10 +1,8 @@
-import { Entity } from "@/models";
-
 import { propertyToPipeline, propertyToValues } from "./types";
 import { ValuePipeline } from "./value-pipeline";
 
-export class EntityPipeline<T extends Entity.EntityBase> {
-  protected _propertyPipeline: propertyToPipeline<T> = {};
+export class EntityPipeline<K> {
+  protected _propertyPipeline: propertyToPipeline<K> = {};
 
   // constructors
 
@@ -14,7 +12,7 @@ export class EntityPipeline<T extends Entity.EntityBase> {
 
   // properties
 
-  public get pipelines(): propertyToPipeline<T> {
+  public get pipelines(): propertyToPipeline<K> {
     return { ...this._propertyPipeline };
   }
 
@@ -24,22 +22,22 @@ export class EntityPipeline<T extends Entity.EntityBase> {
 
   // methods
 
-  public createPipeline(property: keyof T): ValuePipeline<T[keyof T]> {
+  public createPipeline(property: keyof K): ValuePipeline<K[keyof K]> {
     if (property === "type" || property === "publicId")
       throw new Error("Cannot define pipeline for manager attributes");
     if (this._propertyPipeline[property]) throw new Error("Already have pipeline for property");
 
-    this._propertyPipeline[property] = new ValuePipeline<T[keyof T]>();
+    this._propertyPipeline[property] = new ValuePipeline<K[keyof K]>();
     return this._propertyPipeline[property];
   }
 
-  public deletePipeline(property: keyof T) {
+  public deletePipeline(property: keyof K) {
     this._propertyPipeline[property] = undefined;
   }
 
   public generate(count: number) {
     this.properties.map((x) => {
-      const pipeline = this._propertyPipeline[x as keyof T];
+      const pipeline = this._propertyPipeline[x as keyof K];
       if (!pipeline) return;
 
       pipeline.generate(count);
@@ -48,20 +46,20 @@ export class EntityPipeline<T extends Entity.EntityBase> {
 
   public reset() {
     this.properties.map((x) => {
-      const pipeline = this._propertyPipeline[x as keyof T];
+      const pipeline = this._propertyPipeline[x as keyof K];
       if (!pipeline) return;
 
       pipeline.reset();
     });
   }
 
-  public getOutputs(): propertyToValues<T> {
-    const out: propertyToValues<T> = {};
+  public getOutputs(): propertyToValues<K> {
+    const out: propertyToValues<K> = {};
     this.properties.map((x) => {
-      const pipeline = this._propertyPipeline[x as keyof T];
+      const pipeline = this._propertyPipeline[x as keyof K];
       if (!pipeline) return;
 
-      out[x as keyof T] = pipeline.output;
+      out[x as keyof K] = pipeline.output;
     });
 
     return out;

@@ -3,14 +3,14 @@ import { Entity } from "@/models";
 import { EntityPipeline } from "./entity-pipeline";
 import { propertyToValues } from "./types";
 
-type EntityFactoryConfig<T extends Entity.EntityBase> = {
-  pipeline: EntityPipeline<T>;
+type EntityFactoryConfig<K> = {
+  pipeline: EntityPipeline<K>;
   count: number;
   name: string;
 }[];
 
-export class EntityFactory<T extends Entity.EntityBase> {
-  protected _pipelines: EntityFactoryConfig<T> = [];
+export class EntityFactory<K extends object, T extends Entity.EntityBase<K>> {
+  protected _pipelines: EntityFactoryConfig<K> = [];
 
   // constructors
 
@@ -20,15 +20,19 @@ export class EntityFactory<T extends Entity.EntityBase> {
 
   // properties
 
-  public get pipelines(): EntityFactoryConfig<T> {
+  public get pipelines(): EntityFactoryConfig<K> {
     return this._pipelines.map((x) => ({ ...x }));
   }
 
   // methods
 
-  public createPipeline(count: number, name?: string): EntityPipeline<T> {
-    const pipeline = new EntityPipeline<T>();
-    this._pipelines.push({ pipeline, count, name: name || "Entity Pipeline" });
+  public createPipeline(count: number, name?: string): EntityPipeline<K> {
+    const pipeline = new EntityPipeline<K>();
+    this._pipelines.push({
+      pipeline,
+      count,
+      name: name || `Entity Pipeline ${this._pipelines.length + 1}`,
+    });
 
     return pipeline;
   }
@@ -45,6 +49,19 @@ export class EntityFactory<T extends Entity.EntityBase> {
     this._pipelines[index].name = name;
   }
 
+  public movePipeline(index: number, dir: "up" | "down") {
+    const delta = dir === "up" ? -1 : 1;
+    const dest = index + delta;
+
+    if (dest < 0 || dest >= this._pipelines.length) {
+      return;
+    }
+
+    const temp = this._pipelines[index];
+    this._pipelines[index] = this._pipelines[dest];
+    this._pipelines[dest] = temp;
+  }
+
   public generate() {
     this._pipelines.map((x) => {
       x.pipeline.generate(x.count);
@@ -57,13 +74,13 @@ export class EntityFactory<T extends Entity.EntityBase> {
     });
   }
 
-  public getOutputs(): propertyToValues<T> {
-    const out: propertyToValues<T> = {};
+  public getOutputs(): propertyToValues<K> {
+    const out: propertyToValues<K> = {};
 
     this._pipelines.map((pipeline) => {
       pipeline.pipeline.properties.forEach((key) => {
         if (key in out) return;
-        out[key as keyof T] = [];
+        out[key as keyof K] = [];
       });
 
       const pipelineOut = pipeline.pipeline.getOutputs();

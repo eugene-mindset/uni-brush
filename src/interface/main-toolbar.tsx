@@ -83,14 +83,16 @@ export const MainToolbar: React.FC<Props> = (props: Props) => {
 
   return (
     <div ref={ref} id="main-toolbar">
-      <button
-        ref={toggleRef}
-        id="main-toolbar-toggle"
-        className="core square"
-        onClick={onClickToggle}
-      >
-        {showOptions ? <SVGIcons.CaretLeftFill /> : <SVGIcons.CaretRightFill />}
-      </button>
+      <div>
+        <button
+          ref={toggleRef}
+          id="main-toolbar-toggle"
+          className="core square"
+          onClick={onClickToggle}
+        >
+          {showOptions ? <SVGIcons.CaretLeftFill /> : <SVGIcons.CaretRightFill />}
+        </button>
+      </div>
       <div id="toolbar-container" className={showOptions ? "flex-col" : "flex-row"}>
         <div id="inner-toolbar">
           {props.routes.map(

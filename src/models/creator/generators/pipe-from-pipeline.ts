@@ -4,21 +4,21 @@ interface Config<T> {
   outputs: T[];
 }
 
-export class PipeFromPipeline<T> extends Generator<T, Config<T>> {
-  public static override readonly stepKey: string = "Generator:PipeFromPipeline";
+export class PipeFromFactory<T> extends Generator<T, Config<T>> {
+  public static override readonly stepKey: string = "Generator:PipeFromFactory";
 
-  public static override create<T>(): PipeFromPipeline<T> {
-    return new PipeFromPipeline<T>({
+  public static override create<T>(): PipeFromFactory<T> {
+    return new PipeFromFactory<T>({
       outputs: [],
     });
   }
 
-  public clone(): PipeFromPipeline<T> {
-    return new PipeFromPipeline<T>({ ...this.config });
+  public clone(): PipeFromFactory<T> {
+    return new PipeFromFactory<T>({ ...this.config });
   }
 
   public override get stepKey(): string {
-    return PipeFromPipeline.stepKey;
+    return PipeFromFactory.stepKey;
   }
 
   public get config(): Config<T> {

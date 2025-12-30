@@ -2,7 +2,7 @@ import { Panel } from "@/components";
 import { useProceduralCreatorModel } from "@/hooks";
 import { EntityTypes } from "@/models";
 
-import * as CreatorView from "./components";
+import { CreatorEntityFactoryEditor } from "./components";
 
 export const ProceduralCreator: React.FC = () => {
   const { coreModel, generate } = useProceduralCreatorModel();
@@ -25,7 +25,7 @@ export const ProceduralCreator: React.FC = () => {
       </div>
       <br />
       <br />
-      <CreatorView.BaseFactoryComponent factory={coreModel} entity={EntityTypes.STAR_SYSTEM} />
+      <CreatorEntityFactoryEditor entityFactory={coreModel} entity={EntityTypes.STAR_SYSTEM} />
       <div className="space-top gap flex-row justify-right">
         <button className="core float-right">Save</button>
         <button className="core float-right" onClick={generate}>

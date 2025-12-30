@@ -1,3 +1,3 @@
 export { DefaultValue } from "./default-value";
-export { PipeFromPipeline } from "./pipe-from-pipeline";
 export { NormalDistributionVector } from "./normal-distribution";
+export { PipeFromFactory as PipeFromPipeline } from "./pipe-from-pipeline";

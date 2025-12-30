@@ -1,9 +1,9 @@
-.entity_pipeline {
+.entity_factory {
   margin-bottom: var(--general-spacing);
   border: 1px solid white;
   padding: var(--general-spacing);
 }
 
-.entity_pipeline:last-child {
+.entity_factory:last-child {
   margin-bottom: 0;
 }

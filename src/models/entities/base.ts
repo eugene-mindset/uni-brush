@@ -214,7 +214,6 @@ export class ManagerBase<
   }
 
   protected emit<Key extends keyof Events>(eventName: Key, ...args: unknown[]): void {
-    console.log(eventName);
     this.eventManager.emit(eventName, ...args);
   }
 
@@ -300,7 +299,7 @@ export class ManagerBase<
     array: (typeof this.dataStore)[K][number][],
   ) {
     if (this.currentCapacity < array.length) {
-      this.resizeStore();
+      throw new Error("Array to set with longer than whats available");
     }
 
     this.resetAttributeForAll(key);

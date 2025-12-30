@@ -26,7 +26,7 @@ interface InputProps<
   inputType: HTMLInputTypeAttribute;
 }
 
-const ModelStepInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
+const CreatorStepInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: InputProps<K, T>,
 ) => {
   const { step, configKey, inputType } = props;
@@ -55,7 +55,7 @@ const ModelStepInput = <K extends object, T extends Creator.Base.Step<unknown, K
   );
 };
 
-const ModelStepVectorInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
+const CreatorStepVectorInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: BaseInputProps<K, T>,
 ) => {
   const { step, configKey } = props;
@@ -81,7 +81,7 @@ export interface DynamicInputProps<K extends object, T extends Creator.Base.Step
   configKey: keyof K;
 }
 
-export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
+export const CreatorStepDynamicInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: DynamicInputProps<K, T>,
 ) => {
   const { step, configKey } = props;
@@ -93,7 +93,7 @@ export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.S
   if (!properties.type) return;
   if (properties.type === "vector") {
     return (
-      <ModelStepVectorInput
+      <CreatorStepVectorInput
         key={configKey as string}
         step={step}
         configKey={configKey as keyof K}
@@ -108,7 +108,7 @@ export const ModelStepDynamicInput = <K extends object, T extends Creator.Base.S
     );
   } else {
     return (
-      <ModelStepInput
+      <CreatorStepInput
         key={configKey as string}
         inputType={properties.type}
         step={step}

@@ -8,6 +8,7 @@ import { CommonProps } from "./types";
 
 export interface Props extends CommonProps {
   canToggle?: "header-small" | "header-big";
+  toggleButtonClassName?: string;
 }
 
 export const PanelHeader: React.FC<Props> = (props: Props) => {
@@ -26,7 +27,9 @@ export const PanelHeader: React.FC<Props> = (props: Props) => {
       {React.Children.toArray(props?.children)}
       {props.canToggle === "header-small" &&
         (toggleState ? <SVGIcons.CaretUpFill /> : <SVGIcons.CaretDownFill />)}
-      {props.canToggle === "header-big" && <ToggleComponent.Button className="fit" />}
+      {props.canToggle === "header-big" && (
+        <ToggleComponent.Button className={props.toggleButtonClassName || "xs"} />
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import * as THREE from "three";
 
 import { ThreeJSViewer } from "@/components";
-import { useManager, useTriggerUpdate } from "@/hooks";
+import { useForceRender, useManager } from "@/hooks";
 import { EntityTypes } from "@/models";
 import { createGalaxyScene, RenderPipeline } from "@/renderer";
 
@@ -10,7 +10,7 @@ export interface GalaxyViewerProps {}
 
 const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
-  const refresh = useTriggerUpdate();
+  const { forceRender } = useForceRender();
 
   const onSelect = (pipeline: RenderPipeline) => {
     const obj3D = pipeline.selectedObject?.visual?.object3D;
@@ -51,12 +51,12 @@ const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   };
 
   useEffect(() => {
-    starSystemManager.addEventListener("create_all", refresh);
+    starSystemManager.addEventListener("create_all", forceRender);
 
     return () => {
-      starSystemManager.removeEventListener("create_all", refresh);
+      starSystemManager.removeEventListener("create_all", forceRender);
     };
-  }, [refresh, starSystemManager]);
+  }, [forceRender, starSystemManager]);
 
   return (
     <ThreeJSViewer

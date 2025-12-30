@@ -61,7 +61,10 @@ button.core.xs {
 }
 
 .square {
+  margin-top: auto;
+  width: auto;
   aspect-ratio: 1;
+  margin-bottom: auto;
 }
 
 .core-hover {

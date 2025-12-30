@@ -25,13 +25,13 @@ export interface EventsToCallbackBase {
 /**
  *
  */
-export class EntityBase {
+export class EntityBase<Attributes extends object> {
   /** What type of entity is this instance */
   public static readonly type: EntityTypes = EntityTypes.BASE;
   public readonly type = EntityBase.type;
 
   /** Manager the instance associates with */
-  protected _manager: ManagerBase<object, EntityBase, EventsToCallbackBase>;
+  protected _manager: ManagerBase<Attributes, EntityBase<Attributes>, EventsToCallbackBase>;
   /** Internal id associating the instance to a specific entity within the Manager  */
   protected readonly _index: number;
 
@@ -64,7 +64,11 @@ export class EntityBase {
 /**
  *
  */
-export class ManagerBase<Attributes, Inst extends EntityBase, Events extends EventsToCallbackBase> {
+export class ManagerBase<
+  Attributes extends object,
+  Inst extends EntityBase<Attributes>,
+  Events extends EventsToCallbackBase,
+> {
   public static readonly type: EntityTypes = EntityTypes.BASE;
   public readonly type: EntityTypes = EntityTypes.BASE;
 

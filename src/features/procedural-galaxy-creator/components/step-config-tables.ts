@@ -1,6 +1,6 @@
 import { HTMLInputTypeAttribute } from "react";
 
-import { Creator } from "@/models";
+import { Creator, EntityTypes } from "@/models";
 
 type configTable = {
   [key: string]: {
@@ -115,4 +115,8 @@ export const AllOperators = {
   [Creator.Operators.ArmGravity.stepKey]: Creator.Operators.ArmGravity,
 };
 
-export default { StepConfigTable, AllGenerators, AllOperators };
+export const EditableAttributes = {
+  [EntityTypes.STAR_SYSTEM]: ["name", "desc", "initPos"],
+};
+
+export default { StepConfigTable, AllGenerators, AllOperators, EditableAttributes };

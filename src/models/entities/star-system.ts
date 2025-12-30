@@ -25,7 +25,7 @@ export interface StarSystemEvents extends EventsToCallbackBase {
   dispose: () => void;
 }
 
-export class StarSystemEntity extends EntityBase {
+export class StarSystemEntity extends EntityBase<StarSystemAttributes> {
   public static readonly type = EntityTypes.STAR_SYSTEM;
   public readonly type = StarSystemEntity.type;
   protected manager: StarSystemManager;

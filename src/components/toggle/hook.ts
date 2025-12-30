@@ -1,20 +1,20 @@
-import { Atom } from "jotai";
-import { atom, useAtomValue } from "jotai";
 import { createContext, useContext } from "react";
 
-interface ToggleContextState {
-  onToggle: () => void;
-  toggleStateAtom: Atom<boolean>;
-}
+import { ToggleContextState } from "./type";
 
 export const ToggleContext = createContext<ToggleContextState>({
   onToggle: () => {},
-  toggleStateAtom: atom(false),
+  toggleState: false,
 });
 
 export const useToggle = () => {
-  const { onToggle, toggleStateAtom } = useContext(ToggleContext);
-  const toggleState = useAtomValue(toggleStateAtom);
+  const context = useContext(ToggleContext);
+  if (!context)
+    throw new Error(
+      "useToggle must be called within a ToggleComponent or a ControlledToggleComponent",
+    );
+
+  const { onToggle, toggleState } = context;
 
   return {
     toggleState,

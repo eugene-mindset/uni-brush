@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { ActionOnlyButton, SVGIcons, ToggleComponent } from "@/components";
+import { ActionOnlyButton, ControlledToggleComponent, SVGIcons } from "@/components";
 
 export interface Props {
   onAdd?: () => void;
@@ -22,8 +22,8 @@ export const CreatorSectionToolbar = (props: Props) => {
   // https://react.dev/link/setstate-in-render
 
   return (
-    <ToggleComponent isShown={toggle}>
-      <ToggleComponent.Area>
+    <ControlledToggleComponent isShown={toggle} onToggle={() => (x) => !x}>
+      <ControlledToggleComponent.Area>
         {props.onAdd && (
           <ActionOnlyButton className="core xs" onClick={props.onAdd}>
             <SVGIcons.Plus />
@@ -54,7 +54,7 @@ export const CreatorSectionToolbar = (props: Props) => {
             <SVGIcons.Trash />
           </ActionOnlyButton>
         )}
-      </ToggleComponent.Area>
+      </ControlledToggleComponent.Area>
       {toggle ? (
         <ActionOnlyButton className="core xs" onClick={() => setToggle(false)}>
           <SVGIcons.ArrowBarRight />
@@ -64,6 +64,6 @@ export const CreatorSectionToolbar = (props: Props) => {
           <SVGIcons.List />
         </ActionOnlyButton>
       )}
-    </ToggleComponent>
+    </ControlledToggleComponent>
   );
 };

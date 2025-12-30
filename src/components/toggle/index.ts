@@ -1,2 +1,2 @@
 export * from "./component";
-export * from "./hook";
+export { useToggle } from "./hook";

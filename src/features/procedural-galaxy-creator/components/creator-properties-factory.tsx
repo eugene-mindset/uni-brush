@@ -58,7 +58,7 @@ export const CreatorPropertiesFactoryEditor = <K extends object>({
 
   return (
     <div className={styles.entity_factory}>
-      <ToggleComponent isInitiallyShown>
+      <ToggleComponent isInitShown>
         <Panel.Header canToggle="header-big" className="flex-row gap">
           <h3 className="flex-fill">{name}</h3>
           <CreatorSectionToolbar

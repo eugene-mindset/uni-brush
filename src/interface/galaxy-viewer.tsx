@@ -10,7 +10,7 @@ export interface GalaxyViewerProps {}
 
 const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   const starSystemManager = useManager(EntityTypes.STAR_SYSTEM);
-  const { forceRender } = useForceRender();
+  const { forceRender, forceRenderKey } = useForceRender();
 
   const onSelect = (pipeline: RenderPipeline) => {
     const obj3D = pipeline.selectedObject?.visual?.object3D;
@@ -61,6 +61,7 @@ const GalaxyViewer: React.FC<GalaxyViewerProps> = (_: GalaxyViewerProps) => {
   return (
     <ThreeJSViewer
       id="mainRenderer"
+      key={forceRenderKey}
       onSelect={onSelect}
       onInitialize={onInit}
       onCleanUp={onCleanUp}

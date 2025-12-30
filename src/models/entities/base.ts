@@ -214,6 +214,7 @@ export class ManagerBase<
   }
 
   protected emit<Key extends keyof Events>(eventName: Key, ...args: unknown[]): void {
+    console.log(eventName);
     this.eventManager.emit(eventName, ...args);
   }
 

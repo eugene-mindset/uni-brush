@@ -1,4 +1,4 @@
-import { Ref, useImperativeHandle, useRef, useState } from "react";
+import { Ref, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import React from "react";
 
 import { ActionOnlyButton, Panel, SVGIcons, ToggleComponent } from "@/components";
@@ -18,13 +18,17 @@ interface SetStateModalProps {
   onClose: () => void;
 }
 
-const SetStateModal = ({ ref, ...props }: SetStateModalProps) => {
+const SetStateModal = React.memo(({ ref, ...props }: SetStateModalProps) => {
   const { index } = props;
-  const typeText = index > -1 ? "Operator" : "Generator";
+  const typeText = useMemo(() => (index > -1 ? "Operator" : "Generator"), [index]);
 
   const modalRef = useRef<HTMLDialogElement>(null);
 
-  const options = index > -1 ? AllOperators : AllGenerators;
+  const options = useMemo(() => (index > -1 ? AllOperators : AllGenerators), [index]);
+  const dropdownOptions = useMemo(
+    () => Object.keys(options).map((x) => ({ value: x, text: x })),
+    [options],
+  );
   const [value, setValue] = useState<string>(Object.keys(options)[0]);
 
   useImperativeHandle<HTMLDialogElement | null, HTMLDialogElement | null>(
@@ -48,7 +52,7 @@ const SetStateModal = ({ ref, ...props }: SetStateModalProps) => {
           value={value}
           setValue={(x) => setValue(x as string)}
           labelText="Select"
-          options={Object.keys(options).map((x) => ({ value: x, text: x }))}
+          options={dropdownOptions}
         />
         <div className="space-top gap flex-row justify-right">
           <button className="core float-right" onClick={() => value && props.onConfirm(value)}>
@@ -61,7 +65,8 @@ const SetStateModal = ({ ref, ...props }: SetStateModalProps) => {
       </Panel>
     </dialog>
   );
-};
+});
+SetStateModal.displayName = "SetStateModel";
 
 type MappedPipelineListRef = {
   forceRender: () => void;
@@ -79,9 +84,9 @@ const MappedPipelineList = <V, T extends Creator.Base.ValuePipeline<V>>({
   onSetStep,
 }: MappedPipelineProps<V, T>) => {
   // eslint-disable-next-line react-compiler/react-compiler
-  "use no memo";
+  "use no memo"; // we need the pipeline to not be memo'd since it its mutable
 
-  const { forceRender } = useForceRender();
+  const { forceRender, forceRenderKey } = useForceRender();
 
   const onDeleteGenerator = React.useCallback(() => {
     pipeline.setGenerator();
@@ -119,7 +124,7 @@ const MappedPipelineList = <V, T extends Creator.Base.ValuePipeline<V>>({
   }, [forceRender]);
 
   return (
-    <React.Fragment>
+    <div data-version={forceRenderKey}>
       {pipeline?.generator && (
         <BaseStepComponent
           key={`x.stepKey_-1`}
@@ -142,7 +147,7 @@ const MappedPipelineList = <V, T extends Creator.Base.ValuePipeline<V>>({
             onMoveDown={i < pipeline.operators.length - 1 ? () => onMoveStep(i, "down") : undefined}
           />
         ))}
-    </React.Fragment>
+    </div>
   );
 };
 
@@ -154,57 +159,69 @@ export interface Props<V, T extends Creator.Base.ValuePipeline<V>> {
 export const BasePipelineComponent = <V, T extends Creator.Base.ValuePipeline<V>>(
   props: Props<V, T>,
 ) => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  "use no memo"; // force rerender despite content being collapsed
+
   const { pipeline } = props;
 
   const setModalRef = useRef<HTMLDialogElement>(null);
   const addModalRef = useRef<HTMLDialogElement>(null);
 
   const pipelineListRef = useRef<MappedPipelineListRef>(null);
+  const { forceRender } = useForceRender();
 
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
-  const onSetStep = (index: number) => {
+  const onSetStep = useCallback((index: number) => {
     setSelectedIndex(index);
     setModalRef.current?.show();
-  };
+  }, []);
 
-  const onSetStepConfirm = (stepKey: string) => {
-    if (!selectedIndex) return;
+  const onSetStepConfirm = useCallback(
+    (stepKey: string) => {
+      if (!selectedIndex) return;
 
-    if (selectedIndex < 0) {
-      const generator = AllGenerators[stepKey];
-      pipeline.setGenerator(generator);
-    } else {
-      const operator = AllOperators[stepKey];
-      pipeline.setOperator(selectedIndex, operator);
-    }
+      if (selectedIndex < 0) {
+        const generator = AllGenerators[stepKey];
+        pipeline.setGenerator(generator);
+      } else {
+        const operator = AllOperators[stepKey];
+        pipeline.setOperator(selectedIndex, operator);
+      }
 
+      setModalRef.current?.close();
+      pipelineListRef.current?.forceRender();
+      forceRender();
+    },
+    [selectedIndex, pipeline, forceRender],
+  );
+
+  const onSetStepCancel = useCallback(() => {
     setModalRef.current?.close();
-    pipelineListRef.current?.forceRender();
-  };
+  }, []);
 
-  const onSetStepCancel = () => {
-    setModalRef.current?.close();
-  };
-
-  const onAddStep = () => {
+  const onAddStep = useCallback(() => {
     if (!pipeline.generator) {
       onSetStep(-1);
     } else {
       addModalRef.current?.show();
     }
-  };
+  }, [pipeline.generator, onSetStep]);
 
-  const onAddStepConfirm = (stepKey: string) => {
-    const operator = AllOperators[stepKey];
-    pipeline.createOperator(operator);
-    addModalRef.current?.close();
-    pipelineListRef.current?.forceRender();
-  };
+  const onAddStepConfirm = useCallback(
+    (stepKey: string) => {
+      const operator = AllOperators[stepKey];
+      pipeline.createOperator(operator);
+      addModalRef.current?.close();
+      pipelineListRef.current?.forceRender();
+      forceRender();
+    },
+    [pipeline, forceRender],
+  );
 
-  const onAddStepCancel = () => {
+  const onAddStepCancel = useCallback(() => {
     addModalRef.current?.close();
-  };
+  }, []);
 
   return (
     <>

@@ -70,7 +70,7 @@ export const CreatorPropertiesFactoryEditor = <K extends object>({
           />
         </Panel.Header>
         <ToggleComponent.Area>
-          <div className="flex-col gap margin-block">
+          <div className="flex-col gap mg-block">
             {/* TODO: make real inputs */}
             <Panel.Input
               labelText="Name"

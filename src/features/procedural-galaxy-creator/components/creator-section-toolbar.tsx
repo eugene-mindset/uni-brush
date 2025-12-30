@@ -14,6 +14,13 @@ export interface Props {
 export const CreatorSectionToolbar = (props: Props) => {
   const [toggle, setToggle] = useState(false);
 
+  // TODO: fix react error
+
+  // Cannot update a component (`ToggleAreaComponent`) while rendering a
+  // different component (`ToggleComponent`). To locate the bad setState() call
+  // inside `ToggleComponent`, follow the stack trace as described in
+  // https://react.dev/link/setstate-in-render
+
   return (
     <ToggleComponent isShown={toggle}>
       <ToggleComponent.Area>

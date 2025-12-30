@@ -73,6 +73,27 @@ export const BaseFactoryComponent = <K extends object, V extends Entity.EntityBa
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const onAddEntityPipeline = () => {
+    // TODO: get default counts for each entity
+    factory.createPipeline(1000);
+    forceRender();
+  };
+
+  const onDeletePipeline = (index: number) => {
+    factory.deletePipeline(index);
+    forceRender();
+  };
+
+  const onMoveUpPipeline = (index: number) => {
+    factory.movePipeline(index, "up");
+    forceRender();
+  };
+
+  const onMoveDownPipeline = (index: number) => {
+    factory.movePipeline(index, "down");
+    forceRender();
+  };
+
   const onAddValue = (index: number) => {
     setSelectedIndex(index);
     addModalRef.current?.show();
@@ -88,27 +109,6 @@ export const BaseFactoryComponent = <K extends object, V extends Entity.EntityBa
   const onAddValueCancel = () => {
     addModalRef.current?.close();
   };
-  const onAddEntityPipeline = () => {
-    // TODO: get default counts for each entity
-    factory.createPipeline(1000);
-    forceRender();
-  };
-
-  const onDelete = (index: number) => {
-    factory.deletePipeline(index);
-    forceRender();
-  };
-
-  const onMoveUp = (index: number) => {
-    factory.movePipeline(index, "up");
-    forceRender();
-  };
-
-  const onMoveDown = (index: number) => {
-    factory.movePipeline(index, "down");
-    forceRender();
-  };
-
   return (
     <div className="form-list">
       <ToggleComponent isInitiallyShown>
@@ -126,11 +126,13 @@ export const BaseFactoryComponent = <K extends object, V extends Entity.EntityBa
                     <SectionToolbar
                       // support duplicate functionality
                       onAdd={() => onAddValue(index)}
-                      onDelete={() => onDelete(index)}
+                      onDelete={() => onDeletePipeline(index)}
                       onMoveDown={
-                        index < factory.pipelines.length - 1 ? () => onMoveDown(index) : undefined
+                        index < factory.pipelines.length - 1
+                          ? () => onMoveDownPipeline(index)
+                          : undefined
                       }
-                      onMoveUp={index > 0 ? () => onMoveUp(index) : undefined}
+                      onMoveUp={index > 0 ? () => onMoveUpPipeline(index) : undefined}
                     />
                   </Panel.Header>
                   <ToggleComponent.Area>

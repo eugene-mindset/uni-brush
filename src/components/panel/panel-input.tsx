@@ -1,8 +1,8 @@
-import React, { HTMLInputTypeAttribute, Ref, useRef } from "react";
 import classNames from "classnames";
+import React, { HTMLInputTypeAttribute, Ref, useRef } from "react";
 
-import { CommonProps } from "./types";
 import styles from "./style.module.css";
+import { CommonProps } from "./types";
 
 export interface Props extends CommonProps {
   labelText?: string;

@@ -49,13 +49,13 @@ export const AppMenu: React.FC = () => {
 
   return showMenu ? (
     <dialog id="app-menu" className="core-div modal">
-      <button className="core large" onClick={onLoadClick}>
+      <button className="core lg" onClick={onLoadClick}>
         Load
       </button>
-      <button className="core large" onClick={onSaveClick}>
+      <button className="core lg" onClick={onSaveClick}>
         Save
       </button>
-      <button className="core large" onClick={onQuitClick}>
+      <button className="core lg" onClick={onQuitClick}>
         Quit
       </button>
     </dialog>

@@ -15,6 +15,7 @@ import { CommonProps } from "./types";
 
 interface Props extends CommonProps {
   title?: string;
+  titleContent?: React.ReactNode;
   canToggle?: boolean;
   canDrag?: boolean;
   width?: string | number | null;
@@ -95,20 +96,19 @@ export function Panel(props: Props) {
           props.canDrag && isDragging && styles.dragging,
         )}
       >
-        {props.title && (
-          <div
-            ref={(x) => {
-              titleRef.current = x;
-            }}
-            className={classNames(styles.title, toggle && styles.title_toggle)}
-            onPointerDown={onDragStart}
-          >
-            {props.canToggle && (
-              <ToggleButton toggle={toggle} onToggle={() => setToggle((x) => !x)} />
-            )}
-            <h1 className={styles.title_text}>{props.title}</h1>
-          </div>
-        )}
+        <div
+          ref={(x) => {
+            titleRef.current = x;
+          }}
+          className={classNames(styles.title, toggle && styles.title_toggle)}
+          onPointerDown={onDragStart}
+        >
+          {props.canToggle && (
+            <ToggleButton toggle={toggle} onToggle={() => setToggle((x) => !x)} />
+          )}
+          {props.titleContent}
+          <h1 className={styles.title_text}>{props.title}</h1>
+        </div>
         <div className="scrollable">{toggle && React.Children.toArray(props?.children)}</div>
       </div>
     </PanelContext.Provider>

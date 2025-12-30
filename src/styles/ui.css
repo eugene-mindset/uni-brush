@@ -116,12 +116,32 @@ table.alt-row-table {
   box-sizing: border-box;
 }
 
-.space-top {
+.mg-top {
   margin-top: var(--general-spacing);
 }
 
-.space-bottom {
+.mg-bottom {
   margin-bottom: var(--general-spacing);
+}
+
+.mg-right {
+  margin-right: var(--general-spacing);
+}
+
+.mg-left {
+  margin-left: var(--general-spacing);
+}
+
+.mg-block {
+  margin-block: var(--general-spacing);
+}
+
+.mg-inline {
+  margin-inline: var(--general-spacing);
+}
+
+.mg {
+  margin: var(--general-spacing);
 }
 
 .justify-right {
@@ -136,9 +156,6 @@ table.alt-row-table {
   flex: 0;
 }
 
-.margin-block {
-  margin-block: var(--general-spacing);
-}
 
 .grid-3 {
   display: grid;

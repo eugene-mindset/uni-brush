@@ -39,12 +39,7 @@ button.core.selected {
   outline: none;
 }
 
-button.core.large {
-  font-size: 1.25rem;
-  height: 50px;
-}
-
-button.core.small {
+button.core.s {
   font-size: 0.8rem;
   height: 30px;
   border-radius: 3px 10px;
@@ -58,6 +53,11 @@ button.core.fit {
 button.core.xs {
   height: 25px;
   border-radius: 3px 10px;
+}
+
+button.core.lg {
+  font-size: 1.25rem;
+  height: 50px;
 }
 
 .square {

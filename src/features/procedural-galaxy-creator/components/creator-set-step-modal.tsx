@@ -48,7 +48,7 @@ export const CreatorSetStepModal = ({ ref, ...props }: SetStateModalProps) => {
           labelText="Select"
           options={dropdownOptions}
         />
-        <div className="space-top gap flex-row justify-right">
+        <div className="mg-top gap flex-row justify-right">
           <button className="core float-right" onClick={() => value && props.onConfirm(value)}>
             Save
           </button>

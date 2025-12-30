@@ -39,7 +39,7 @@ export const CreatorAddValueFactoryModal = <K extends object>({
           labelText="Select"
           options={options.map((x) => ({ value: x as string, text: x as string }))}
         />
-        <div className="space-top gap flex-row justify-right">
+        <div className="mg-top gap flex-row justify-right">
           <button className="core float-right" onClick={() => value && props.onConfirm(value)}>
             Save
           </button>

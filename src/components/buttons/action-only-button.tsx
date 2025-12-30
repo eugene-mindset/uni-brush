@@ -1,9 +1,9 @@
-import { useRef, HTMLAttributes } from "react";
 import classNames from "classnames";
+import { HTMLAttributes, useRef } from "react";
 
 interface Props extends HTMLAttributes<HTMLButtonElement> {}
 
-export const ActionOnlyButton: React.FC<Props> = (props) => {
+export const ActionOnlyButton: React.FC<Props> = (props: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {

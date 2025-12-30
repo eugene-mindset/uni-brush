@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { ProceduralCreator } from "@/features/procedural-galaxy-creator";
+import { ProceduralGalaxyCreator } from "@/features/procedural-galaxy-creator";
 import { StarSystemDirectory } from "@/features/star-system-directory";
 import { StarSystemEditor } from "@/features/star-system-editor";
 
@@ -16,7 +16,7 @@ const toolbarRoutes = [
 
 const panelToShow: Record<string, React.ReactNode> = {
   "Geography, Directory": <StarSystemDirectory />,
-  "Geography, Procedural Creator": <ProceduralCreator />,
+  "Geography, Procedural Creator": <ProceduralGalaxyCreator />,
 };
 
 export const FullInterface: React.FC = () => {

@@ -3,27 +3,27 @@ import { Base, Generators, Operators } from ".";
 
 export const initModel = () => {
   const model = new Base.EntityFactory<StarSystemAttributes, StarSystemEntity>();
-  const mainEntityPipe = model.createPipeline(1750, "Primary Shape");
-  mainEntityPipe.createPipeline("initPos");
-  mainEntityPipe.createPipeline("name");
+  const mainEntityPipe = model.createFactory(1750, "Primary Shape");
+  mainEntityPipe.createFactory("initPos");
+  mainEntityPipe.createFactory("name");
 
-  mainEntityPipe.pipelines["initPos"]?.setGenerator(Generators.NormalDistributionVector);
-  mainEntityPipe.pipelines["initPos"]?.createOperator(Operators.BasicGravity);
-  mainEntityPipe.pipelines["initPos"]?.createOperator(Operators.ArmGravity);
+  mainEntityPipe.factories["initPos"]?.setGenerator(Generators.NormalDistributionVector);
+  mainEntityPipe.factories["initPos"]?.createOperator(Operators.BasicGravity);
+  mainEntityPipe.factories["initPos"]?.createOperator(Operators.ArmGravity);
 
-  mainEntityPipe.pipelines["name"]?.setGenerator(Generators.DefaultValue<string>);
-  mainEntityPipe.pipelines["name"]?.generator?.setConfig({ defaultValue: "Primary Star" });
+  mainEntityPipe.factories["name"]?.setGenerator(Generators.DefaultValue<string>);
+  mainEntityPipe.factories["name"]?.generator?.setConfig({ defaultValue: "Primary Star" });
 
-  const testEntityPipe = model.createPipeline(750, "Secondary Shape");
-  testEntityPipe.createPipeline("initPos");
-  testEntityPipe.createPipeline("name");
+  const testEntityPipe = model.createFactory(750, "Secondary Shape");
+  testEntityPipe.createFactory("initPos");
+  testEntityPipe.createFactory("name");
 
-  testEntityPipe.pipelines["initPos"]?.setGenerator(Generators.NormalDistributionVector);
+  testEntityPipe.factories["initPos"]?.setGenerator(Generators.NormalDistributionVector);
 
   const NewType = Generators.DefaultValue<string>;
 
-  testEntityPipe.pipelines["name"]?.setGenerator(NewType);
-  testEntityPipe.pipelines["name"]?.generator?.setConfig({ defaultValue: "Secondary Star" });
+  testEntityPipe.factories["name"]?.setGenerator(NewType);
+  testEntityPipe.factories["name"]?.generator?.setConfig({ defaultValue: "Secondary Star" });
 
   return model;
 };

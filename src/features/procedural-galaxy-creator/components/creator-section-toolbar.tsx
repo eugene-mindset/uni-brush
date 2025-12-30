@@ -11,7 +11,7 @@ export interface Props {
   onSet?: () => void;
 }
 
-export const SectionToolbar = (props: Props) => {
+export const CreatorSectionToolbar = (props: Props) => {
   const [toggle, setToggle] = useState(false);
 
   return (

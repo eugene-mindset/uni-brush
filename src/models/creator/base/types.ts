@@ -1,10 +1,9 @@
-import { Entity } from "@/models";
-import { ValuePipeline } from "./value-pipeline";
+import { ValueFactory } from "./value-factory";
 
-export type propertyToPipeline<T extends Entity.EntityBase> = {
-  [key in keyof T]?: ValuePipeline<T[key]>;
+export type propertyToFactory<T extends object> = {
+  [key in keyof T]?: ValueFactory<T[key]>;
 };
 
-export type propertyToValues<T extends Entity.EntityBase> = {
+export type propertyToValues<T extends object> = {
   [key in keyof T]?: T[key][];
 };

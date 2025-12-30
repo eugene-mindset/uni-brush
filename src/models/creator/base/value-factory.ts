@@ -2,7 +2,7 @@ import { Generator } from "./generator";
 import { Operator } from "./operator";
 import { Step } from "./step";
 
-export class ValuePipeline<T> {
+export class ValueFactory<T> {
   private _generator?: Generator<T, object>;
   private _operators: Operator<T, object>[] = [];
 

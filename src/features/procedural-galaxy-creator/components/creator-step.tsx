@@ -2,8 +2,8 @@ import { Panel } from "@/components";
 import { ToggleComponent } from "@/components/toggle";
 import { Creator } from "@/models";
 
-import { ModelStepDynamicInput } from "./model-step-input";
-import { SectionToolbar } from "./section-toolbar";
+import { CreatorSectionToolbar } from "./creator-section-toolbar";
+import { CreatorStepDynamicInput } from "./creator-step-input";
 import ConfigTables from "./step-config-tables";
 
 interface Props<K extends object, T extends Creator.Base.Step<unknown, K>> {
@@ -16,7 +16,7 @@ interface Props<K extends object, T extends Creator.Base.Step<unknown, K>> {
   onSet?: () => void;
 }
 
-export const BaseStepComponent = <K extends object, T extends Creator.Base.Step<unknown, K>>(
+export const CreatorStepEditor = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: Props<K, T>,
 ) => {
   const { StepConfigTable } = ConfigTables;
@@ -30,7 +30,7 @@ export const BaseStepComponent = <K extends object, T extends Creator.Base.Step<
           <h5 className="flex-fill">
             {props.order}: {stepProperties.header}
           </h5>
-          <SectionToolbar
+          <CreatorSectionToolbar
             onDelete={props.onDelete}
             onDuplicate={props.onDuplicate}
             onMoveDown={props.onMoveDown}
@@ -42,7 +42,7 @@ export const BaseStepComponent = <K extends object, T extends Creator.Base.Step<
           <div className="flex-col gap">
             {/* // TODO: add ordering */}
             {Object.keys(step.config).map((value) => (
-              <ModelStepDynamicInput key={value} step={step} configKey={value as keyof K} />
+              <CreatorStepDynamicInput key={value} step={step} configKey={value as keyof K} />
             ))}
           </div>
         </ToggleComponent.Area>

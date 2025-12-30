@@ -1,16 +1,16 @@
 import { Entity } from "@/models";
 
-import { EntityPipeline } from "./entity-pipeline";
+import { PropertiesFactory } from "./properties-factory";
 import { propertyToValues } from "./types";
 
-type EntityFactoryConfig<K> = {
-  pipeline: EntityPipeline<K>;
+type EntityFactoryConfig<K extends object> = {
+  factory: PropertiesFactory<K>;
   count: number;
   name: string;
 }[];
 
 export class EntityFactory<K extends object, T extends Entity.EntityBase<K>> {
-  protected _pipelines: EntityFactoryConfig<K> = [];
+  protected _factories: EntityFactoryConfig<K> = [];
 
   // constructors
 
@@ -20,76 +20,76 @@ export class EntityFactory<K extends object, T extends Entity.EntityBase<K>> {
 
   // properties
 
-  public get pipelines(): EntityFactoryConfig<K> {
-    return this._pipelines.map((x) => ({ ...x }));
+  public get factories(): EntityFactoryConfig<K> {
+    return this._factories.map((x) => ({ ...x }));
   }
 
   // methods
 
-  public createPipeline(count: number, name?: string): EntityPipeline<K> {
-    const pipeline = new EntityPipeline<K>();
-    this._pipelines.push({
-      pipeline,
+  public createFactory(count: number, name?: string): PropertiesFactory<K> {
+    const factory = new PropertiesFactory<K>();
+    this._factories.push({
+      factory: factory,
       count,
-      name: name || `Entity Pipeline ${this._pipelines.length + 1}`,
+      name: name || `Entity Pipeline ${this._factories.length + 1}`,
     });
 
-    return pipeline;
+    return factory;
   }
 
-  public deletePipeline(index: number) {
-    this._pipelines.splice(index, 1);
+  public deleteFactory(index: number) {
+    this._factories.splice(index, 1);
   }
 
-  public setPipelineCount(index: number, count: number) {
-    this._pipelines[index].count = count;
+  public setFactoryCount(index: number, count: number) {
+    this._factories[index].count = count;
   }
 
-  public setPipelineName(index: number, name: string) {
-    this._pipelines[index].name = name;
+  public setFactoryName(index: number, name: string) {
+    this._factories[index].name = name;
   }
 
-  public movePipeline(index: number, dir: "up" | "down") {
+  public moveFactory(index: number, dir: "up" | "down") {
     const delta = dir === "up" ? -1 : 1;
     const dest = index + delta;
 
-    if (dest < 0 || dest >= this._pipelines.length) {
+    if (dest < 0 || dest >= this._factories.length) {
       return;
     }
 
-    const temp = this._pipelines[index];
-    this._pipelines[index] = this._pipelines[dest];
-    this._pipelines[dest] = temp;
+    const temp = this._factories[index];
+    this._factories[index] = this._factories[dest];
+    this._factories[dest] = temp;
   }
 
   public generate() {
-    this._pipelines.map((x) => {
-      x.pipeline.generate(x.count);
+    this._factories.map((x) => {
+      x.factory.generate(x.count);
     });
   }
 
   public reset() {
-    this._pipelines.map((x) => {
-      x.pipeline.reset();
+    this._factories.map((x) => {
+      x.factory.reset();
     });
   }
 
   public getOutputs(): propertyToValues<K> {
     const out: propertyToValues<K> = {};
 
-    this._pipelines.map((pipeline) => {
-      pipeline.pipeline.properties.forEach((key) => {
+    this._factories.map((factory) => {
+      factory.factory.properties.forEach((key) => {
         if (key in out) return;
         out[key as keyof K] = [];
       });
 
-      const pipelineOut = pipeline.pipeline.getOutputs();
+      const factoryOut = factory.factory.getOutputs();
 
-      Object.keys(pipelineOut).map((key) => {
-        const trueKey = key as keyof typeof pipelineOut;
+      Object.keys(factoryOut).map((key) => {
+        const trueKey = key as keyof typeof factoryOut;
 
-        const arr = pipelineOut[trueKey] || [];
-        if (!((trueKey as keyof T) in pipelineOut)) return;
+        const arr = factoryOut[trueKey] || [];
+        if (!((trueKey as keyof T) in factoryOut)) return;
 
         if (out[trueKey]) {
           out[trueKey].push(...arr);

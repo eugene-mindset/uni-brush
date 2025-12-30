@@ -13,7 +13,7 @@ export const useProceduralCreatorModel = () => {
     galaxyGeneratorModel.generate();
     const outputs = galaxyGeneratorModel.getOutputs();
 
-    starSystemManager.fullReset();
+    starSystemManager.fullReset(outputs["name"]?.length);
     starSystemManager.setAttributePer("initPos", outputs.initPos as Vector3[]);
     starSystemManager.setAttributePer("name", outputs.name as string[]);
     starSystemManager.initializeEntities();

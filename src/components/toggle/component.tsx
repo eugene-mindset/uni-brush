@@ -1,30 +1,7 @@
-import { atom, useSetAtom } from "jotai";
-import React, { Activity } from "react";
+import React, { Activity, useState } from "react";
 
 import { ToggleButton } from "../buttons";
 import { ToggleContext, useToggle } from "./hook";
-
-interface MainProps extends React.PropsWithChildren {
-  isInitiallyShown?: boolean;
-  isShown?: boolean;
-}
-
-export function ToggleComponent(props: MainProps) {
-  const toggleStateAtom = atom(props?.isInitiallyShown || false);
-  const setToggle = useSetAtom(toggleStateAtom);
-
-  props.isShown !== undefined && setToggle(props.isShown);
-
-  const onToggle = () => {
-    setToggle((x) => !x);
-  };
-
-  return (
-    <ToggleContext.Provider value={{ toggleStateAtom, onToggle }}>
-      {React.Children.toArray(props.children)}
-    </ToggleContext.Provider>
-  );
-}
 
 const ToggleAreaComponent: React.FC<React.PropsWithChildren> = (props) => {
   const { toggleState: toggle } = useToggle();
@@ -48,6 +25,38 @@ const ToggleButtonComponent = (props: Partial<ToggleButtonProps>) => {
   );
 };
 
-ToggleComponent.useToggle = useToggle;
+interface MainProps extends React.PropsWithChildren {
+  isInitShown?: boolean;
+}
+
+export function ToggleComponent(props: MainProps) {
+  const [toggle, setToggle] = useState<boolean>(props.isInitShown || false);
+  const onToggle = () => {
+    setToggle((x) => !x);
+  };
+
+  return (
+    <ToggleContext.Provider value={{ onToggle, toggleState: toggle }}>
+      {React.Children.toArray(props.children)}
+    </ToggleContext.Provider>
+  );
+}
+
 ToggleComponent.Area = ToggleAreaComponent;
 ToggleComponent.Button = ToggleButtonComponent;
+
+interface MainControlledProps extends React.PropsWithChildren {
+  isShown: boolean;
+  onToggle: () => void;
+}
+
+export function ControlledToggleComponent({ onToggle, isShown, ...props }: MainControlledProps) {
+  return (
+    <ToggleContext.Provider value={{ onToggle, toggleState: isShown }}>
+      {React.Children.toArray(props.children)}
+    </ToggleContext.Provider>
+  );
+}
+
+ControlledToggleComponent.Area = ToggleAreaComponent;
+ControlledToggleComponent.Button = ToggleButtonComponent;

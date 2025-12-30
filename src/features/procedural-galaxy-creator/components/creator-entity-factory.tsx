@@ -77,7 +77,7 @@ export const CreatorEntityFactoryEditor = <K extends object, V extends Entity.En
   return (
     <Provider store={store}>
       <div className="form-list">
-        <ToggleComponent isInitiallyShown>
+        <ToggleComponent isInitShown>
           <Panel.Header canToggle="header-big" className="flex-row gap">
             <h2 className="flex-fill">{entity}</h2>
             <CreatorSectionToolbar onAdd={onAdd} />

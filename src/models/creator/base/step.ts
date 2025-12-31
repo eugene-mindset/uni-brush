@@ -1,11 +1,13 @@
 export abstract class Step<O, K extends object> {
   protected _config: K;
+  public readonly id: string;
 
   public static readonly stepKey: string = "Base";
 
   // constructors
 
   protected constructor(config: K) {
+    this.id = crypto.randomUUID();
     this._config = config;
   }
 
@@ -25,9 +27,9 @@ export abstract class Step<O, K extends object> {
 
   // methods
 
-  protected abstract generateStep(idx: number, ...args: unknown[]): O;
+  protected abstract generateStep(_count: number, _idx: number, ..._args: unknown[]): O;
 
-  public abstract generate(...args: unknown[]): O[];
+  public abstract generate(..._args: unknown[]): O[];
 
   public setConfig(config: K) {
     this._config = { ...config };

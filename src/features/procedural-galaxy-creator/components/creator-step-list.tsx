@@ -63,7 +63,7 @@ export const CreatorStepList = <V, T extends Creator.Base.ValueFactory<V>>({
     <div data-version={forceRenderKey}>
       {valueFactory?.generator && (
         <CreatorStepEditor
-          key={`x.stepKey_-1`}
+          key={`generator-${valueFactory.generator.id}`}
           step={valueFactory.generator}
           order={1}
           onDelete={onDeleteGenerator}
@@ -73,7 +73,7 @@ export const CreatorStepList = <V, T extends Creator.Base.ValueFactory<V>>({
       {valueFactory?.operators &&
         valueFactory.operators.map((x, i) => (
           <CreatorStepEditor
-            key={`x.stepKey_${i}`}
+            key={`operator-${x.id}`}
             step={x}
             order={i + 2}
             onDelete={() => onDeleteOperator(i)}

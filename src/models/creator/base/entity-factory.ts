@@ -11,11 +11,12 @@ type EntityFactoryConfig<K extends object> = {
 
 export class EntityFactory<K extends object, T extends Entity.EntityBase<K>> {
   protected _factories: EntityFactoryConfig<K> = [];
+  public readonly id: string;
 
   // constructors
 
   public constructor() {
-    /* empty */
+    this.id = crypto.randomUUID();
   }
 
   // properties

@@ -36,6 +36,7 @@
     "jotai": "^2.15.1",
     "jotai-devtools": "^0.13.0",
     "jotai-effect": "^2.1.7",
+    "jotai-family": "^1.0.1",
     "lodash": "^4.17.21",
     "stats.js": "^0.17.0",
     "three": "^0.181.2",
@@ -77,5 +78,10 @@
     "typescript-eslint": "^8.48.1",
     "vite": "^7.1.6",
     "vitest": "4.0.14"
+  },
+  "overrides": {
+    "eslint-plugin-react-hooks": {
+      "zod-validation-error": "^4.0.0"
+    }
   }
 }

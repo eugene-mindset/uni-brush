@@ -71,7 +71,6 @@ export const CreatorPropertiesFactoryEditor = <K extends object>({
         </Panel.Header>
         <ToggleComponent.Area>
           <div className="flex-col gap mg-block">
-            {/* TODO: make real inputs */}
             <Panel.Input
               labelText="Name"
               value={name}
@@ -84,13 +83,13 @@ export const CreatorPropertiesFactoryEditor = <K extends object>({
             />
           </div>
           {Object.keys(propertiesFactory.factories).map((x) => {
-            const pipeline =
+            const valueFactory =
               propertiesFactory.factories[x as keyof typeof propertiesFactory.factories];
             return (
-              pipeline && (
+              valueFactory && (
                 <CreatorValueFactoryEditor
-                  key={`value-pipe-${x}`}
-                  valueFactory={pipeline}
+                  key={`value-factory-${valueFactory.id}`}
+                  valueFactory={valueFactory}
                   property={x}
                 />
               )

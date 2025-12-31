@@ -59,7 +59,7 @@ export class ArmGravity extends Operator<Vector3, Config> {
     return this.precomputeConfig(this.config);
   }
 
-  protected override generateStep(_idx: number, input: Vector3): Vector3 {
+  protected override generateStep(_count: number, _idx: number, input: Vector3): Vector3 {
     const theta =
       Math.atan2(input.z / this.config.dim.z, input.x / this.config.dim.x) + this.config.armOffset;
 

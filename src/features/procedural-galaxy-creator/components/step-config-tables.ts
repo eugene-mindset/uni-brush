@@ -102,12 +102,20 @@ export const StepConfigTable: configTable = {
       },
     },
   },
+  [Creator.Generators.UniformDistributionVector.stepKey]: {
+    header: "Uniform Distribution",
+    config: {
+      dim: { type: "vector", text: "Dimensions" },
+    },
+  },
 };
 
 export const AllGenerators = {
   [Creator.Generators.DefaultValue.stepKey]: Creator.Generators.DefaultValue,
   [Creator.Generators.NormalDistributionVector.stepKey]:
     Creator.Generators.NormalDistributionVector,
+  [Creator.Generators.UniformDistributionVector.stepKey]:
+    Creator.Generators.UniformDistributionVector,
 };
 
 export const AllOperators = {

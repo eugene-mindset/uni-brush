@@ -21,7 +21,7 @@ export abstract class Generator<O, K extends object> extends Step<O, K> {
     const out: O[] = [];
 
     for (let i = 0; i < count; i++) {
-      out.push(this.generateStep(i));
+      out.push(this.generateStep(count, i));
     }
 
     return out;

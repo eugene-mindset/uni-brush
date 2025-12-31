@@ -35,10 +35,10 @@ export class NormalDistributionVector extends Generator<Vector3, Config> {
   }
 
   protected override generateStep(): Vector3 {
-    const radius = Math.abs(MathHelpers.randomPercentFromNormal().z0 * this.config.normalDev);
+    const radius = Math.abs(MathHelpers.randomPercentFromNormal().z0 * this._config.normalDev);
 
     let initPos = MathHelpers.randomVectorFromNormal().normalize();
-    initPos = initPos.multiplyVectors(initPos, this.config.dim).multiplyScalar(radius);
+    initPos = initPos.multiplyVectors(initPos, this._config.dim).multiplyScalar(radius);
 
     return initPos;
   }

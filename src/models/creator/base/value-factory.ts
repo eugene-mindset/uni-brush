@@ -8,6 +8,12 @@ export class ValueFactory<T> {
 
   private _outputs: T[][] = [];
 
+  public readonly id: string;
+
+  public constructor() {
+    this.id = crypto.randomUUID();
+  }
+
   // properties
 
   public get generator(): Generator<T, object> | undefined {

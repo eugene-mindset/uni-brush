@@ -4,10 +4,12 @@ import { ValueFactory } from "./value-factory";
 export class PropertiesFactory<K extends object> {
   protected _valueFactories: propertyToFactory<K> = {};
 
+  public readonly id: string;
+
   // constructors
 
   public constructor() {
-    /* empty */
+    this.id = crypto.randomUUID();
   }
 
   // properties

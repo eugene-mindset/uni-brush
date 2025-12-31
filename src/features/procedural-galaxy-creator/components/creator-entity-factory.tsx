@@ -86,7 +86,7 @@ export const CreatorEntityFactoryEditor = <K extends object, V extends Entity.En
             <Panel.Group>
               {entityFactory.factories.map((propertiesFactory, index) => (
                 <CreatorPropertiesFactoryEditor<K>
-                  key={`entity-factory-${propertiesFactory.name}`}
+                  key={`entity-factory-${propertiesFactory.factory.id}`}
                   propertiesFactory={propertiesFactory.factory}
                   name={propertiesFactory.name}
                   count={propertiesFactory.count}

@@ -1,6 +1,6 @@
 import { atom, getDefaultStore } from "jotai";
-import { atomFamily } from "jotai/utils";
 import { observe } from "jotai-effect";
+import { atomFamily } from "jotai-family";
 import _ from "lodash";
 
 import { RenderPipeline, RenderPipelineIntersection } from "@/renderer";

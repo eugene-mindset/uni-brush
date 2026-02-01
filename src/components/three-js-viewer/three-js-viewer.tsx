@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createStore, Provider } from "jotai";
 import { getDefaultStore } from "jotai";
 import { Store } from "jotai/vanilla/store";
-import { Ref, useEffect, useImperativeHandle, useRef } from "react";
+import { Ref, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
 
 import { RenderPipeline } from "@/renderer";
 import { renderPipelineAtomFamily } from "@/store";
@@ -33,6 +33,21 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
   const observerRef = useRef<ResizeObserver>(null);
   const isDragThreshold = useRef<number>(null);
 
+  // Store callbacks in refs so they can update without recreating the pipeline
+  const onInitializeRef = useRef(props.onInitialize);
+  const onCleanUpRef = useRef(props.onCleanUp);
+  const onTickRef = useRef(props.onTick);
+  const onSelectRef = useRef(props.onSelect);
+  const onCameraTargetReachedRef = useRef(props.onCameraTargetReached);
+
+  useLayoutEffect(() => {
+    onInitializeRef.current = props.onInitialize;
+    onCleanUpRef.current = props.onCleanUp;
+    onTickRef.current = props.onTick;
+    onSelectRef.current = props.onSelect;
+    onCameraTargetReachedRef.current = props.onCameraTargetReached;
+  });
+
   useImperativeHandle(ref, () => {
     return {
       pipeline: pipelineRef.current,
@@ -46,9 +61,9 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
     const pipeline = new RenderPipeline(canvasRef.current);
     pipelineRef.current = pipeline;
     pipeline.updateDimensions(divRef.current.clientWidth, divRef.current.clientHeight);
-    pipeline.setCustomInitialize(() => props.onInitialize && props.onInitialize(pipeline));
-    pipeline.setCustomCleanUp(() => props.onCleanUp && props.onCleanUp(pipeline));
-    pipeline.setCustomTick((delta) => props.onTick && props.onTick(pipeline, delta));
+    pipeline.setCustomInitialize(() => onInitializeRef.current?.(pipeline));
+    pipeline.setCustomCleanUp(() => onCleanUpRef.current?.(pipeline));
+    pipeline.setCustomTick((delta) => onTickRef.current?.(pipeline, delta));
     pipeline.initialize();
 
     if (id) {
@@ -62,15 +77,14 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
       pipelineRef.current?.cleanUp();
       pipelineRef.current = null;
     };
-  }, [id, divRef, canvasRef, pipelineAtom, props]);
+  }, [id, pipelineAtom]);
 
   useEffect(() => {
     const pipeline = pipelineRef.current;
     if (!pipeline) return;
 
-    const finalOnSelect = () => props.onSelect && props.onSelect(pipeline);
-    const finalOnCameraTargetReached = () =>
-      props.onCameraTargetReached && props.onCameraTargetReached(pipeline);
+    const finalOnSelect = () => onSelectRef.current?.(pipeline);
+    const finalOnCameraTargetReached = () => onCameraTargetReachedRef.current?.(pipeline);
 
     pipeline.addEventListener("on_click", finalOnSelect);
     pipeline.addEventListener("on_camera_target_reached", finalOnCameraTargetReached);
@@ -79,7 +93,7 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
       pipeline.removeEventListener("on_click", finalOnSelect);
       pipeline.removeEventListener("on_camera_target_reached", finalOnCameraTargetReached);
     };
-  }, [pipelineRef, props]);
+  }, []);
 
   useEffect(() => {
     const mainDiv = divRef.current;
@@ -155,11 +169,11 @@ const InnerThreeJSViewer = ({ ref, children, id, ...props }: Props) => {
 };
 
 export const ThreeJSViewer = (props: Props) => {
-  const storeRef = useRef(props?.store || createStore());
+  const [store] = useState(createStore());
 
   return (
-    <Provider store={storeRef.current}>
-      <InnerThreeJSViewer {...props} store={storeRef.current} />
+    <Provider store={store}>
+      <InnerThreeJSViewer {...props} store={store} />
     </Provider>
   );
 };

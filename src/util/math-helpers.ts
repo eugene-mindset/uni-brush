@@ -1,4 +1,7 @@
+import random from "random";
 import { Vector3 } from "three";
+
+const normal = random.normal(0, 1 / 4);
 
 /**
  * Generate two random variables produced from the Gaussian distribution, utilizing Box–Muller transform
@@ -49,11 +52,7 @@ export function randomSigned(): number {
  * @returns a random vector
  */
 export function randomVectorFromNormal() {
-  return new Vector3(
-    randomPercentFromNormal().z0,
-    randomPercentFromNormal().z0,
-    randomPercentFromNormal().z0
-  );
+  return new Vector3(normal(), normal(), normal());
 }
 
 /**

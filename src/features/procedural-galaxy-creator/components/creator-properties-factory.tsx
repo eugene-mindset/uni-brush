@@ -78,6 +78,7 @@ export const CreatorPropertiesFactoryEditor = <K extends object>({
             />
             <Panel.Input
               labelText="Count"
+              type="number"
               value={count}
               onInput={(e) => props.onChangeCount(parseInt(e.currentTarget.value))}
             />

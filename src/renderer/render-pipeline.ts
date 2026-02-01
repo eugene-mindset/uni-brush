@@ -9,7 +9,7 @@ import { Global, RenderSetup } from ".";
 import { RenderPipelineIntersection } from "./render-pipeline-intersection";
 import { RenderPasses } from "./render-setup";
 
-const CAMERA_LINEAR_SPEED = 100;
+const CAMERA_LINEAR_SPEED = 350;
 const CAMERA_ANGULAR_SPEED = 5;
 // const CAMERA_PHYSICS_PRECISION = 0.001;
 const CAMERA_LERP = 0.25;
@@ -209,8 +209,6 @@ export class RenderPipeline {
     if (this._isInit) throw new Error("Cannot initialize already init render model");
     if (!this._canvas) throw new Error("Canvas element is not valid.");
 
-    this.renderer = this.createRenderer();
-    this.passes = this.createPipeline();
     RenderSetup.enablePipeline(this.currentCamera, this.passes);
     if (this._customInit) this._customInit();
     this._isInit = true;
@@ -222,11 +220,9 @@ export class RenderPipeline {
     if (this._isInit) {
       this.stopRendering();
       this.dim = new THREE.Vector2(width, height);
-      this.createPipeline();
       this.startRendering();
     } else {
       this.dim = new THREE.Vector2(width, height);
-      this.createPipeline();
     }
     // this.pipeline = this.createPipeline(width, height);
     // RenderSetup.enablePipeline(this.currentCamera, this.pipeline);
@@ -242,9 +238,10 @@ export class RenderPipeline {
 
   public cleanUp() {
     this.stopRendering();
-    this.renderer.dispose();
     Object.entries(this.passes).forEach((x) => x[1].dispose());
     if (this._customCleanUp) this._customCleanUp();
+
+    this.renderer.dispose();
 
     this._isInit = false;
   }

@@ -68,10 +68,6 @@ export const StepConfigTable: configTable = {
         type: "vector",
         text: "Arm Space Size",
       },
-      normalSpread: {
-        type: "number",
-        text: "Normal Deviation Ratio",
-      },
       armCount: {
         type: "number",
         text: "Number of Arms",
@@ -86,15 +82,7 @@ export const StepConfigTable: configTable = {
       },
       armShape: {
         type: "number",
-        text: "Arm Sharpness (whacky)",
-      },
-      armSpread: {
-        type: "number",
-        text: "Randomness in Arm",
-      },
-      armTaperSpread: {
-        type: "number",
-        text: "Randomness down Arm",
+        text: "Arm Sharpness",
       },
       centerOverArmRatio: {
         type: "number",

@@ -7,13 +7,10 @@ import { Operator } from "../base";
 
 interface Config {
   dim: Vector3;
-  normalSpread: number;
   armCount: number;
   armOffset: number;
   armSpeed: number;
   armShape: number;
-  armSpread: number;
-  armTaperSpread: number;
   centerOverArmRatio: number;
 }
 
@@ -23,13 +20,10 @@ export class ArmGravity extends Operator<Vector3, Config> {
   public static override create(): ArmGravity {
     return new ArmGravity({
       dim: new Vector3(1000, 10, 1000),
-      normalSpread: 4 / 3.25,
       armCount: 4,
       armOffset: Math.PI / 4,
       armSpeed: 15,
       armShape: 10,
-      armSpread: 0.1,
-      armTaperSpread: 0.25,
       centerOverArmRatio: 0.1,
     });
   }
@@ -91,19 +85,7 @@ export class ArmGravity extends Operator<Vector3, Config> {
       input.z / this.config.dim.z,
     ).applyAxisAngle(new Vector3(0, 1, 0), -finalTheta);
 
-    // add jitter to final position
-    const jitter =
-      1 +
-      this.config.armSpread *
-        this.config.dim.length() *
-        MathHelpers.randomPercentFromNormal().z0 *
-        this.config.normalSpread *
-        Math.min(planarDistRatio + this.config.armTaperSpread, 1);
-
-    const final = MathHelpers.applyJitter(
-      new Vector3().multiplyVectors(rotated, this.config.dim),
-      jitter,
-    );
+    const final = new Vector3().multiplyVectors(rotated, this.config.dim);
 
     return final;
   }

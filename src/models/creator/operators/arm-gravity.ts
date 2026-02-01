@@ -22,7 +22,7 @@ export class ArmGravity extends Operator<Vector3, Config> {
       dim: new Vector3(1000, 10, 1000),
       armCount: 4,
       armOffset: Math.PI / 4,
-      armSpeed: 15,
+      armSpeed: Math.PI / 12,
       armShape: 10,
       centerOverArmRatio: 0.1,
     });

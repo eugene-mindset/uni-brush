@@ -7,7 +7,7 @@ type configTable = {
     header: string;
     config: {
       [key: string]: {
-        type: HTMLInputTypeAttribute | "vector" | "select";
+        type: HTMLInputTypeAttribute | "angle" | "vector" | "select";
         text?: string;
         selectOptions?: { text: string; value: string | number }[];
       };
@@ -73,11 +73,11 @@ export const StepConfigTable: configTable = {
         text: "Number of Arms",
       },
       armOffset: {
-        type: "number",
+        type: "angle",
         text: "Arm Rotational Offset",
       },
       armSpeed: {
-        type: "number",
+        type: "angle",
         text: "Arm Rotational Speed",
       },
       armShape: {

@@ -1,5 +1,5 @@
 import { HTMLInputTypeAttribute, useState } from "react";
-import { Vector3 } from "three";
+import { MathUtils, Vector3 } from "three";
 
 import { Panel } from "@/components";
 import { Creator } from "@/models";
@@ -55,6 +55,33 @@ const CreatorStepInput = <K extends object, T extends Creator.Base.Step<unknown,
   );
 };
 
+const CreatorStepAngleInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
+  props: BaseInputProps<K, T>,
+) => {
+  const { step, configKey } = props;
+
+  const [value, setValue] = useState<number>(
+    (step.config[configKey] as number) * MathUtils.RAD2DEG,
+  );
+
+  const onInput = (value: string) => {
+    const final = parseFloat(value);
+    setValue(final);
+    updateConfig(step, { [configKey]: final * MathUtils.DEG2RAD } as object as K);
+  };
+
+  return (
+    <Panel.Input
+      type="number"
+      labelText={props.labelText}
+      value={value as string | number | undefined}
+      onInput={(event) => onInput(event.currentTarget.value)}
+    >
+      <span className="mg-left">{"\u00b0"}</span>
+    </Panel.Input>
+  );
+};
+
 const CreatorStepVectorInput = <K extends object, T extends Creator.Base.Step<unknown, K>>(
   props: BaseInputProps<K, T>,
 ) => {
@@ -91,7 +118,16 @@ export const CreatorStepDynamicInput = <K extends object, T extends Creator.Base
   const properties = stepProperties.config[configKey as string];
 
   if (!properties.type) return;
-  if (properties.type === "vector") {
+  if (properties.type === "angle") {
+    return (
+      <CreatorStepAngleInput
+        key={configKey as string}
+        step={step}
+        configKey={configKey as keyof K}
+        labelText={properties.text}
+      />
+    );
+  } else if (properties.type === "vector") {
     return (
       <CreatorStepVectorInput
         key={configKey as string}
